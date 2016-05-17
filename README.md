@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # generator-demoiselle [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
 > Gerador Demoiselle Angular
 
@@ -36,3 +37,7 @@ MIT © [Paulo Gladson](https://www.frameworkdemoiselle.gov.br/)
 [daviddm-url]: https://david-dm.org/PauloGladson/generator-demoiselle
 [coveralls-image]: https://coveralls.io/repos/PauloGladson/generator-demoiselle/badge.svg
 [coveralls-url]: https://coveralls.io/r/PauloGladson/generator-demoiselle
+=======
+# generator-demoiselle
+Gerador de código do Demoiselle 2.5 com AngularJS
+>>>>>>> 5070af5600d76fa5adde2d27577ce49b07942b32
