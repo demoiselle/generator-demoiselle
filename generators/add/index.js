@@ -44,18 +44,26 @@ module.exports = yeoman.Base.extend({
 
         this.fs.copyTpl(
                 this.templatePath('frontend/app/scripts/controllers/_controller.js'),
-                this.destinationPath('frontend/app/scripts/controllers/' + this.props.name + '.js'), {
+                this.destinationPath('frontend/app/scripts/controllers/' + this.props.name.toLowerCase() + '.js'), {
             name: this.props.name
         }
         );
 
         this.fs.copyTpl(
                 this.templatePath('frontend/app/scripts/services/_service.js'),
-                this.destinationPath('frontend/app/scripts/services/' + this.props.name + '.js'), {
+                this.destinationPath('frontend/app/scripts/services/' + this.props.name.toLowerCase() + '.js'), {
             name: this.props.name
         }
         );
 
+	this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-edit.html'), 
+                     this.destinationPath('frontend/app/views/'+this.props.name.toLowerCase()+'/edit.html'),{
+            name: this.props.name
+        });
+ 	this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-list.html'), 
+                     this.destinationPath('frontend/app/views/'+this.props.name.toLowerCase()+'/list.html'),{
+            name: this.props.name
+        });
     },
     install: function () {
         //this.installDependencies();

@@ -51,102 +51,6 @@ app.filter('tipoArquivo', function() {
     };
 });
 
-
-var operacoes = {
-    CRIAR: {icone: "glyphicon glyphicon-plus", badge: "info"},
-    ATUALIZAR: {icone: "glyphicon glyphicon-floppy-disk", badge: "primary"},
-    APROVAR: {icone: "glyphicon glyphicon-thumbs-up", badge: "success"},
-    REPROVAR: {icone: "glyphicon glyphicon-thumbs-down", badge: "danger"},
-    FINALIZAR: {icone: "glyphicon glyphicon-ok", badge: "warning"},
-    EXCLUIR: {icone: "glyphicon glyphicon-alert", badge: "danger"}
-};
-
-
-
-app.filter('operacaoIcone', function() {
-    return function(operacao) {
-        return operacoes[operacao].icone;
-    };
-});
-
-app.filter('operacaoClass', function() {
-    return function(operacao) {
-        return operacoes[operacao].badge;
-    };
-});
-
-app.filter('tipoInteresseIcone', function() {
-    return function(i) {
-        if (i == 'I')
-            return "glyphicon glyphicon-eye-open";
-        if (i == 'M')
-            return "glyphicon glyphicon-globe";
-        return "";
-    };
-});
-
-app.filter('tipoInteresseNome', function() {
-    return function(i) {
-        if (i == 'I')
-            return "Interessado";
-        if (i == 'M')
-            return "Membro da equipe";
-        return "";
-    };
-});
-
-app.filter('nomeFase', function() {
-    var nomes = {
-        'ANALISE': 'Análise',
-        'PROSPECCAO': 'Prospecção',
-        'INTERNALIZACAO': 'Internalização',
-        'SUSTENTACAO': 'Sustentação',
-        'DECLINIO': 'Declínio',
-        'LEGADO': 'Legado'
-    };
-    return function(fase) {
-        if (!isNaN(parseFloat(fase)) && isFinite(fase)) {
-            return nomes[Object.keys(nomes)[fase - 1]];
-        }
-        var nome = nomes[fase];
-        if (nome)
-            return nome;
-        return "Não existe";
-    };
-});
-
-
-app.filter('iconeFase', function() {
-    var url = {
-        'ANALISE': 'images/fases/analise.png',
-        'PROSPECCAO': 'images/fases/prospeccao.png',
-        'INTERNALIZACAO': 'images/fases/internalizacao.png',
-        'SUSTENTACAO': 'images/fases/sustentacao.png',
-        'DECLINIO': 'images/fases/declinio.png',
-        'NENHUMA': 'images/fases/nenhuma.png',
-    };
-    return function(fase) {
-        var nome = url[fase];
-        if (nome)
-            return nome;
-        return url['NENHUMA'];
-    };
-});
-
-app.filter('faseUrl', function() {
-    var url = {
-        'ANALISE': 'analise/edit',
-        'PROSPECCAO': 'prospeccao/edit',
-        'INTERNALIZACAO': 'internalizacao/edit',
-        'SUSTENTACAO': 'sustentacao/edit',
-        'DECLINIO': 'declinio/edit',
-        'LEGADO': 'legado/edit'
-    };
-    return function(fase) {
-        return url[fase];
-    };
-});
-
 app.filter('startFrom', function() {
     return function(input, start) {
         if (!input)
@@ -194,16 +98,6 @@ app.filter('trunk', function() {
     };
 });
 
-app.filter('identificador', function() {
-    return function(fase) {
-        var ano = new Date(fase.dataCriacao).getFullYear();
-        var id = "" + fase.id;
-        var zeros = "000000";
-        var identificador = ano + zeros.substring(0, zeros.length - id.length) + id;
-        return identificador;
-    };
-});
-
 app.filter('buscaPor', function() {
     return function(arr, searchString) {
         if (!searchString) {
@@ -220,13 +114,3 @@ app.filter('buscaPor', function() {
     };
 });
 
-app.filter('statusFase', function(){
-    return function(fase) {
-        if(!fase.dataFinalizacao){
-            return "Essa fase está em andamento.";
-        }
-        else{
-            return "Essa fase está finalizada";
-        }
-    };
-});

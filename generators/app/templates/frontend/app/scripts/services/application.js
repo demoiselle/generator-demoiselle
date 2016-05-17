@@ -1,10 +1,9 @@
 'use strict';
 
-app.factory('AppService', ['$window', '$rootScope', 'LAYOUTS', function ($window, $rootScope, LAYOUTS) {
+app.factory('AppService', ['$window', '$rootScope', function ($window, $rootScope) {
 
-        var tokenKey = "Token";
-        var cssKey = "Css";
-        var photoKey = "Photo";
+        var tokenKey = "token";
+        var cssKey = "css";
 
         var service = {};
 
@@ -34,8 +33,8 @@ app.factory('AppService', ['$window', '$rootScope', 'LAYOUTS', function ($window
                     $rootScope.css = css;
                     return css;
                 } else {
-                    $window.localStorage.setItem(cssKey, 'material');
-                    $rootScope.css = 'material';
+                    $window.localStorage.setItem(cssKey, 'default');
+                    $rootScope.css = 'default';
                 }
             }
             return $rootScope.css;
@@ -44,7 +43,7 @@ app.factory('AppService', ['$window', '$rootScope', 'LAYOUTS', function ($window
         function cssInArray(css) {
             var cssInList = false;
 
-            angular.forEach(LAYOUTS, function (value, key) {
+            angular.forEach($rootScope.bootstraps, function (value, key) {
                 if (value.url === css) {
                     cssInList = true;
                 }
@@ -96,3 +95,17 @@ app.factory('AppService', ['$window', '$rootScope', 'LAYOUTS', function ($window
         return service;
     }]);
 
+app.service('Session', function () {
+
+    this.create = function (userId, userRole) {
+        this.userId = userId;
+        this.userRole = userRole;
+    };
+
+    this.destroy = function () {
+        this.userId = null;
+        this.userRole = null;
+    };
+
+    return this;
+});

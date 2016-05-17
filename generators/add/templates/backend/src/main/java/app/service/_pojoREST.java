@@ -40,8 +40,8 @@ import javax.ws.rs.core.Response;
  */
 
 
-@Api(value = "<%=name%>")
-@Path("<%=name%>")
+@Api(value = "<%=name.toLowerCase()%>")
+@Path("<%=name.toLowerCase()%>")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 public class <%=name%>REST implements Serializable {

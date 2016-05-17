@@ -19,7 +19,6 @@ import javax.validation.constraints.Size;
  * @author 70744416353
  */
 @Entity
-@Cacheable
 @RequestScoped
 @Table(name = "usuario")
 public class User implements Principal, Serializable {
@@ -35,8 +34,7 @@ public class User implements Principal, Serializable {
     @Column(name = "nome")
     private String name;
 
-    private Long condominio;
-    private Long perfil;
+    private String perfil;
     private String email;
     private String cpf;
     private String fone;
@@ -156,28 +154,12 @@ public class User implements Principal, Serializable {
         this.senha = senha;
     }
 
-    /**
-     *
-     * @return
-     */
-    public Long getPerfil() {
+    public String getPerfil() {
         return perfil;
     }
 
-    /**
-     *
-     * @param perfil
-     */
-    public void setPerfil(Long perfil) {
+    public void setPerfil(String perfil) {
         this.perfil = perfil;
-    }
-
-    public Long getCondominio() {
-        return condominio;
-    }
-
-    public void setCondominio(Long condominio) {
-        this.condominio = condominio;
     }
 
     public String getCpf() {

@@ -10,7 +10,8 @@
     },
     "files": [
         "generators/app",
-        "generators/add"
+        "generators/add",
+        "generators/serpro"
     ],
     "main": "generators/index.js",
     "keywords": [

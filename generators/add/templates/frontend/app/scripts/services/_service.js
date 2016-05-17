@@ -1,45 +1,43 @@
 'use strict';
 
-var backendUrl = '';
+app.factory('<%=name%>Service', ['$http', '$q', function ($http, $q) {
+        var service = {};
 
-app.factory('<%=name%>Service', ['$http', function ($http) {
-    
-    var service = {};
+        service.get = function (id) {
+            return $http.get('api/<%=name.toLowerCase()%>/' + id).then(function (res) {
+                return res.data;
+            });
+        };
 
-    service.get = function () {
-        return $http
-                .get('api/tema')
-                .then(function (res) {
-                    return res.data;
-                });
-    };
+        service.delete = function (id) {
+            return $http.delete('api/<%=name.toLowerCase()%>/' + id).then(function (res) {
+                return res.data;
+            });
+        };
 
-    service.obterDemandas = function () {
-        return $http
-                .get('api/<%=name%>/minhasDemandas')
-                .then(function(res) {
-                    return res.data;
-                });
-    };
+        service.save = function (<%=name%>) {
+            return $http({
+                url: 'api/<%=name.toLowerCase()%>',
+                method: <%=name%>.id ? "PUT" : "POST",
+                data: <%=name%>
+            }).then();
+        };
 
-    service.getTotalFases = function () {
-        return $http
-                .get('api/<%=name%>/totalfases')
-                .then(function(res) {
-                    return res.data;
-                });
-    };
-
-    service.getProdutoComVersoesEFases = function(nome) {
-        nome = nome.replace('/', '|');
-        return $http
-                .get('api/fase/produto/produtoComVersoesEFases/' + nome)
-                .then(function(res) {
+        service.list = function (field, order, init, qtde) {
+            return $http.get('api/<%=name.toLowerCase()%>/' + field + '/' + order + '/' + init + '/' + qtde).then(
+                function (res) {
                     return res.data;
                 }
             );
-    };
 
-    return service;
-}]);
+        };
+
+        service.count = function () {
+            return $http.get('api/<%=name.toLowerCase()%>/count').then(function (res) {
+                return res.data;
+            });
+        };
+
+        return service;
+    }]);
 

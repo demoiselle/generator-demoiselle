@@ -1,4 +1,4 @@
-package pgxp.persistence;
+package app.persistence;
 
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
 import br.gov.frameworkdemoiselle.template.JPACrud;
@@ -7,10 +7,7 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-/**
- *
- * @author 70744416353
- */
+
 @PersistenceController
 public class <%=name%>DAO extends JPACrud<<%=name%>, Long> {
 

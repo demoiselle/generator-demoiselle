@@ -14,16 +14,12 @@
         <!-- endbuild -->
         <link rel="stylesheet" href="layouts/{{css}}.css">
         <!-- build:css(.tmp) styles/main.css -->
-        <link rel="stylesheet" href="styles/timeline.css">
-        <link rel="stylesheet" href="styles/timeline/timeline.css">
-        <link rel="stylesheet" href="styles/fluxo.css">
         <link rel="stylesheet" href="styles/main.css">
         <link rel="stylesheet" href="styles/animate.css">
-        <!--        <link rel="stylesheet" href="styles/nga.css">-->
         <!-- endbuild -->
 
         <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-        <!--<link rel="stylesheet" href="bower_components/angular-grid/ng-grid.css" />-->
+
     </head>
 
     <!--body logged-in-->
@@ -40,7 +36,7 @@
                     </button>
                     <a class="navbar-brand" href="#/">
                         APP
-                        <img alt="img" src="images/logo.png" style="width: 6.5em; margin-top: -8px;">
+                        <!--<img alt="img" src="images/logo.png" style="width: 6.5em; margin-top: -8px;">-->
                     </a>
                 </div>
 
@@ -63,15 +59,15 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-3 col-md-2 sidebar">
+                <div class="col-sm-3 col-md-2 sidebar" ng-if="currentUser">
                     <ul class="nav nav-sidebar">
-
-                        <li ng-if="currentUser">
-                            <a href="#profile"><i class="glyphicon glyphicon-user"></i> {{currentUser.name| limitTo:30}}{{currentUser.name.length > 100 ? '...' : ''}}</a>
-                        </li>
 
                         <li>
                             <a href="#dashboard"><i class="glyphicon glyphicon-stats"></i> Painel</a>
+                        </li>
+
+			<li has-roles="ADMINISTRADOR">
+                            <a href="#usuario"><i class="glyphicon glyphicon-user"></i> Usuário</a>
                         </li>
 
                         <li>
@@ -132,20 +128,25 @@
         <script src="scripts/filters/filters.js"></script>
         <!-- endbuild -->
 
+        <!-- build:js({.tmp,app}) scripts/controllers.js -->
+        <script src="scripts/controllers/application.js"></script>
+        <script src="scripts/controllers/auth.js"></script>
+        <script src="scripts/controllers/dashboard.js"></script>
+        <script src="scripts/controllers/swagger.js"></script>
+        <script src="scripts/controllers/usuario.js"></script>
+        <!-- endbuild -->
+
         <!-- build:js({.tmp,app}) scripts/services.js -->
         <script src="scripts/services/alert.js"></script>
         <script src="scripts/services/application.js"></script>
         <script src="scripts/services/auth.js"></script>
         <script src="scripts/services/dashboard.js"></script>
+        <script src="scripts/services/usuario.js"></script>
         <script src="scripts/services/validation.js"></script>
-
         <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/controllers.js -->
-        <script src="scripts/controllers/application.js"></script>
-        <script src="scripts/controllers/auth.js"></script>
-        <script src="scripts/controllers/dashboard.js"></script>
-        <!-- endbuild -->
+
+
 
 
     </body>

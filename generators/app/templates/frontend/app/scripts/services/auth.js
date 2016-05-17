@@ -1,7 +1,7 @@
 'use strict';
 
-app.factory('AuthService', ['$http', 'AppService', '$rootScope', 'UsuarioService',
-    function ($http, AppService, $rootScope, UsuarioService) {
+app.factory('AuthService', ['$http', 'AppService', '$rootScope',
+    function ($http, AppService, $rootScope) {
 
         var authService = {};
 
@@ -15,23 +15,10 @@ app.factory('AuthService', ['$http', 'AppService', '$rootScope', 'UsuarioService
 
                     AppService.setToken(headers('Set-Token'));
                     $rootScope.currentUser = AppService.getUserFromToken();
-                    getPhoto();
                     return res;
                 }
                 );
 
-
-
-        };
-
-        authService.getPhoto = function () {
-            if ($rootScope.currentUser) {
-                UsuarioService.getPhoto($rootScope.currentUser.id).then(
-                    function (foto) {
-                        $rootScope.currentPhoto = foto.imagem;
-                    }
-                );
-            }
         };
 
         authService.setCss = function (css) {
@@ -46,7 +33,8 @@ app.factory('AuthService', ['$http', 'AppService', '$rootScope', 'UsuarioService
 
             return $http
                 .delete('api/auth')
-                .then(function () {
+                .then(function (response) {
+                    console.log('AuthService Logout Success');
                     AppService.removeToken();
                 }
                 );
@@ -58,26 +46,23 @@ app.factory('AuthService', ['$http', 'AppService', '$rootScope', 'UsuarioService
 
         authService.isAuthorized = function (authorizedRoles) {
 
-            var hasAuthorizedRole = false;
-
             if (authService.isAuthenticated()) {
 
                 if (!angular.isArray(authorizedRoles)) {
                     authorizedRoles = [authorizedRoles];
                 }
 
-                var grupos = $rootScope.currentUser.grupos;
+                var hasAuthorizedRole = false;
 
-                if (grupos !== undefined && grupos !== null) {
+                var perfil = $rootScope.currentUser.perfil;
+
+                if (perfil !== undefined && perfil !== null) {
                     for (var i = 0; i < authorizedRoles.length; i++) {
-                        for (var j = 0; j < grupos.length; j++) {
-                            for (var k = 0; k < grupos[j].perfis.length; k++) {
-                                if (authorizedRoles[i].indexOf(grupos[j].perfis[k]) !== -1) {
-                                    hasAuthorizedRole = true;
-                                    break;
-                                }
-                            }
+                        if (authorizedRoles[i] === perfil) {
+                            hasAuthorizedRole = true;
+                            break;
                         }
+
                     }
                 }
             } else {

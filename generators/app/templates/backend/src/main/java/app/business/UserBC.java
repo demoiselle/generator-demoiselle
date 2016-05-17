@@ -18,6 +18,29 @@ public class UserBC extends DelegateCrud<User, Long, UserDAO> {
 
     private static final long serialVersionUID = -7801407214303725321L;
 
+    @Startup
+    @Transactional
+    public void load() {
+        if (findAll().isEmpty()) {
+
+            User user = new User();
+            user.setName("ADMIN");
+            user.setEmail("admin@demoiselle.gov.br");
+            user.setSenha(Util.MD5("123456"));
+            user.setPerfil("ADMINISTRADOR");
+
+            getDelegate().insert(user);
+
+            user = new User();
+            user.setName("USUARIO");
+            user.setEmail("usuario@demoiselle.gov.br");
+            user.setSenha(Util.MD5("456789"));
+            user.setPerfil("USUARIO");
+
+            getDelegate().insert(user);
+        }
+    }
+
     /**
      *
      * @return

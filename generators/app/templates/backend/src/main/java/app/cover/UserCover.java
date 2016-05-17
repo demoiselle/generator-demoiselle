@@ -5,7 +5,6 @@
  */
 package app.cover;
 
-import app.entity.Perfil;
 import app.entity.User;
 
 /**
@@ -26,7 +25,7 @@ public class UserCover {
     public UserCover(User user) {
         this.id = user.getId();
         this.nome = user.getName();
-        this.perfil = Perfil.getPerfil(user.getPerfil()).name();
+        this.perfil = user.getPerfil();
         this.ip = user.getIp();
     }
 

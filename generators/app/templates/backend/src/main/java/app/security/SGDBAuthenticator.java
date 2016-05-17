@@ -11,7 +11,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import app.business.UserBC;
 import app.cover.UserCover;
-import app.entity.Perfil;
 import app.entity.User;
 
 /**
@@ -71,7 +70,7 @@ public class SGDBAuthenticator implements Authenticator {
             this.user = new User();
             this.user.setId(cover.getId());
             this.user.setName(cover.getNome());
-            this.user.setPerfil(Perfil.valueOf(cover.getPerfil()).getId());
+            this.user.setPerfil(cover.getPerfil());
         }
 
     }

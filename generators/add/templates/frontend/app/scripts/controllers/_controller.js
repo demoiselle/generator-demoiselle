@@ -1,161 +1,245 @@
 'use strict';
 
-app.controller('<%=name%>Controller', ['$q', '$scope', '$rootScope', '$filter', '$timeout', '<%=name%>Service', 'ProdutoService', 'AlertService',
-    function ($q, $scope, $rootScope, $filter, $timeout, <%=name%>Service, ProdutoService, AlertService) {
+app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '<%=name%>Service', 'AlertService', '$rootScope', 'ValidationService',
+    function ($scope, $location, $routeParams, <%=name%>Service, AlertService, $rootScope, ValidationService) {
 
-        var orderBy = $filter('orderBy');
-        $scope.tema = "";
-        $scope.produto = "";
-        $scope.resultadoProdutos = [];
-        $scope.temas = [];
-        $scope.fases = [];
-        $scope.produtos = [];
+        var id = $routeParams.id;
 
-        $scope.seguindo = [];
-        $scope.filteredSeguindo = [];
+        $scope.count = function () {
+            <%=name%>Service.count().then(
+                function (data) {
+                    $scope.totalServerItems = data;
+                },
+                function (error) {
+                    var data = error[0];
+                    var status = error[1];
 
-        <%=name%>Service.get().then(function (data) {
-            $scope.resultadoProdutos = [];
-            $scope.temas = data;
-            $scope.orderTemas = function (predicate, reverse) {
-                $scope.temas = orderBy($scope.temas, predicate, reverse);
-            };
-            $scope.orderTemas('nome', false);
-        });
+                    if (status === 401) {
+                        AlertService.addWithTimeout('warning', data.message);
+                    }
 
-        $scope.carregarProdutos = function () {
-            ProdutoService.listarProdutosUnicosPorTema($scope.tema.id).then(function (data) {
-                $scope.resultadoProdutos = data;
-            });
+                }
+            );
         };
 
-        function getFasesUrl(fluxo) {
-            var html = "";
-            for (var i = 0; i < fluxo.length; i++) {
-                var f = fluxo[i];
-                html += '<a href="#/' + $filter("faseUrl")(f.fase) + '/' + f.id + '">' + $filter("nomeFase")(f.fase) + '</a>';
+        var id = $routeParams.id;
+        var path = $location.$$url;
+
+        if (path === '/<%=name.toLowerCase()%>') {
+            $scope.count();
+        }
+        ;
+
+        if (path === '/<%=name.toLowerCase()%>/edit') {
+            $scope.<%=name%> = {};
+        }
+        ;
+
+        if (path === '/<%=name.toLowerCase()%>/edit/' + id) {
+            <%=name%>Service.get(id).then(
+                function (data) {
+                    $scope.<%=name.toLowerCase()%> = data;
+                },
+                function (error) {
+                    var data = error[0];
+                    var status = error[1];
+
+                    if (status === 401) {
+                        AlertService.addWithTimeout('warning', data.message);
+                    }
+
+                }
+
+            );
+        }
+
+        $scope.pageChanged = function () {
+            $scope.<%=name.toLowerCase()%>s = [];
+            var num = (($scope.currentPage - 1) * $scope.itemsPerPage);
+            <%=name%>Service.list(num, $scope.itemsPerPage).then(
+                function (data) {
+                    $scope.<%=name.toLowerCase()%>s = data;
+                },
+                function (error) {
+                    if (error.status === 401) {
+                        AlertService.addWithTimeout('warning', error.data.message);
+                    }
+
+                }
+            );
+        };
+
+        $scope.new = function () {
+            $location.path('/<%=name.toLowerCase()%>/edit');
+        };
+
+        $scope.save = function () {
+
+            $("[id$='-message']").text("");
+
+            <%=name%>Service.save($scope.<%=name.toLowerCase()%>).then(
+                function (data) {
+                    AlertService.addWithTimeout('success', '<%=name%> salvo com sucesso');
+                    $location.path('/<%=name.toLowerCase()%>');
+                },
+                function (error) {
+
+                    var data = error[0];
+                    var status = error[1];
+
+                    if (status === 401) {
+                        AlertService.addWithTimeout('danger', 'Não foi possível executar a operação');
+                    } else if (status === 412 || status === 422) {
+                        ValidationService.registrarViolacoes(data);
+                    }
+
+                }
+            );
+        };
+
+        $scope.delete = function (id) {
+            <%=name%>Service.delete(id).then(
+                function (data) {
+                    AlertService.addWithTimeout('success', '<%=name%> removido com sucesso');
+                    $location.path('/<%=name.toLowerCase()%>');
+                    $scope.count();
+                    $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+                },
+                function (error) {
+                    var data = error[0];
+                    var status = error[1];
+
+                    if (status === 401) {
+                        AlertService.addWithTimeout('warning', data.message);
+                    }
+
+                }
+            );
+        };
+
+        $scope.edit = function (id) {
+            $rootScope.<%=name.toLowerCase()%>CurrentPage = $scope.pagingOptions.currentPage;
+            $location.path('/<%=name.toLowerCase()%>/edit/' + id);
+        };
+
+        function buscaElemento(elemento, lista) {
+            var index = -1;
+            for (var i = 0; i < lista.length; i++) {
+                if (lista[i].nome === elemento.nome) {
+                    index = i;
+                    break;
+                }
             }
-            return html;
+            return index;
         }
 
+        $scope.filterOptions = {
+            filterText: '',
+            externalFilter: 'searchText',
+            useExternalFilter: true
+        };
 
-        function formatarData(date) {
-            if (date == null || date == undefined)
-                return new Date();
-            //var from = date.split("-");
-            //var f = new Date(from[0], from[1] - 1, from[2]);
-            return date;
-        }
+        $scope.pagingOptions = {
+            pageSizes: [15],
+            pageSize: 15,
+            currentPage: 1
+        };
 
-        var templateMercado = '<img src="images/rocket.png"> {version} ';
-        var templateMercadoDescontinuidade = '<img src="images/grave.png"> {version} ';
-        var templateSerpro = '<img src="images/serpro.png"> {version} - {fases}';
+        $scope.setPagingData = function (data, page, pageSize) {
+            var pagedData = data.slice((page - 1) * pageSize, page * pageSize);
+            $scope.myData = pagedData;
+            $scope.totalServerItems = data.length;
+            if (!$scope.$$phase) {
+                $scope.$apply();
+            }
+        };
 
-        $scope.carregarTimeline = function () {
-            $scope.versoes = null;
-            <%=name%>Service.getProdutoComVersoesEFases($scope.produto).then(function (data) {
-                $scope.versoes = [];
+        $scope.getPagedDataAsync = function (pageSize, page) {
+            var field;
+            var order;
+            if (typeof ($scope.sortInfo) === "undefined") {
+                field = "id";
+                order = "asc";
+            } else {
+                field = $scope.sortInfo.fields[0];
+                order = $scope.sortInfo.directions[0];
+            }
 
-                for (var x = 0; x < data.length; x++) {
-                    var v = data[x];
-                    var classe = 'version' + (x + 1);
-                    if (v.data != null) {
-                        $scope.versoes.push({
-                            'start': formatarData(new Date(v.data)),
-                            'content': templateMercado.replace("{version}", v.nome + ' v.' + v.versao),
-                            'className': classe
-                        });
-                    }
-                    if (v.dataDescontinuidade != null) {
-                        $scope.versoes.push({
-                            'start': formatarData(new Date(v.dataDescontinuidade)),
-                            'content': templateMercadoDescontinuidade.replace("{version}", v.nome + ' v.' + v.versao),
-                            'className': classe
-                        });
-                    }
+            setTimeout(function () {
+                var init = (page - 1) * pageSize;
+                <%=name%>Service.list(field, order, init, pageSize).then(
+                    function (data) {
+                        $scope.<%=name.toLowerCase()%>s = data;
+                    },
+                    function (error) {
+                        var data = error[0];
+                        var status = error[1];
 
-                    if (v.fases) {
-                        for (var y = 0; y < v.fases.length; y++) {
-                            var fase = v.fases[y];
-                            $scope.versoes.push({
-                                'start': formatarData(new Date(fase.dataRealizacao)),
-                                'end': formatarData(new Date(fase.dataFinalizacao)),
-                                'content': templateSerpro.replace("{version}", v.nome + ' v.' + v.versao)
-                                    .replace("{fases}", getFasesUrl([{id: fase.id, fase: fase.fase}])),
-                                'className': classe
-                            });
+                        if (status === 401) {
+                            AlertService.addWithTimeout('warning', data.message);
                         }
                     }
-                }
-
-                if ($scope.versoes.length == 0) {
-                    AlertService.addWithTimeout('danger', 'Não foi encontrado fases para (' + $scope.produto + ')');
-                }
-
-            });
+                );
+            }, 100);
         };
 
-        $scope.call = 0;
-        $scope.titulo = "Fase";
-        $scope.classe = "default";
-        $scope.produtos = [1 + $scope.call, 2 + $scope.call, 3 + $scope.call, 4 + $scope.call, 5 + $scope.call];
-        $scope.fases = [1 + $scope.call, 2 + $scope.call, 3 + $scope.call, 4 + $scope.call, 5 + $scope.call];
-        var pollproduto = function () {
-            $timeout(function () {
-                $rootScope.$apply(function () {
-                    $scope.produtos = [];
-                });
-                $rootScope.$apply(function () {
-                    $scope.produtos = [1 + $scope.call, 2 + $scope.call, 3 + $scope.call, 4 + $scope.call, 5 + $scope.call];
-                });
-                pollproduto();
-            }, 7000);
+        if ($rootScope.<%=name.toLowerCase()%>CurrentPage != undefined) {
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $rootScope.<%=name.toLowerCase()%>CurrentPage);
+            $scope.pagingOptions.currentPage = $rootScope.<%=name.toLowerCase()%>CurrentPage;
+        } else {
+            $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+        }
+
+
+        $scope.$watch('pagingOptions', function (newVal, oldVal) {
+            if (newVal !== oldVal && newVal.currentPage !== oldVal.currentPage) {
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            }
+        }, true);
+
+        $scope.$watch('filterOptions', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            }
+        }, true);
+
+        $scope.$watch('sortInfo', function (newVal, oldVal) {
+            if (newVal !== oldVal) {
+                $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+            }
+        }, true);
+
+        $scope.$on('ngGridEventSorted', function (event, sortInfo) {
+            $scope.sortInfo = sortInfo;
+        });
+
+        $scope.gridOptions = {
+            data: '<%=name.toLowerCase()%>s',
+            columnDefs: [{field: 'id', displayName: '', width: "50"},
+                {field: 'descricao', displayName: 'Descrição', width: "550"},
+                {displayName: 'Ação', cellTemplate: '<a ng-show="!currentUser" ng-click="edit(row.entity.id)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-eye-open"></i> Visualizar</a>\n\
+                                                 <a ng-show="currentUser" ng-click="edit(row.entity.id)" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-plus-sign"></i> Alterar</a>\n\
+                                                 <a has-roles="ADMINISTRADOR" confirm-button title="Excluir?" confirm-action="delete(row.entity.id)" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-minus-sign"></i> Excluir</a>', width: "200"}],
+            selectedItems: [],
+            keepLastSelected: true,
+            sortInfo: $scope.sortInfo,
+            multiSelect: false,
+            enablePaging: true,
+            showFooter: true,
+            totalServerItems: 'totalServerItems',
+            pagingOptions: $scope.pagingOptions,
+            enableSorting: true,
+            useExternalSorting: true,
+            i18n: "pt"
         };
 
-        var pollfase = function () {
-            $timeout(function () {
-                $rootScope.$apply(function () {
-                    $scope.fases = [];
-                    $scope.titulo = "";
-                });
-                $rootScope.$apply(function () {
-                    $scope.fases = [1 + $scope.call, 2 + $scope.call, 3 + $scope.call, 4 + $scope.call, 5 + $scope.call];
-                    $scope.titulo = "Fase";
-                    switch ($scope.call) {
-                        case 0:
-                            $scope.classe = "default";
-                            break;
-                        case 1:
-                            $scope.classe = "primary";
-                            break;
-                        case 2:
-                            $scope.classe = "success";
-                            break;
-                        case 3:
-                            $scope.classe = "info";
-                            break;
-                        case 4:
-                            $scope.classe = "warning";
-                            break;
-                        case 5:
-                            $scope.classe = "danger";
-                            $scope.call = 0;
-                            break;
-                    }
-                });
-                $scope.call++;
-                pollfase();
-            }, 9000);
-        };
-
-        var pollupdate = function () {
-            $timeout(function () {
-                //pegar dados do servidor
-                pollupdate();
-            }, 600000);
-        };
-
-        pollproduto();
-        pollfase();
+        $scope.$on('$routeChangeStart', function (event, next) {
+            if (next.originalPath.indexOf("<%=name.toLowerCase()%>") === -1) {
+                $rootScope.<%=name.toLowerCase()%>CurrentPage = 1;
+            }
+        });
 
     }]);
+
+
+

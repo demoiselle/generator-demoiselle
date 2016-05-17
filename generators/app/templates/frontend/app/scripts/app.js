@@ -10,118 +10,98 @@ var app = angular.module('app', [
     'ngTouch',
     'ui.bootstrap',
     'ngGrid',
-    'angularFileUpload',
+    'swaggerUi',
     'notification',
-    'ngWebsocket',
     'Config'
-]).config(['$routeProvider', 'USER_ROLES', function ($routeProvider, USER_ROLES) {
+]).config(['$routeProvider', 'USER_ROLES',
+    function ($routeProvider, USER_ROLES) {
 
         $routeProvider
 
-                .when('/', {
-                    templateUrl: 'views/dashboard/dashboard.html',
-                    controller: 'DashboardController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                })
+             .when('/', {
+                templateUrl: 'views/dashboard/dashboard.html',
+                controller: 'DashboardController',
+                data: {
+                    authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
+                }
+            })
 
-                .when('/login', {
-                    templateUrl: 'views/login.html',
-                    controller: 'AuthController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                })
+            .when('/login', {
+                templateUrl: 'views/login.html',
+                controller: 'AuthController',
+                data: {
+                    authorizedRoles: [USER_ROLES.NOT_LOGGED]
+                }
+            })
 
-                .when('/dashboard', {
-                    templateUrl: 'views/dashboard/dashboard.html',
-                    controller: 'DashboardController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                })
+            .when('/dashboard', {
+                templateUrl: 'views/dashboard/dashboard.html',
+                controller: 'DashboardController',
+                data: {
+                    authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
+                }
+            })
 
-                .when('/profile', {
-                    templateUrl: 'views/usuario/profile.html',
-                    controller: 'ProfileController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                })
-
-                .when('/403', {
-                    templateUrl: 'views/403.html',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                })
-
-                .when('/fabricante', {
-                    templateUrl: 'views/fabricante/fabricante-listar.html',
-                    controller: 'FabricanteController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                })
-
-                .when('/fabricante/edit', {
-                    templateUrl: 'views/fabricante/fabricante-edit.html',
-                    controller: 'FabricanteController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.CADASTRADOR]
-                    }
-                })
-
-                .when('/fabricante/edit/:id', {
-                    templateUrl: 'views/fabricante/fabricante-edit.html',
-                    controller: 'FabricanteController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                })
+            .when('/403', {
+                templateUrl: 'views/403.html',
+                data: {
+                    authorizedRoles: [USER_ROLES.NOT_LOGGED]
+                }
+            })
 
 
-                .when('/usuario', {
-                    templateUrl: 'views/usuario/usuario-listar.html',
-                    controller: 'UsuarioController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.ADMINISTRADOR]
-                    }
-                })
+            .when('/usuario', {
+                templateUrl: 'views/usuario/list.html',
+                controller: 'UsuarioController',
+                data: {
+                    authorizedRoles: [USER_ROLES.ADMINISTRADOR]
+                }
+            })
 
-                .when('/usuario/edit/:id', {
-                    templateUrl: 'views/usuario/usuario-edit.html',
-                    controller: 'UsuarioController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.ADMINISTRADOR]
-                    }
-                })
 
-                .when('/usuario/new', {
-                    templateUrl: 'views/usuario/usuario-novo.html',
-                    controller: 'UsuarioController',
-                    data: {
-                        authorizedRoles: [USER_ROLES.ADMINISTRADOR]
-                    }
-                })
 
-                .otherwise({
-                    redirectTo: '/dashboard',
-                    data: {
-                        authorizedRoles: [USER_ROLES.NOT_LOGGED]
-                    }
-                });
+            .when('/swagger', {
+                templateUrl: 'views/swagger.html',
+                controller: 'SwaggerController',
+                data: {authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
+                }
+            })
+
+//            .when('/bookmark', {
+//                templateUrl: 'views/bookmark/list.html',
+//                controller: 'BookmarkController',
+//                data: {
+//                    authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
+//                }
+//            })
+//
+//            .when('/bookmark/edit', {
+//                templateUrl: 'views/bookmark/edit.html',
+//                controller: 'BookmarkController',
+//                data: {
+//                    authorizedRoles: [USER_ROLES.ADMINISTRADOR]
+//                }
+//            })
+//
+//            .when('/bookmark/edit/:id', {
+//                templateUrl: 'views/bookmark/edit.html',
+//                controller: 'BookmarkController',
+//                data: {
+//                    authorizedRoles: [USER_ROLES.ADMINISTRADOR]
+//                }
+//            })
+
+            .otherwise({
+                redirectTo: '/dashboard',
+                data: {
+                    authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
+                }
+            });
 
 
     }]);
 
-app.config(['$httpProvider', '$websocketProvider', function ($httpProvider, $websocketProvider) {
-
-        $websocketProvider.$setup({
-            reconnect: true,
-            reconnectInterval: 21000
-        });
+app.config(['$httpProvider', function ($httpProvider) {
 
         $httpProvider.interceptors.push(['$q', '$rootScope', 'AppService', 'ENV', function ($q, $rootScope, AppService, ENV) {
                 return {
@@ -130,14 +110,14 @@ app.config(['$httpProvider', '$websocketProvider', function ($httpProvider, $web
 
                         var token = AppService.getToken();
 
-                        if (ENV.name === 'development') {
-                            if (config.url.indexOf('api') !== -1) {
+                        if (ENV.name == "development") {
+                            if (config.url.indexOf("api") !== -1) {
                                 config.url = ENV.apiEndpoint + config.url;
                             }
                         }
 
                         if (token) {
-                            config.headers.Authorization = 'Token ' + token;
+                            config.headers['Authorization'] = "Token " + token;
                         }
 
                         return config || $q.when(config);
@@ -163,8 +143,8 @@ app.config(['$httpProvider', '$websocketProvider', function ($httpProvider, $web
 
     }]);
 
-app.run(['$rootScope', '$location', '$window', 'AUTH_EVENTS', 'APP_EVENTS', 'USER_ROLES', 'AuthService', 'AppService', 'AlertService', 'WS',
-    function ($rootScope, $location, $window, AUTH_EVENTS, APP_EVENTS, USER_ROLES, AuthService, AppService, AlertService, WS) {
+app.run(['$rootScope', '$location', '$window', 'AUTH_EVENTS', 'APP_EVENTS', 'USER_ROLES', 'AuthService', 'AppService', 'AlertService',
+    function ($rootScope, $location, $window, AUTH_EVENTS, APP_EVENTS, USER_ROLES, AuthService, AppService, AlertService) {
 
         $rootScope.$on('$routeChangeStart', function (event, next) {
 
@@ -187,52 +167,30 @@ app.run(['$rootScope', '$location', '$window', 'AUTH_EVENTS', 'APP_EVENTS', 'USE
             }
         });
 
-        $rootScope.$on(AUTH_EVENTS.exit, function (emit, args) {
-            AlertService.notification("Segurança", "Seu usuário está logando em outra estação");
-            console.log("exit");
-            $rootScope.currentUser = null;
-            AppService.removeToken();
-            $location.path("/dashboard");
-            $window.location.reload();
-        });
-
-        $rootScope.$on(AUTH_EVENTS.comunicado, function (emit, args) {
-            AlertService.notification("Comunicado", args.emit.data);
-        });
-
-        $rootScope.$on(AUTH_EVENTS.mensagem, function (emit, args) {
-            AlertService.notification("Mensagem", args.emit.data);
-        });
-
-        $rootScope.$on(AUTH_EVENTS.quantidade, function (emit, args) {
-            $rootScope.$apply(function () {
-                $rootScope.conectados = args.emit.data;
-            });
-        });
 
         $rootScope.$on(AUTH_EVENTS.notAuthorized, function () {
-            $location.path('/403');
+            $location.path("/403");
         });
 
         $rootScope.$on(AUTH_EVENTS.notAuthenticated, function () {
             $rootScope.currentUser = null;
             AppService.removeToken();
-            $location.path('/login');
+            $location.path("/login");
         });
 
         $rootScope.$on(AUTH_EVENTS.loginFailed, function () {
             AppService.removeToken();
-            $location.path('/login');
+            $location.path("/login");
         });
 
         $rootScope.$on(AUTH_EVENTS.logoutSuccess, function () {
             $rootScope.currentUser = null;
             AppService.removeToken();
-            $location.path('/dashboard');
+            $location.path("/dashboard");
         });
 
         $rootScope.$on(AUTH_EVENTS.loginSuccess, function () {
-            $location.path('/dashboard');
+            $location.path("/dashboard");
         });
 
         $rootScope.$on(APP_EVENTS.offline, function () {
@@ -241,12 +199,12 @@ app.run(['$rootScope', '$location', '$window', 'AUTH_EVENTS', 'APP_EVENTS', 'USE
         });
 
         // Check if a new cache is available on page load.
-        $window.addEventListener('load', function () {
-            $window.applicationCache.addEventListener('updateready', function () {
+        $window.addEventListener('load', function (e) {
+            $window.applicationCache.addEventListener('updateready', function (e) {
                 if ($window.applicationCache.status === $window.applicationCache.UPDATEREADY) {
                     // Browser downloaded a new app cache.
                     $window.location.reload();
-                    $window.alert('Uma nova versão será carregada!');
+                    alert('Uma nova versão será carregada!');
                 }
             }, false);
         }, false);
@@ -263,29 +221,13 @@ app.constant('AUTH_EVENTS', {
     logoutSuccess: 'auth-logout-success',
     sessionTimeout: 'auth-session-timeout',
     notAuthenticated: 'auth-not-authenticated',
-    notAuthorized: 'auth-not-authorized',
-    exit: 'exit',
-    sistema: 'sistema',
-    comunicado: 'comunicado',
-    mensagem: 'mensagem',
-    produto: 'produto',
-    fase: 'fase',
-    quantidade: 'qtde'
+    notAuthorized: 'auth-not-authorized'
 });
 
 app.constant('USER_ROLES', {
-    ANALISE: 'ANALISE',
-    PROSPECCAO: 'PROSPECCAO',
-    INTERNALIZACAO: 'INTERNALIZACAO',
-    SUSTENTACAO: 'SUSTENTACAO',
-    DECLINIO: 'DECLINIO',
     ADMINISTRADOR: 'ADMINISTRADOR',
-    CADASTRADOR: 'CADASTRADOR',
-    CONSULTOR: 'CONSULTOR',
-    LEGADO: 'LEGADO',
-    SISTEMA: 'SISTEMA',
-    EQUIPAMENTO: 'EQUIPAMENTO',
-    PRODUTO: 'PRODUTO',
+    FUNCIONARIO: 'FUNCIONARIO',
+    USUARIO: 'USUARIO',
     NOT_LOGGED: 'NOT_LOGGED'
 });
 
@@ -330,3 +272,8 @@ app.factory('AuthInterceptor', ['$rootScope', '$q', 'AUTH_EVENTS', 'APP_EVENTS',
         };
 
     }]);
+
+
+
+
+

@@ -38,8 +38,6 @@ import javax.ws.rs.core.Response;
  *
  * @author 70744416353
  */
-
-
 @Api(value = "user")
 @Path("user")
 @Produces(APPLICATION_JSON)
@@ -182,7 +180,7 @@ public class UserREST implements Serializable {
      * Delegates the insert operation of the given instance.
      *
      * @param bean A entity to be inserted by the delegate
-     * @return 
+     * @return
      */
     @POST
     @Transactional
@@ -230,7 +228,7 @@ public class UserREST implements Serializable {
      * Delegates the update operation of the given instance.
      *
      * @param bean The instance containing the updated state.
-     * @return 
+     * @return
      */
     @PUT
     @Transactional
@@ -251,3 +249,4 @@ public class UserREST implements Serializable {
     }
 
 }
+

@@ -3,7 +3,6 @@ package app.security;
 import javax.inject.Inject;
 
 import br.gov.frameworkdemoiselle.security.SecurityContext;
-import app.entity.Perfil;
 import app.entity.User;
 
 /**
@@ -28,7 +27,7 @@ public class Authorizer implements br.gov.frameworkdemoiselle.security.Authorize
         if (securityContext.isLoggedIn()) {
             User user = (User) securityContext.getUser();
             if (user.getPerfil() != null) {
-                if (!role.equalsIgnoreCase(Perfil.getPerfil(user.getPerfil()).name())) {
+                if (!role.equalsIgnoreCase(user.getPerfil())) {
                 } else {
                     return true;
                 }

@@ -1,13 +1,13 @@
-package pgxp.business;
+package app.business;
 
 import br.gov.frameworkdemoiselle.lifecycle.Startup;
 import br.gov.frameworkdemoiselle.stereotype.BusinessController;
 import br.gov.frameworkdemoiselle.template.DelegateCrud;
 import br.gov.frameworkdemoiselle.transaction.Transactional;
-import pgxp.entity.<%=name%>;
-import pgxp.persistence.<%=name%>DAO;
+import app.entity.<%=name%>;
+import app.persistence.<%=name%>DAO;
 import java.util.List;
-import pgxp.util.Util;
+import app.util.Util;
 
 /**
  *

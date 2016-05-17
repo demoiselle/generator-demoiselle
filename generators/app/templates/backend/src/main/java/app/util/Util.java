@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.apache.http.HttpResponse;
 
 /**
  *
@@ -52,24 +51,6 @@ public class Util {
     }
 
     private Util() {
-    }
-
-    /**
-     *
-     * @param response
-     * @return
-     * @throws IOException
-     */
-    public static String getHtml(HttpResponse response) throws IOException {
-        BufferedReader rd3 = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        String line3 = "";
-        String lineFinal = "";
-
-        while ((line3 = rd3.readLine()) != null) {
-            lineFinal += line3;
-        }
-
-        return lineFinal;
     }
 
 }
