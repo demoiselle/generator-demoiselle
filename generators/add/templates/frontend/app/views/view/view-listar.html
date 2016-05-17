@@ -1,0 +1,14 @@
+<div class="painel painel-default animated fadeInUp" >
+    <h3 class="page-header">
+        Fabricante <small>listagem</small>
+    </h3>
+
+    <button has-roles="USER_ROLES.ADMINISTRADOR, USER_ROLES.CADASTRADOR" class="btn btn-primary" ng-click="new ()">
+        <i class="glyphicon glyphicon-plus-sign"> </i> Novo
+    </button>
+
+    <br/>
+    <br/>
+
+    <div ng-grid="gridOptions" ng-animate=" 'animate' "></div>
+</div>

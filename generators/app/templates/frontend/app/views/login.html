@@ -1,0 +1,28 @@
+<div class="col-md-4 col-md-offset-3" style="margin-top: 60px;" ng-if="!currentUser">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="">
+                <img alt="Citrino" src="images/citrino.png" style="width: 12em;">
+            </h4>
+        </div>
+
+        <form name="loginForm" ng-controller="AuthController" ng-submit="login(credentials)" novalidate>
+            <div class="panel-body">
+                <p>
+                    <label for="username">CPF</label>
+                    <input id="username" type="text" class="form-control" ng-model="credentials.username" autofill="autofill"/>
+                    <span id="username-message" class="text-danger"></span>
+                </p>
+                <p>
+                    <label for="password">Senha</label>
+                    <input id="password" type="password" class="form-control" ng-model="credentials.password" autofill="autofill"/>
+                    <span id="password-message" class="text-danger"></span>
+                </p>
+                <p>
+                    <button id="login" class="btn btn-success" type="submit">Entrar</button>
+                </p>
+                <div id="message" class="text-danger"></div>
+            </div>
+        </form>
+    </div>
+</div>
