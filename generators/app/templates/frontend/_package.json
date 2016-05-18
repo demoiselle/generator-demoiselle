@@ -30,7 +30,8 @@
     "jshint-stylish": "^0.2.0",
     "load-grunt-tasks": "^0.4.0",
     "time-grunt": "^0.3.1",
-     "bower-nexus3-resolver" : "*"
+    "bower-nexus3-resolver" : "*",
+    "grunt-injector": "^1.0.0"
   },
   "engines": {
     "node": ">=0.10.0"
