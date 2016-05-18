@@ -45,15 +45,16 @@ public class JWTManager implements Serializable {
      * @throws org.jose4j.lang.JoseException
      */
     public JWTManager() throws JoseException {
+            
         if (appConfig.getChave() == null) {
             RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
-            Logger.getLogger(JWTManager.class.getName()).log(Level.WARNING, "Coloque os parametros no feira.properties e reinicie a app ");
-            Logger.getLogger(JWTManager.class.getName()).log(Level.INFO, "jwt.key=" + chave.toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
-            rsaJsonWebKey = null;
-        } else {
-            rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(appConfig.getChave());
+            appConfig.setChave(chave.toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
+            Logger.getLogger(JWTManager.class.getName()).log(Level.SEVERE, "Coloque os parametros no app.properties e reinicie a aplicacao ");
+            Logger.getLogger(JWTManager.class.getName()).log(Level.SEVERE, "jwt.key={0}", appConfig.getChave());
         }
-        rsaJsonWebKey.setKeyId("PGXP");
+        rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(appConfig.getChave());
+        rsaJsonWebKey.setKeyId("DEMOISELLE");
+    
     }
 
     /**

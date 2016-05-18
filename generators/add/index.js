@@ -56,6 +56,13 @@ module.exports = yeoman.Base.extend({
         }
         );
 
+	this.fs.copyTpl(
+                this.templatePath('frontend/app/scripts/routes/_route.js'),
+                this.destinationPath('frontend/app/scripts/routes/' + this.props.name.toLowerCase() + '.js'), {
+            name: this.props.name
+        }
+        );
+
 	this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-edit.html'), 
                      this.destinationPath('frontend/app/views/'+this.props.name.toLowerCase()+'/edit.html'),{
             name: this.props.name

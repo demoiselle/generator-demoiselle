@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('<%=name%>Service', ['$http', '$q', function ($http, $q) {
+app.factory('<%=name%>Service', ['$http', function ($http) {
         var service = {};
 
         service.get = function (id) {
@@ -15,11 +15,11 @@ app.factory('<%=name%>Service', ['$http', '$q', function ($http, $q) {
             });
         };
 
-        service.save = function (<%=name%>) {
+        service.save = function (<%=name.toLowerCase()%>) {
             return $http({
                 url: 'api/<%=name.toLowerCase()%>',
-                method: <%=name%>.id ? "PUT" : "POST",
-                data: <%=name%>
+                method: <%=name.toLowerCase()%>.id ? "PUT" : "POST",
+                data: <%=name.toLowerCase()%>
             }).then();
         };
 

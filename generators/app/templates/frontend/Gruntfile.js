@@ -9,6 +9,8 @@
 
 module.exports = function (grunt) {
 
+    grunt.loadNpmTasks('grunt-injector');
+
     // Load grunt tasks automatically
     require('load-grunt-tasks')(grunt);
 
@@ -105,6 +107,19 @@ module.exports = function (grunt) {
                     open: true,
                     base: '<%= yeoman.dist %>'
                 }
+            }
+        },
+	injector: {
+            options: {
+                destFile: 'app/index.html',
+                ignorePath: 'app/'
+            },
+            files: {
+                expand: true,
+                cwd: 'app/scripts/',
+                src: ['{,*/}*.js'],
+                dest: 'app/scripts/',
+                ext: '.js'
             }
         },
         // generate application cache manifest
@@ -430,6 +445,7 @@ module.exports = function (grunt) {
             'clean:server',
             'ngconstant:development',
             'wiredep',
+	    'injector',
             'concurrent:server',
             'autoprefixer',
             'connect:livereload',
@@ -454,6 +470,7 @@ module.exports = function (grunt) {
         'clean:dist',
         'ngconstant:production',
         'wiredep',
+        'injector',
         'useminPrepare',
         'concurrent:dist',
         'autoprefixer',
