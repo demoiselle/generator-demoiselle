@@ -19,10 +19,12 @@ module.exports = yeoman.Base.extend({
     },
     config: function () {
 
-	console.log(this.props.name);
+        var family = jsonQ(JSON.parse('swagger.json'));
+    //to find all the name
+   
+	console.log(family.find('tags'));
 	
-    var someData_notJSON = JSON.parse(this.props.name);
-    console.log(someData_notJSON[0].red);
+   
 
        //this.fs.copy(this.templatePath('frontend/.bowerrc'), this.destinationPath('frontend/.bowerrc'));
        //this.fs.copy(this.templatePath('frontend/.npmrc'), this.destinationPath('frontend/.npmrc'));
