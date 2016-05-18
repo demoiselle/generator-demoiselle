@@ -1,6 +1,6 @@
 'use strict';
 
-app.factory('<%=name%>Service', ['$http', function ($http) {
+app.factory('<%=classe%>Service', ['$http', function ($http) {
         var service = {};
 
         service.get = function (id) {

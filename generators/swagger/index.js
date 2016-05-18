@@ -1,31 +1,66 @@
 'use strict';
 var yeoman = require('yeoman-generator');
 var jsonQ = require("jsonq");
+var fs = require("fs");
 
-module.exports = yeoman.Base.extend({
-    config: function () {
-        this.indexFile = this.readFileAsString('swagger.json');
-        var family = jsonQ(this.indexFile);
+//module.exports = yeoman.Base.extend({
+ //   config: function () {
+        this.swagger = fs.readFileSync('swagger.json', 'utf-8');
+          //  this.readFileAsString('swagger.json');
+        var family = jsonQ(this.swagger);
         var basePath = family.find('basePath').value();
         var definitions = family.find('definitions').value();
         var paths = family.find('paths').value();
+        var properties = family.find('definitions').find('User').find('properties').value();
+
+//   console.log(paths);
+//        console.log(properties);
+//        console.log(definitions);
+
+        jsonQ.each(paths[0], function (key, value) {
+            console.log(key);
+
+            var services = family.find('paths').find(key).value();
+
+            jsonQ.each(services[0], function (key2, value2) {
+                console.log(key2);
+//                this.fs.copyTpl(
+//                    this.templatePath('frontend/app/scripts/services/_service.js'),
+//                    this.destinationPath('frontend/app/scripts/services/' + this.props.name.toLowerCase() + '.js'), {
+//                    classe: key
+//                }
+//            );
+            });
 
 
-        //console.log(servicos);
-        //console.log(basePath);
-        console.log(definitions);
-        //console.log(paths[0]);
-        //console.log(paths.length);
-//        paths.forEach(function (item) {
-//            console.log(item);
+
+            console.log('---------------------------');
+        });
+
+        jsonQ.each(definitions[0], function (key, value) {
+            console.log(key);
+
+            var properties = family.find('definitions').find(key).find('properties').value();
+
+            jsonQ.each(properties[0], function (key2, value2) {
+                console.log(key2);
+            });
+
+            var name = family.find('paths', function () {
+                return this[0].toLowerCase() == 'm'
+            });
+
+             console.log('---------------------------');
+        });
+
+//
+//        jsonQ.each(paths[0], function (key, value) {
+//            console.log(key);
+//            jsonQ.each(value, function (key2, value2) {
+//                console.log(key2);
+//            });
+//            console.log('---------------------------');
 //        });
-        //console.log(paths[0][0]);
-
-
-        for (var i = 0; i < paths[0].length; i++) {
-            //console.log(paths[i]);
-            //console.log(family.find(paths[i]).value());
-        }
 
 
 //        this.fs.copyTpl(
@@ -64,8 +99,5 @@ module.exports = yeoman.Base.extend({
 
 
 
-    },
-    install: function () {
-        //this.installDependencies();
-    }
-});
+   // }
+//});

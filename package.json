@@ -1,6 +1,6 @@
 {
     "name": "generator-demoiselle",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "description": "Gerador Demoiselle 2.5 com AngularJS",
     "homepage": "https://www.frameworkdemoiselle.gov.br/",
     "author": {
@@ -51,7 +51,7 @@
             "mocha": true
         }
     },
-    "repository": "https://github.com/demoiselle/generator-demoiselle.git",
+    "repository": "demoiselle/generator-demoiselle",
     "scripts": {
         "prepublish": "gulp prepublish",
         "test": "gulp"

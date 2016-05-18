@@ -1,38 +1,40 @@
-# generator-demoiselle [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
+# generator-demoiselle [![NPM version][npm-image]] [npm-url] [coveralls-url]
 > Gerador Demoiselle Angular
 
-## Installation
-
-First, install [Yeoman](http://yeoman.io) and generator-demoiselle using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+## Instação
 
 ```bash
-npm install -g yo
-npm install -g generator-demoiselle
+sudo npm install -g yo
+sudo npm install -g generator-demoiselle
 ```
 
-Then generate your new project:
+Criar um projeto novo
 
 ```bash
 yo demoiselle
 ```
+Criar nova funcionalidade
 
-## Getting To Know Yeoman
+```bash
+yo demoiselle:add
+```
 
- * Yeoman has a heart of gold.
- * Yeoman is a person with feelings and opinions, but is very easy to work with.
- * Yeoman can be too opinionated at times but is easily convinced not to be.
- * Feel free to [learn more about Yeoman](http://yeoman.io/).
+Apontar para repositório interno (NPM e Bower)
+
+```bash
+yo demoiselle:serpro
+```
+
+Gerar frontend apartir de um swagger
+
+```bash
+wget http://estacionamento-fwkdemoiselle.rhcloud.com/api/swagger.json
+yo demoiselle:swagger
+```
 
 ## License
 
 MIT © [Paulo Gladson](https://www.frameworkdemoiselle.gov.br/)
 
-
 [npm-image]: https://badge.fury.io/js/generator-demoiselle.svg
 [npm-url]: https://npmjs.org/package/generator-demoiselle
-[travis-image]: https://travis-ci.org/PauloGladson/generator-demoiselle.svg?branch=master
-[travis-url]: https://travis-ci.org/PauloGladson/generator-demoiselle
-[daviddm-image]: https://david-dm.org/PauloGladson/generator-demoiselle.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/PauloGladson/generator-demoiselle
-[coveralls-image]: https://coveralls.io/repos/PauloGladson/generator-demoiselle/badge.svg
-[coveralls-url]: https://coveralls.io/r/PauloGladson/generator-demoiselle
