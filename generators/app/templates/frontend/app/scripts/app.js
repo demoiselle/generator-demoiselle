@@ -18,79 +18,21 @@ var app = angular.module('app', [
 
         $routeProvider
 
-             .when('/', {
-                templateUrl: 'views/dashboard/dashboard.html',
-                controller: 'DashboardController',
-                data: {
-                    authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
-                }
-            })
-
-            .when('/login', {
+        .when('/login', {
                 templateUrl: 'views/login.html',
                 controller: 'AuthController',
                 data: {
                     authorizedRoles: [USER_ROLES.NOT_LOGGED]
                 }
             })
-
-            .when('/dashboard', {
-                templateUrl: 'views/dashboard/dashboard.html',
-                controller: 'DashboardController',
-                data: {
-                    authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
-                }
-            })
-
+         
             .when('/403', {
                 templateUrl: 'views/403.html',
                 data: {
                     authorizedRoles: [USER_ROLES.NOT_LOGGED]
                 }
             })
-
-
-            .when('/usuario', {
-                templateUrl: 'views/usuario/list.html',
-                controller: 'UsuarioController',
-                data: {
-                    authorizedRoles: [USER_ROLES.ADMINISTRADOR]
-                }
-            })
-
-
-
-            .when('/swagger', {
-                templateUrl: 'views/swagger.html',
-                controller: 'SwaggerController',
-                data: {authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
-                }
-            })
-
-//            .when('/bookmark', {
-//                templateUrl: 'views/bookmark/list.html',
-//                controller: 'BookmarkController',
-//                data: {
-//                    authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
-//                }
-//            })
-//
-//            .when('/bookmark/edit', {
-//                templateUrl: 'views/bookmark/edit.html',
-//                controller: 'BookmarkController',
-//                data: {
-//                    authorizedRoles: [USER_ROLES.ADMINISTRADOR]
-//                }
-//            })
-//
-//            .when('/bookmark/edit/:id', {
-//                templateUrl: 'views/bookmark/edit.html',
-//                controller: 'BookmarkController',
-//                data: {
-//                    authorizedRoles: [USER_ROLES.ADMINISTRADOR]
-//                }
-//            })
-
+          
             .otherwise({
                 redirectTo: '/dashboard',
                 data: {
