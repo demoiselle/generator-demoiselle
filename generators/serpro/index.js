@@ -16,8 +16,8 @@ module.exports = yeoman.Base.extend({
         }.bind(this));
     },
     config: function () {
-        this.fs.copy(this.templatePath('frontend/.bowerrc'), this.destinationPath('frontend/.bowerrc'));
-        this.fs.copy(this.templatePath('frontend/.npmrc'), this.destinationPath('frontend/.npmrc'));
-        this.fs.copy(this.templatePath('frontend/.jshintrc'), this.destinationPath('frontend/.jshintrc'));
+        this.fs.copy(this.templatePath('frontend/_bowerrc'), this.destinationPath('frontend/.bowerrc'));
+        this.fs.copy(this.templatePath('frontend/_npmrc'), this.destinationPath('frontend/.npmrc'));
+        this.fs.copy(this.templatePath('frontend/_jshintrc'), this.destinationPath('frontend/.jshintrc'));
     }
 });
