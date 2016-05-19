@@ -6,7 +6,7 @@
 - Implementação da segurança do Demoiselle 2.5 baseada em JWT (https://jwt.io/) RFC7519 (https://tools.ietf.org/html/rfc7519)
 - O padrão swagger agora é OpenApis (https://openapis.org/specification) e os Servidores gerados aqui já estão utilizando essa api por padrão
 
-## Instação
+## Instalação
 
 - Para se trabalhar com Demoiselle é necessário o java-jdk-7 e do AngularJS o nodejs
 - para a instalação do nodejs siga os passos:
@@ -53,7 +53,7 @@ yo demoiselle:swagger
 
 ## Roadmap
 
-- 0.0.5 Mapeamento completo do swagger ("Me dê um swagger.json que te dou uma aplicação")
+- 0.1.0 Mapeamento completo do swagger ("Me dê um swagger.json que te dou uma aplicação")
 - 1.0.0 Versão final
 - 1.5.0 Versão usando as referências do JonhPapa (https://github.com/johnpapa/angular-styleguide/blob/master/a1/i18n/pt-BR.md)
 - 2.0.0 Versão com AngularJS - 2 e a nova versão do Demoiselle JEE7

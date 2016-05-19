@@ -1,7 +1,5 @@
 'use strict';
 var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
 
 module.exports = yeoman.Base.extend({
     prompting: function () {
@@ -18,11 +16,8 @@ module.exports = yeoman.Base.extend({
         }.bind(this));
     },
     config: function () {
-       this.fs.copy(this.templatePath('frontend/.bowerrc'), this.destinationPath('frontend/.bowerrc'));
-       this.fs.copy(this.templatePath('frontend/.npmrc'), this.destinationPath('frontend/.npmrc'));
-
-    },
-    install: function () {
-        //this.installDependencies();
+        this.fs.copy(this.templatePath('frontend/.bowerrc'), this.destinationPath('frontend/.bowerrc'));
+        this.fs.copy(this.templatePath('frontend/.npmrc'), this.destinationPath('frontend/.npmrc'));
+        this.fs.copy(this.templatePath('frontend/.jshintrc'), this.destinationPath('frontend/.jshintrc'));
     }
 });
