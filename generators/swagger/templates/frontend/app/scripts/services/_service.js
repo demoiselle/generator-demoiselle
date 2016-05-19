@@ -1,30 +1,30 @@
 'use strict';
 
-app.factory('<%=classe%>Service', ['$http', function ($http) {
+app.factory('<%=entityName%>Service', ['$http', function ($http) {
         var service = {};
 
         service.get = function (id) {
-            return $http.get('api/<%=name.toLowerCase()%>/' + id).then(function (res) {
+            return $http.get('api/<%=entityName.toLowerCase()%>/' + id).then(function (res) {
                 return res.data;
             });
         };
 
         service.delete = function (id) {
-            return $http.delete('api/<%=name.toLowerCase()%>/' + id).then(function (res) {
+            return $http.delete('api/<%=entityName.toLowerCase()%>/' + id).then(function (res) {
                 return res.data;
             });
         };
 
-        service.save = function (<%=name.toLowerCase()%>) {
+        service.save = function (<%=entityName.toLowerCase()%>) {
             return $http({
-                url: 'api/<%=name.toLowerCase()%>',
-                method: <%=name.toLowerCase()%>.id ? "PUT" : "POST",
-                data: <%=name.toLowerCase()%>
+                url: 'api/<%=entityName.toLowerCase()%>',
+                method: <%=entityName.toLowerCase()%>.id ? "PUT" : "POST",
+                data: <%=entityName.toLowerCase()%>
             }).then();
         };
 
         service.list = function (field, order, init, qtde) {
-            return $http.get('api/<%=name.toLowerCase()%>/' + field + '/' + order + '/' + init + '/' + qtde).then(
+            return $http.get('api/<%=entityName.toLowerCase()%>/' + field + '/' + order + '/' + init + '/' + qtde).then(
                 function (res) {
                     return res.data;
                 }
@@ -33,7 +33,7 @@ app.factory('<%=classe%>Service', ['$http', function ($http) {
         };
 
         service.count = function () {
-            return $http.get('api/<%=name.toLowerCase()%>/count').then(function (res) {
+            return $http.get('api/<%=entityName.toLowerCase()%>/count').then(function (res) {
                 return res.data;
             });
         };
