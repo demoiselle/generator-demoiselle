@@ -1,4 +1,4 @@
-# generator-demoiselle [![NPM version][npm-image]] [npm-url] [coveralls-url]
+# generator-demoiselle [![NPM version][npm-image]] [npm-url] 
 > Gerador Demoiselle Angular
 
 ## Instação
@@ -28,7 +28,7 @@ yo demoiselle:serpro
 Gerar frontend apartir de um swagger
 
 ```bash
-wget http://estacionamento-fwkdemoiselle.rhcloud.com/api/swagger.json
+wget http://estacionamento-fwkdemoiselle.rhcloud.com/api/swagger.json (Exemplo)
 yo demoiselle:swagger
 ```
 
