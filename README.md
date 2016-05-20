@@ -6,13 +6,16 @@
 - Implementação da segurança do Demoiselle 2.5 baseada em JWT (https://jwt.io/) RFC7519 (https://tools.ietf.org/html/rfc7519)
 - O padrão swagger agora é OpenApis (https://openapis.org/specification) e os Servidores gerados aqui já estão utilizando essa api por padrão
 
+### Vídeo Tutorial
+- https://www.youtube.com/watch?v=57kyX-nuKRQ
+
 ## Instalação
 
 - Para se trabalhar com Demoiselle é necessário o java-jdk-7 e do AngularJS o nodejs
 - para a instalação do nodejs siga os passos:
 ```bash
 sudo apt-get install nodejs
-sudo npm install npm bower grunt-cli -g (SEMPRE que suar sudo colocar -g(global))
+sudo npm install npm bower grunt-cli -g (SEMPRE que usar sudo colocar -g(global))
 ```
 
 ```bash
