@@ -5,14 +5,13 @@
  */
 package app.service;
 
-import br.gov.frameworkdemoiselle.NotFoundException;
-import br.gov.frameworkdemoiselle.security.LoggedIn;
-import br.gov.frameworkdemoiselle.security.RequiredRole;
-import br.gov.frameworkdemoiselle.transaction.Transactional;
 import app.business.<%=name%>BC;
 import app.entity.<%=name%>;
-import app.security.Roles;
 import app.util.Util;
+import static app.util.Util.fieldInClass;
+import br.gov.frameworkdemoiselle.NotFoundException;
+import br.gov.frameworkdemoiselle.security.LoggedIn;
+import br.gov.frameworkdemoiselle.transaction.Transactional;
 import br.gov.frameworkdemoiselle.util.ValidatePayload;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,6 +33,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import javax.ws.rs.core.Response;
+import static javax.ws.rs.core.Response.ok;
 
 /**
  *
@@ -176,7 +177,7 @@ public class <%=name%>REST implements Serializable {
      * Delegates the insert operation of the given instance.
      *
      * @param bean A entity to be inserted by the delegate
-     * @return 
+     * @return
      */
     @POST
     @Transactional
@@ -222,7 +223,7 @@ public class <%=name%>REST implements Serializable {
      * Delegates the update operation of the given instance.
      *
      * @param bean The instance containing the updated state.
-     * @return 
+     * @return
      */
     @PUT
     @Transactional

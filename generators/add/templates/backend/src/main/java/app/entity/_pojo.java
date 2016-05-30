@@ -10,14 +10,10 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- *
- * @author 70744416353
- */
 @Entity
 public class <%=name%> implements Serializable {
 
-    private static final long serialVersionUID = 5625711959333905292L;
+    private static final long serialVersionUID = 7L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,22 +40,31 @@ public class <%=name%> implements Serializable {
         this.id = id;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDescricao() {
         return descricao;
     }
 
     /**
      *
-     * @param Name
+     * @param descricao
      */
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
     @Override
+    public String toString() {
+        return "<%=name%>{" + "id=" + id + ", descricao=" + descricao + '}';
+    }
+
+    @Override
     public int hashCode() {
         int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.id);
+        hash = 79 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -74,10 +79,7 @@ public class <%=name%> implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Livro other = (Livro) obj;
-        if (!Objects.equals(this.id, other.getId())) {
-            return false;
-        }
-        return true;
+        final <%=name%> other = (<%=name%>) obj;
+        return Objects.equals(this.id, other.id);
     }
 }

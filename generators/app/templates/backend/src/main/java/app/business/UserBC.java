@@ -18,6 +18,9 @@ public class UserBC extends DelegateCrud<User, Long, UserDAO> {
 
     private static final long serialVersionUID = -7801407214303725321L;
 
+    /**
+     *
+     */
     @Startup
     @Transactional
     public void load() {

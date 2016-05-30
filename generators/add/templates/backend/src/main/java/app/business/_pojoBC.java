@@ -1,14 +1,10 @@
 package app.business;
 
-import br.gov.frameworkdemoiselle.lifecycle.Startup;
-import br.gov.frameworkdemoiselle.stereotype.BusinessController;
-import br.gov.frameworkdemoiselle.template.DelegateCrud;
-import br.gov.frameworkdemoiselle.transaction.Transactional;
 import app.entity.<%=name%>;
 import app.persistence.<%=name%>DAO;
+import br.gov.frameworkdemoiselle.stereotype.BusinessController;
+import br.gov.frameworkdemoiselle.template.DelegateCrud;
 import java.util.List;
-import app.util.Util;
-
 /**
  *
  * @author 70744416353

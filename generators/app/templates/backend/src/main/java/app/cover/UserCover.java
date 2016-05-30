@@ -77,10 +77,18 @@ public class UserCover {
         this.perfil = perfil;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getIp() {
         return ip;
     }
 
+    /**
+     *
+     * @param ip
+     */
     public void setIp(String ip) {
         this.ip = ip;
     }

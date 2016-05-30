@@ -12,7 +12,7 @@
 - para a instalação do nodejs siga os passos:
 ```bash
 sudo apt-get install nodejs
-sudo npm install npm bower grunt-cli -g (SEMPRE que suar sudo colocar -g(global))
+sudo npm install npm bower grunt-cli -g (SEMPRE que usar sudo colocar -g(global))
 ```
 
 ```bash

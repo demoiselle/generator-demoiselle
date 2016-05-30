@@ -2,12 +2,12 @@ package app.entity;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Objects;
 import javax.enterprise.context.RequestScoped;
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -23,10 +23,10 @@ import javax.validation.constraints.Size;
 @Table(name = "usuario")
 public class User implements Principal, Serializable {
 
-    private static final long serialVersionUID = 5625711959333905292L;
+    private static final long serialVersionUID = 5_625_711_959_333_905_292L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @NotNull
@@ -62,6 +62,7 @@ public class User implements Principal, Serializable {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -154,20 +155,63 @@ public class User implements Principal, Serializable {
         this.senha = senha;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPerfil() {
         return perfil;
     }
 
+    /**
+     *
+     * @param perfil
+     */
     public void setPerfil(String perfil) {
         this.perfil = perfil;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getCpf() {
         return cpf;
     }
 
+    /**
+     *
+     * @param cpf
+     */
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", name=" + name + ", perfil=" + perfil + ", email=" + email + ", cpf=" + cpf + ", fone=" + fone + ", senha=" + senha + ", token=" + token + ", ip=" + ip + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final User other = (User) obj;
+        return Objects.equals(this.id, other.id);
     }
 
 }

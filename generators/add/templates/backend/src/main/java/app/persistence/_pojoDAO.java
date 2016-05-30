@@ -1,11 +1,9 @@
 package app.persistence;
 
+import app.entity.<%=name%>;
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
 import br.gov.frameworkdemoiselle.template.JPACrud;
-import app.entity.<%=name%>;
 import java.util.List;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 
 
 @PersistenceController
