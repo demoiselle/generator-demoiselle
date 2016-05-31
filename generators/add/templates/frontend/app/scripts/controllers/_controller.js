@@ -33,13 +33,13 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '$
             ValidationService.clear();
             $scope.count();
         }
-        ;
+
 
         if (path === '/<%=name.toLowerCase()%>/edit') {
             ValidationService.clear();
             $scope.<%=name%> = {};
         }
-        ;
+
 
         if (path === '/<%=name.toLowerCase()%>/edit/' + id) {
             ValidationService.clear();
@@ -98,7 +98,7 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '$
         $scope.save = function () {
 
             <%=name%>Service.save($scope.<%=name.toLowerCase()%>).then(
-                function (data) {
+                function () {
                     AlertService.addWithTimeout('success', '<%=name%> salvo com sucesso');
                     $location.path('/<%=name.toLowerCase()%>');
                 },
@@ -122,7 +122,7 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '$
 
         $scope.delete = function (id) {
             <%=name%>Service.delete(id).then(
-                function (data) {
+                function () {
                     AlertService.addWithTimeout('success', '<%=name%> removido com sucesso');
                     $location.path('/<%=name.toLowerCase()%>');
                     $scope.count();
@@ -150,17 +150,6 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '$
             $rootScope.<%=name.toLowerCase()%>CurrentPage = $scope.pagingOptions.currentPage;
             $location.path('/<%=name.toLowerCase()%>/edit/' + id);
         };
-
-        function buscaElemento(elemento, lista) {
-            var index = -1;
-            for (var i = 0; i < lista.length; i++) {
-                if (lista[i].nome === elemento.nome) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
 
         $scope.filterOptions = {
             filterText: '',
