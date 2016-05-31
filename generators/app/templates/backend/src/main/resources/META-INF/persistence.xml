@@ -4,7 +4,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
 	<class>app.entity.User</class>
-    	<exclude-unlisted-classes>true</exclude-unlisted-classes>
+    	<exclude-unlisted-classes>false</exclude-unlisted-classes>
     	<shared-cache-mode>ALL</shared-cache-mode>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>

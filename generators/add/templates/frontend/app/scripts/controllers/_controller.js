@@ -1,21 +1,25 @@
 'use strict';
 
-app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '<%=name%>Service', 'AlertService', '$rootScope', 'ValidationService',
-    function ($scope, $location, $routeParams, <%=name%>Service, AlertService, $rootScope, ValidationService) {
-
-        var id = $routeParams.id;
+app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '$rootScope', '<%=name%>Service', 'AlertService', 'ValidationService',
+    function ($scope, $location, $routeParams, $rootScope, <%=name%>Service, AlertService, ValidationService) {
 
         $scope.count = function () {
             <%=name%>Service.count().then(
-                function (data) {
-                    $scope.totalServerItems = data;
+                function (res) {
+                    $scope.totalServerItems = res.data;
                 },
-                function (error) {
-                    var data = error[0];
-                    var status = error[1];
+                function (res) {
+
+                    var data = res.data;
+                    var status = res.status;
+                    var message = res.message;
 
                     if (status === 401) {
-                        AlertService.addWithTimeout('warning', data.message);
+                        AlertService.addWithTimeout('warning', message);
+                    } else if (status === 412 || status === 422) {
+                        ValidationService.registrarViolacoes(data);
+                    } else if (status === 403) {
+                        AlertService.showMessageForbiden();
                     }
 
                 }
@@ -26,26 +30,35 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '<
         var path = $location.$$url;
 
         if (path === '/<%=name.toLowerCase()%>') {
+            ValidationService.clear();
             $scope.count();
         }
         ;
 
         if (path === '/<%=name.toLowerCase()%>/edit') {
+            ValidationService.clear();
             $scope.<%=name%> = {};
         }
         ;
 
         if (path === '/<%=name.toLowerCase()%>/edit/' + id) {
+            ValidationService.clear();
             <%=name%>Service.get(id).then(
-                function (data) {
-                    $scope.<%=name.toLowerCase()%> = data;
+                function (res) {
+                    $scope.<%=name.toLowerCase()%> = res.data;
                 },
-                function (error) {
-                    var data = error[0];
-                    var status = error[1];
+                function (res) {
+
+                    var data = res.data;
+                    var status = res.status;
+                    var message = res.message;
 
                     if (status === 401) {
-                        AlertService.addWithTimeout('warning', data.message);
+                        AlertService.addWithTimeout('warning', message);
+                    } else if (status === 412 || status === 422) {
+                        ValidationService.registrarViolacoes(data);
+                    } else if (status === 403) {
+                        AlertService.showMessageForbiden();
                     }
 
                 }
@@ -57,12 +70,21 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '<
             $scope.<%=name.toLowerCase()%>s = [];
             var num = (($scope.currentPage - 1) * $scope.itemsPerPage);
             <%=name%>Service.list(num, $scope.itemsPerPage).then(
-                function (data) {
-                    $scope.<%=name.toLowerCase()%>s = data;
+                function (res) {
+                    $scope.<%=name.toLowerCase()%>s = res.data;
                 },
-                function (error) {
-                    if (error.status === 401) {
-                        AlertService.addWithTimeout('warning', error.data.message);
+                function (res) {
+
+                    var data = res.data;
+                    var status = res.status;
+                    var message = res.message;
+
+                    if (status === 401) {
+                        AlertService.addWithTimeout('warning', message);
+                    } else if (status === 412 || status === 422) {
+                        ValidationService.registrarViolacoes(data);
+                    } else if (status === 403) {
+                        AlertService.showMessageForbiden();
                     }
 
                 }
@@ -75,22 +97,23 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '<
 
         $scope.save = function () {
 
-            $("[id$='-message']").text("");
-
             <%=name%>Service.save($scope.<%=name.toLowerCase()%>).then(
                 function (data) {
                     AlertService.addWithTimeout('success', '<%=name%> salvo com sucesso');
                     $location.path('/<%=name.toLowerCase()%>');
                 },
-                function (error) {
+                function (res) {
 
-                    var data = error[0];
-                    var status = error[1];
+                    var data = res.data;
+                    var status = res.status;
+                    var message = res.message;
 
                     if (status === 401) {
-                        AlertService.addWithTimeout('danger', 'Não foi possível executar a operação');
+                        AlertService.addWithTimeout('warning', message);
                     } else if (status === 412 || status === 422) {
                         ValidationService.registrarViolacoes(data);
+                    } else if (status === 403) {
+                        AlertService.showMessageForbiden();
                     }
 
                 }
@@ -105,12 +128,18 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '<
                     $scope.count();
                     $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
                 },
-                function (error) {
-                    var data = error[0];
-                    var status = error[1];
+                function (res) {
+
+                    var data = res.data;
+                    var status = res.status;
+                    var message = res.message;
 
                     if (status === 401) {
-                        AlertService.addWithTimeout('warning', data.message);
+                        AlertService.addWithTimeout('warning', message);
+                    } else if (status === 412 || status === 422) {
+                        ValidationService.registrarViolacoes(data);
+                    } else if (status === 403) {
+                        AlertService.showMessageForbiden();
                     }
 
                 }
@@ -168,22 +197,29 @@ app.controller('<%=name%>Controller', ['$scope', '$location', '$routeParams', '<
             setTimeout(function () {
                 var init = (page - 1) * pageSize;
                 <%=name%>Service.list(field, order, init, pageSize).then(
-                    function (data) {
-                        $scope.<%=name.toLowerCase()%>s = data;
+                    function (res) {
+                        $scope.<%=name.toLowerCase()%>s = res.data;
                     },
-                    function (error) {
-                        var data = error[0];
-                        var status = error[1];
+                    function (res) {
+
+                        var data = res.data;
+                        var status = res.status;
+                        var message = res.message;
 
                         if (status === 401) {
-                            AlertService.addWithTimeout('warning', data.message);
+                            AlertService.addWithTimeout('warning', message);
+                        } else if (status === 412 || status === 422) {
+                            ValidationService.registrarViolacoes(data);
+                        } else if (status === 403) {
+                            AlertService.showMessageForbiden();
                         }
+
                     }
                 );
             }, 100);
         };
 
-        if ($rootScope.<%=name.toLowerCase()%>CurrentPage != undefined) {
+        if ($rootScope.<%=name.toLowerCase()%>CurrentPage !== undefined) {
             $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $rootScope.<%=name.toLowerCase()%>CurrentPage);
             $scope.pagingOptions.currentPage = $rootScope.<%=name.toLowerCase()%>CurrentPage;
         } else {

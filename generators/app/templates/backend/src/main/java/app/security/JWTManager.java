@@ -45,16 +45,17 @@ public class JWTManager implements Serializable {
      * @throws org.jose4j.lang.JoseException
      */
     public JWTManager() throws JoseException {
-            
+
         if (appConfig.getChave() == null) {
             RsaJsonWebKey chave = RsaJwkGenerator.generateJwk(2048);
             appConfig.setChave(chave.toJson(JsonWebKey.OutputControlLevel.INCLUDE_PRIVATE));
-            Logger.getLogger(JWTManager.class.getName()).log(Level.SEVERE, "Coloque os parametros no app.properties e reinicie a aplicacao ");
+            Logger.getLogger(JWTManager.class.getName()).log(Level.SEVERE, "Se você quiser usar sua app em cluster, coloque o parametro jwt.key no app.properties e reinicie a aplicacao");
             Logger.getLogger(JWTManager.class.getName()).log(Level.SEVERE, "jwt.key={0}", appConfig.getChave());
+            Logger.getLogger(JWTManager.class.getName()).log(Level.SEVERE, "Se você não usar esse parametro, a cada reinicialização será gerada uma nova chave privada, isso inviabiliza o uso em cluster ");
         }
         rsaJsonWebKey = (RsaJsonWebKey) RsaJsonWebKey.Factory.newPublicJwk(appConfig.getChave());
         rsaJsonWebKey.setKeyId("DEMOISELLE");
-    
+
     }
 
     /**
@@ -95,12 +96,12 @@ public class JWTManager implements Serializable {
         UserCover usuario = null;
         if (jwt != null && !jwt.isEmpty()) {
             JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                    .setRequireExpirationTime() // the JWT must have an expiration time
-                    .setAllowedClockSkewInSeconds(60) // allow some leeway in validating time based claims to account for clock skew
-                    .setExpectedIssuer(appConfig.getRemetente()) // whom the JWT needs to have been issued by
-                    .setExpectedAudience(appConfig.getDestinatario()) // to whom the JWT is intended for
-                    .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
-                    .build(); // create the JwtConsumer instance
+                .setRequireExpirationTime() // the JWT must have an expiration time
+                .setAllowedClockSkewInSeconds(60) // allow some leeway in validating time based claims to account for clock skew
+                .setExpectedIssuer(appConfig.getRemetente()) // whom the JWT needs to have been issued by
+                .setExpectedAudience(appConfig.getDestinatario()) // to whom the JWT is intended for
+                .setVerificationKey(rsaJsonWebKey.getKey()) // verify the signature with the public key
+                .build(); // create the JwtConsumer instance
 
             try {
                 JwtClaims jwtClaims = jwtConsumer.processToClaims(jwt);

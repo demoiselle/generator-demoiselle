@@ -5,7 +5,6 @@ app.config(['$routeProvider', 'USER_ROLES',
 
         $routeProvider
 
-
                 .when('/<%=name.toLowerCase()%>', {
                     templateUrl: 'views/<%=name.toLowerCase()%>/list.html',
                     controller: '<%=name%>Controller',
@@ -29,8 +28,5 @@ app.config(['$routeProvider', 'USER_ROLES',
                         authorizedRoles: [USER_ROLES.ADMINISTRADOR]
                     }
                 });
-
-
-
 
     }]);

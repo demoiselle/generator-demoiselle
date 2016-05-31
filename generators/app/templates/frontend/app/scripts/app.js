@@ -18,28 +18,27 @@ var app = angular.module('app', [
 
         $routeProvider
 
-        .when('/login', {
+            .when('/login', {
                 templateUrl: 'views/login.html',
                 controller: 'AuthController',
                 data: {
                     authorizedRoles: [USER_ROLES.NOT_LOGGED]
                 }
             })
-         
+
             .when('/403', {
                 templateUrl: 'views/403.html',
                 data: {
                     authorizedRoles: [USER_ROLES.NOT_LOGGED]
                 }
             })
-          
+
             .otherwise({
                 redirectTo: '/dashboard',
                 data: {
                     authorizedRoles: [USER_ROLES.ADMINISTRADOR, USER_ROLES.USUARIO]
                 }
             });
-
 
     }]);
 

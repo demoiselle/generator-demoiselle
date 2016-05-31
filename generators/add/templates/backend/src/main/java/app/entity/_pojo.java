@@ -20,7 +20,7 @@ public class <%=name%> implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 1)
+    @Size(min = 5, max = 150)
     @Column(name = "descricao")
     private String descricao;
 

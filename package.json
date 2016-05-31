@@ -1,8 +1,8 @@
 {
     "name": "generator-demoiselle",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Gerador Demoiselle 2.5 com AngularJS",
-    "homepage": "https://www.frameworkdemoiselle.gov.br/",
+    "homepage": "https://github.com/demoiselle/generator-demoiselle",
     "author": {
         "name": "Paulo Gladson",
         "email": "paulopinheiro777@gmail.com",

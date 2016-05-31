@@ -23,14 +23,14 @@ import javax.validation.constraints.Size;
 @Table(name = "usuario")
 public class User implements Principal, Serializable {
 
-    private static final long serialVersionUID = 5_625_711_959_333_905_292L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @NotNull
-    @Size(min = 1)
+    @Size(min = 5, max = 150)
     @Column(name = "nome")
     private String name;
 

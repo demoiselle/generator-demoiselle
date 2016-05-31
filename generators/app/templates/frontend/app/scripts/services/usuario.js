@@ -3,12 +3,6 @@
 app.factory('UsuarioService', ['$http', function ($http) {
         var service = {};
 
-        service.get = function () {
-            return $http.get('api/user').then(function (res) {
-                return res;
-            });
-        };
-
         service.get = function (id) {
             return $http.get('api/user/' + id).then(function (res) {
                 return res;
@@ -21,12 +15,10 @@ app.factory('UsuarioService', ['$http', function ($http) {
             });
         };
 
-        service.save = function (bookmark) {
-            return $http({
-                url: 'api/user',
-                method: bookmark.id ? "PUT" : "POST",
-                data: bookmark
-            }).then();
+        service.count = function () {
+            return $http.get('api/user/count').then(function (res) {
+                return res;
+            });
         };
 
         service.list = function (field, order, init, qtde) {
@@ -38,10 +30,16 @@ app.factory('UsuarioService', ['$http', function ($http) {
 
         };
 
-        service.count = function () {
-            return $http.get('api/user/count').then(function (res) {
-                return res;
-            });
+        service.save = function (user) {
+            return $http({
+                url: 'api/user',
+                method: user.id ? "PUT" : "POST",
+                data: user
+            }).then(
+                function (res) {
+                    return res;
+                }
+            );
         };
 
         return service;

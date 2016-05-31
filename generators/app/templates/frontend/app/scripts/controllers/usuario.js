@@ -14,12 +14,11 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
                     var status = res.status;
                     var message = res.message;
 
-                    if (status == 401) {
+                    if (status === 401) {
                         AlertService.addWithTimeout('warning', message);
-                    } else if (status == 412 || status == 422) {
-                        AlertService.addWithTimeout('danger', 'Preencha os campos obrigatórios!');
+                    } else if (status === 412 || status === 422) {
                         ValidationService.registrarViolacoes(data);
-                    } else if (status == 403) {
+                    } else if (status === 403) {
                         AlertService.showMessageForbiden();
                     }
 
@@ -31,16 +30,19 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
         var path = $location.$$url;
 
         if (path === '/usuario') {
+            ValidationService.clear();
             $scope.count();
         }
         ;
 
         if (path === '/usuario/edit') {
+            ValidationService.clear();
             $scope.usuario = {};
         }
         ;
 
         if (path === '/usuario/edit/' + id) {
+            ValidationService.clear();
             UsuarioService.get(id).then(
                 function (res) {
                     $scope.usuario = res.data;
@@ -51,12 +53,11 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
                     var status = res.status;
                     var message = res.message;
 
-                    if (status == 401) {
+                    if (status === 401) {
                         AlertService.addWithTimeout('warning', message);
-                    } else if (status == 412 || status == 422) {
-                        AlertService.addWithTimeout('danger', 'Preencha os campos obrigatórios!');
+                    } else if (status === 412 || status === 422) {
                         ValidationService.registrarViolacoes(data);
-                    } else if (status == 403) {
+                    } else if (status === 403) {
                         AlertService.showMessageForbiden();
                     }
 
@@ -70,6 +71,7 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
             var num = (($scope.currentPage - 1) * $scope.itemsPerPage);
             UsuarioService.list(num, $scope.itemsPerPage).then(
                 function (res) {
+                    AlertService.clear();
                     $scope.usuarios = res.data;
                 },
                 function (res) {
@@ -78,12 +80,11 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
                     var status = res.status;
                     var message = res.message;
 
-                    if (status == 401) {
+                    if (status === 401) {
                         AlertService.addWithTimeout('warning', message);
-                    } else if (status == 412 || status == 422) {
-                        AlertService.addWithTimeout('danger', 'Preencha os campos obrigatórios!');
+                    } else if (status === 412 || status === 422) {
                         ValidationService.registrarViolacoes(data);
-                    } else if (status == 403) {
+                    } else if (status === 403) {
                         AlertService.showMessageForbiden();
                     }
 
@@ -97,8 +98,6 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
 
         $scope.save = function () {
 
-            $("[id$='-message']").text("");
-
             UsuarioService.save($scope.usuario).then(
                 function () {
                     AlertService.addWithTimeout('success', 'Usuario salvo com sucesso');
@@ -110,12 +109,11 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
                     var status = res.status;
                     var message = res.message;
 
-                    if (status == 401) {
+                    if (status === 401) {
                         AlertService.addWithTimeout('warning', message);
-                    } else if (status == 412 || status == 422) {
-                        AlertService.addWithTimeout('danger', 'Preencha os campos obrigatórios!');
+                    } else if (status === 412 || status === 422) {
                         ValidationService.registrarViolacoes(data);
-                    } else if (status == 403) {
+                    } else if (status === 403) {
                         AlertService.showMessageForbiden();
                     }
 
@@ -137,12 +135,11 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
                     var status = res.status;
                     var message = res.message;
 
-                    if (status == 401) {
+                    if (status === 401) {
                         AlertService.addWithTimeout('warning', message);
-                    } else if (status == 412 || status == 422) {
-                        AlertService.addWithTimeout('danger', 'Preencha os campos obrigatórios!');
+                    } else if (status === 412 || status === 422) {
                         ValidationService.registrarViolacoes(data);
-                    } else if (status == 403) {
+                    } else if (status === 403) {
                         AlertService.showMessageForbiden();
                     }
 
@@ -210,12 +207,11 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
                         var status = res.status;
                         var message = res.message;
 
-                        if (status == 401) {
+                        if (status === 401) {
                             AlertService.addWithTimeout('warning', message);
-                        } else if (status == 412 || status == 422) {
-                            AlertService.addWithTimeout('danger', 'Preencha os campos obrigatórios!');
+                        } else if (status === 412 || status === 422) {
                             ValidationService.registrarViolacoes(data);
-                        } else if (status == 403) {
+                        } else if (status === 403) {
                             AlertService.showMessageForbiden();
                         }
 
@@ -224,7 +220,7 @@ app.controller('UsuarioController', ['$scope', '$location', '$routeParams', 'Usu
             }, 100);
         };
 
-        if ($rootScope.usuarioCurrentPage != undefined) {
+        if ($rootScope.usuarioCurrentPage !== undefined) {
             $scope.getPagedDataAsync($scope.pagingOptions.pageSize, $rootScope.usuarioCurrentPage);
             $scope.pagingOptions.currentPage = $rootScope.usuarioCurrentPage;
         } else {
