@@ -51,7 +51,7 @@ app.config(['$httpProvider', function ($httpProvider) {
 
                         var token = AppService.getToken();
 
-                        if (ENV.name == "development") {
+                        if (ENV.name === "development") {
                             if (config.url.indexOf("api") !== -1) {
                                 config.url = ENV.apiEndpoint + config.url;
                             }

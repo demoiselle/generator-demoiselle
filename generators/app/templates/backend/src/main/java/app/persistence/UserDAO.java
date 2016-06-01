@@ -1,9 +1,8 @@
 package app.persistence;
 
+import app.core.RESTCrud;
 import br.gov.frameworkdemoiselle.stereotype.PersistenceController;
-import br.gov.frameworkdemoiselle.template.JPACrud;
 import app.entity.User;
-import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
@@ -12,9 +11,7 @@ import javax.persistence.TypedQuery;
  * @author 70744416353
  */
 @PersistenceController
-public class UserDAO extends JPACrud<User, Long> {
-
-    private static final long serialVersionUID = 1L;
+public class UserDAO extends RESTCrud<User, Long> {
 
     /**
      *
@@ -32,6 +29,7 @@ public class UserDAO extends JPACrud<User, Long> {
             result = query.getSingleResult();
         } catch (NoResultException cause) {
             result = null;
+            LOG.severe(cause.getMessage());
         }
 
         return result;
@@ -54,43 +52,11 @@ public class UserDAO extends JPACrud<User, Long> {
         try {
             result = query.getSingleResult();
         } catch (NoResultException cause) {
-            cause.printStackTrace();
             result = null;
+            LOG.severe(cause.getMessage());
         }
 
         return result;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Long count() {
-        return (Long) getEntityManager().createQuery("select COUNT(u) from " + this.getBeanClass().getSimpleName() + " u").getSingleResult();
-    }
-
-    /**
-     *
-     * @param field
-     * @param order
-     * @param init
-     * @param qtde
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public List list(String field, String order, int init, int qtde) {
-        return getEntityManager().createQuery("select u from " + this.getBeanClass().getSimpleName() + " u ORDER BY " + field + " " + order).setFirstResult(init).setMaxResults(qtde).getResultList();
-    }
-
-    /**
-     *
-     * @param campo
-     * @param valor
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public List list(String campo, String valor) {
-        return getEntityManager().createQuery("select u from " + this.getBeanClass().getSimpleName() + " u " + " where " + campo + " = " + valor + " ORDER BY " + campo).getResultList();
     }
 
 }

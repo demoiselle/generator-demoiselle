@@ -2,6 +2,27 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/routes/dashboard.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/app.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/add/templates/frontend/app/scripts/services/_service.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/controllers/usuario.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/add/templates/frontend/app/scripts/routes/_route.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/controllers/auth.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/services/auth.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/services/alert.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/controllers/application.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/filters/filters.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/package.json</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/controllers/swagger.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/services/dashboard.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/routes/swagger.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/controllers/dashboard.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/services/application.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/services/validation.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/add/templates/frontend/app/scripts/controllers/_controller.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/routes/usuario.js</file>
+            <file>file:/home/70744416353/NetBeansProjects/github/generator-demoiselle/generators/app/templates/frontend/app/scripts/services/usuario.js</file>
+        </group>
     </open-files>
 </project-private>
