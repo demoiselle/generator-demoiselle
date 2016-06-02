@@ -3,7 +3,6 @@ var yeoman = require('yeoman-generator');
 var cheerio = require('cheerio');
 var htmlWiring = require('html-wiring');
 var fs = require('fs');
-var rl = require('readline');
 
 module.exports = yeoman.Base.extend({
     prompting: function () {
@@ -103,7 +102,7 @@ module.exports = yeoman.Base.extend({
                 pu('<li><a href="#' + entityName.toLowerCase() + '"><i class="glyphicon glyphicon-stats"></i>' + entityName + '</a></li>').appendTo('#menu');
                 this.fs.write('frontend/app/index.html', pu.html());
             }
-            
+
         }.bind(this));
 
     }
