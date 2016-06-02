@@ -76,11 +76,11 @@ module.exports = yeoman.Base.extend({
             );
             console.log('--- Service: ok*(ainda somente apps Demoiselle)');
 
-//            this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-edit.html'),
-//                    this.destinationPath('frontend/app/views/' + item.nome.toLowerCase() + '/edit.html'), {
-//                props: item
-//            });
-//            console.log('--- View-edit: ok');
+            this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-edit.html'),
+                    this.destinationPath('frontend/app/views/' + item.nome.toLowerCase() + '/edit.html'), {
+                props: item
+            });
+            console.log('--- View-edit: ok');
 
             this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-list.html'),
                     this.destinationPath('frontend/app/views/' + item.nome.toLowerCase() + '/list.html'), {
@@ -95,15 +95,15 @@ module.exports = yeoman.Base.extend({
 
         this.fs.write('frontend/app/index.html', html.html());
 
-        lote.servicos.forEach(function (item) {
-            this.fs.copyTpl(
-                    this.templatePath('frontend/app/scripts/services/_service.js'),
-                    this.destinationPath('frontend/app/scripts/services/' + item.caminho.split("/")[1].toLowerCase() + '.js'), {
-                props: item
-            }
-            );
-            console.log('Services: ' + item.caminho.split("/")[1].charAt(0).toUpperCase() + item.caminho.split("/")[1].slice(1));
-        }.bind(this));
+//        lote.servicos.forEach(function (item) {
+//            this.fs.copyTpl(
+//                    this.templatePath('frontend/app/scripts/services/_service.js'),
+//                    this.destinationPath('frontend/app/scripts/services/' + item.caminho.split("/")[1].toLowerCase() + '.js'), {
+//                props: item
+//            }
+//            );
+//            console.log('Services: ' + item.caminho.split("/")[1].charAt(0).toUpperCase() + item.caminho.split("/")[1].slice(1));
+//        }.bind(this));
 
     }
 });
