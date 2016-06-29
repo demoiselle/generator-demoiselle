@@ -14,7 +14,7 @@
 - Para se trabalhar com Demoiselle é necessário o java-jdk-7 e do AngularJS o nodejs
 - para a instalação do nodejs siga os passos:
 ```bash
-sudo apt-get install nodejs
+sudo apt-get install nodejs npm
 sudo npm install npm bower grunt-cli -g (SEMPRE que usar sudo colocar -g(global))
 ```
 
