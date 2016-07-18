@@ -1,7 +1,7 @@
 {
     "name": "generator-demoiselle",
-    "version": "0.0.9",
-    "description": "Gerador Demoiselle 2.5 com AngularJS",
+    "version": "0.0.13",
+    "description": "Gerador Demoiselle 2.5 JEE6 com AngularJS",
     "homepage": "https://github.com/demoiselle/generator-demoiselle",
     "author": {
         "name": "Paulo Gladson",
@@ -12,7 +12,8 @@
         "generators/app",
         "generators/add",
         "generators/serpro",
-        "generators/swagger"
+        "generators/swagger",
+        "generators/fromEntity"
     ],
     "main": "generators/index.js",
     "keywords": [

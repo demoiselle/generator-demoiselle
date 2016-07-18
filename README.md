@@ -55,6 +55,12 @@ yo demoiselle:swagger
 - Nesta primeira versão, o backend é criado seguindo um padrão convencionado para um servidor Demoiselle 2.5 gerado aqui, sendo necessário ajustes nos serviços que não estão no padrão básico do CRUD
 - Nas próximas versões faremos o mapeamento completo dos serviços.
 
+Gerar frontend apartir de um swagger
+```bash
+yo demoiselle:fromEntity
+```
+- O comando fromEntity lê a pasta entity do projeto e cria todos os arquivos necessários para a manutenção de cada entidade que está na pasta
+
 ## Roadmap
 
 - 0.1.0 Mapeamento completo do swagger ("Me dê um swagger.json que te dou uma aplicação")

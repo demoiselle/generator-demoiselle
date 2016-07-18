@@ -19,7 +19,6 @@ public class UserBC extends AbstractBC<User, Long, UserDAO> {
      *
      */
     @Startup
-    @Transactional
     public void load() {
         if (findAll().isEmpty()) {
 
