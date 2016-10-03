@@ -71,7 +71,7 @@ yo demoiselle:fromEntity
 
 ## License
 
-MIT © [Paulo Gladson](https://www.frameworkdemoiselle.gov.br/)
+LGPL3 © [Paulo Gladson](https://www.frameworkdemoiselle.gov.br/)
 
 [npm-image]: https://badge.fury.io/js/generator-demoiselle.svg
 [npm-url]: https://npmjs.org/package/generator-demoiselle
