@@ -10,7 +10,7 @@ const plumber = require('gulp-plumber');
 const coveralls = require('gulp-coveralls');
 
 gulp.task('static', function () {
-  return gulp.src('**/*.js')
+  return gulp.src(['**/*.js', '!generators/**/templates/**/*'])
     .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format())
@@ -22,7 +22,7 @@ gulp.task('nsp', function (cb) {
 });
 
 gulp.task('pre-test', function () {
-  return gulp.src('generators/**/*.js')
+  return gulp.src(['generators/**/*.js', '!generators/**/templates/**/*'])
     .pipe(excludeGitignore())
     .pipe(istanbul({
       includeUntested: true
@@ -55,7 +55,7 @@ gulp.task('coveralls', ['test'], function () {
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['generators/**/*.js', 'test/**'], ['test']);
+  gulp.watch(['generators/**/*.js', '!generators/**/templates/**/*', 'test/**'], ['test']);
 });
 
 gulp.task('prepublish', ['nsp']);
