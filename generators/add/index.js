@@ -6,7 +6,8 @@ const _ = require('lodash');
 
 /**
  * yo demoiselle:add <entity-name>
- * Demoiselle generator for new entities
+ *
+ * Demoiselle generator for new entities.
  */
 module.exports = class extends Generator {
 
