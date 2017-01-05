@@ -1,7 +1,8 @@
 'use strict';
 const Generator = require('yeoman-generator');
-const cheerio = require('cheerio');
-const htmlWiring = require('html-wiring');
+const chalk = require('chalk');
+const yosay = require('yosay');
+// const htmlWiring = require('html-wiring');
 const _ = require('lodash');
 
 /**
@@ -16,6 +17,12 @@ module.exports = class extends Generator {
     // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
     this.argument('project', {
       desc: 'Nome do projeto',
+      type: String,
+      required: false
+    });
+
+    this.argument('prefix', {
+      desc: 'prefixo dos componentes',
       type: String,
       required: false
     });
@@ -51,7 +58,16 @@ module.exports = class extends Generator {
         type: 'input',
         name: 'project',
         message: 'Dê um nome para o seu projeto:',
-        default: 'TodoApp'
+        default: 'Todo'
+      });
+    }
+
+    if (!this.options.prefix) {
+      prompts.push({
+        type: 'input',
+        name: 'project',
+        message: 'Dê um prefixo para os seus componentes:',
+        default: 'my'
       });
     }
 
@@ -75,6 +91,7 @@ module.exports = class extends Generator {
     return this.prompt(prompts).then(function (answers) {
       this.answers = answers;
       this.name = this.options.project || answers.project;
+      this.prefix = this.options.prefix || answers.prefix;
       // this.template = this.options.template || answers.template;
     }.bind(this));
   }
@@ -83,12 +100,9 @@ module.exports = class extends Generator {
    * Where you write the generator specific files (routes, controllers, etc)
    */
   writing() {
-    // project name
-    let name = this.name;
-
     // Generate Project
-    this._generateTodoProjectFrontend(name);
-    this._generateTodoProjectBackend(name);
+    this._generateTodoProjectFrontend();
+    // this._generateTodoProjectBackend(name);
   }
 
   /**
@@ -102,24 +116,50 @@ module.exports = class extends Generator {
    * Where installation are run (npm, bower)
    */
   install() {
-    let skipInstall = this.options['skip-install'];
+    // let skipInstall = this.options['skip-install'];
 
-    this.installDependencies({
-      skipInstall: skipInstall,
-      npm: true,
-      bower: false,
-      yarn: false
-    });
+    // this.installDependencies({
+    //   skipInstall: skipInstall,
+    //   npm: true,
+    //   bower: false,
+    //   yarn: false
+    // });
 
     this.log('[install] done.');
   }
 
-  _generateTodoProjectFrontend(name){
-    this.fs.copy(this.templatePath('frontend/'), this.destinationPath('frontend/'));
+  // ---------------
+  // PRIVATE methods
+  // ---------------
+
+  _buildTemplateName(name) {
+    return {
+      name: name,
+      kebab: _.kebabCase(name),
+      snake: _.snakeCase(name),
+      camel: _.camelCase(name),
+      capital: _.upperFirst(_.camelCase(name))
+    };
   }
 
-  _generateTodoProjectBackend(name){
-    this.fs.copy(this.templatePath('backend/'), this.destinationPath('backend/'));
+  _generateTodoProjectFrontend() {
+    let template = {
+      name: this._buildTemplateName(this.name),
+      prefix: this._buildTemplateName(this.prefix)
+    };
+
+    this.fs.copyTpl(this.templatePath('todo/frontend/'), this.destinationPath('frontend/'), template);
   }
-});
+
+  _generateTodoProjectBackend(name) {
+    this.log('TODO: generate frontend project for', name);
+
+    let template = this._buildTemplateName(name);
+    // TODO: create --prefix option
+    if (!template.prefix) {
+      template.prefix = template.name;
+    }
+    this.fs.copyTpl(this.templatePath('todo/backend/'), this.destinationPath('backend/'), template);
+  }
+};
 
