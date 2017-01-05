@@ -1,61 +1,77 @@
 {
-    "name": "generator-demoiselle",
-    "version": "0.0.13",
-    "description": "Gerador Demoiselle 2.5 JEE6 com AngularJS",
-    "homepage": "https://github.com/demoiselle/generator-demoiselle",
-    "author": {
-        "name": "Paulo Gladson",
-        "email": "paulopinheiro777@gmail.com",
-        "url": "https://github.com/demoiselle"
+  "name": "generator-demoiselle",
+  "version": "1.0.0",
+  "description": "Gerador Demoiselle 3.0 JEE7 com Angular2",
+  "homepage": "https://github.com/demoiselle/generator-demoiselle",
+  "authors": [
+    {
+      "name": "Paulo Gladson",
+      "email": "paulopinheiro777@gmail.com",
+      "url": "https://github.com/demoiselle"
     },
-    "files": [
-        "generators/app",
-        "generators/add",
-        "generators/serpro",
-        "generators/swagger",
-        "generators/fromEntity"
-    ],
-    "main": "generators/index.js",
-    "keywords": [
-        "JEE6",
-        "Java",
-        "Demoiselle",
-        "Swagger",
-        "AngularJS",
-        "yeoman-generator"
-    ],
-    "dependencies": {
-        "cheerio": "^0.20.0",
-        "chalk": "^1.0.0",
-        "jsonq": "^1.0.3",
-        "yeoman-generator": "^0.23.0",
-        "yosay": "^1.0.0"
+    {
+      "name": "Leonardo Merlin",
+      "email": "leonardo.merlin@serpro.gov.br",
+      "url": "http://leonardomerlin.com.br"
+    }
+  ],
+  "files": [
+    "generators/app",
+    "generators/add",
+    "generators/serpro",
+    "generators/swagger",
+    "generators/fromEntity"
+  ],
+  "main": "generators/app/index.js",
+  "keywords": [
+    "Demoiselle",
+    "JEE7",
+    "Java",
+    "Angular",
+    "Swagger",
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "cheerio": "^0.22.0",
+    "jsonq": "^1.1.0",
+    "lodash": "^4.17.4",
+    "yeoman-generator": "^1.0.0",
+    "yosay": "^1.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.1.1",
+    "eslint-config-xo-space": "^0.15.0",
+    "gulp": "^3.9.0",
+    "gulp-coveralls": "^0.1.4",
+    "gulp-eslint": "^3.0.1",
+    "gulp-exclude-gitignore": "^1.0.0",
+    "gulp-istanbul": "^1.0.0",
+    "gulp-line-ending-corrector": "^1.0.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-nsp": "^2.1.0",
+    "gulp-plumber": "^1.0.0",
+    "yeoman-assert": "^2.2.1",
+    "yeoman-test": "^1.6.0"
+  },
+  "eslintConfig": {
+    "extends": "xo-space",
+    "env": {
+      "node": true,
+      "browser": true,
+      "shared-node-browser": true,
+      "mocha": true,
+      "jasmine": true,
+      "protractor": true
     },
-    "devDependencies": {
-        "eslint": "^2.1.0",
-        "eslint-config-xo-space": "^0.13.0",
-        "gulp": "^3.9.0",
-        "gulp-coveralls": "^0.1.0",
-        "gulp-eslint": "^2.0.0",
-        "gulp-exclude-gitignore": "^1.0.0",
-        "gulp-istanbul": "^0.10.3",
-        "gulp-line-ending-corrector": "^1.0.1",
-        "gulp-mocha": "^2.0.0",
-        "gulp-nsp": "^2.1.0",
-        "gulp-plumber": "^1.0.0",
-        "yeoman-assert": "^2.0.0",
-        "yeoman-test": "^1.0.0"
-    },
-    "eslintConfig": {
-        "extends": "xo-space",
-        "env": {
-            "mocha": true
-        }
-    },
-    "repository": "demoiselle/generator-demoiselle",
-    "scripts": {
-        "prepublish": "gulp prepublish",
-        "test": "gulp"
-    },
-    "license": "MIT"
+    "rules": {
+      "object-curly-spacing": 0
+    }
+  },
+  "repository": "demoiselle/generator-demoiselle",
+  "scripts": {
+    "prepublish": "gulp prepublish",
+    "test": "gulp"
+  },
+  "license": "MIT"
 }

@@ -1,16 +1,16 @@
 'use strict';
-var path = require('path');
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
-var excludeGitignore = require('gulp-exclude-gitignore');
-var mocha = require('gulp-mocha');
-var istanbul = require('gulp-istanbul');
-var nsp = require('gulp-nsp');
-var plumber = require('gulp-plumber');
-var coveralls = require('gulp-coveralls');
+const path = require('path');
+const gulp = require('gulp');
+const eslint = require('gulp-eslint');
+const excludeGitignore = require('gulp-exclude-gitignore');
+const mocha = require('gulp-mocha');
+const istanbul = require('gulp-istanbul');
+const nsp = require('gulp-nsp');
+const plumber = require('gulp-plumber');
+const coveralls = require('gulp-coveralls');
 
 gulp.task('static', function () {
-  return gulp.src('**/*.js')
+  return gulp.src(['**/*.js', '!generators/**/templates/**/*'])
     .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format())
@@ -22,7 +22,7 @@ gulp.task('nsp', function (cb) {
 });
 
 gulp.task('pre-test', function () {
-  return gulp.src('generators/**/*.js')
+  return gulp.src(['generators/**/*.js', '!generators/**/templates/**/*'])
     .pipe(excludeGitignore())
     .pipe(istanbul({
       includeUntested: true
@@ -31,7 +31,7 @@ gulp.task('pre-test', function () {
 });
 
 gulp.task('test', ['pre-test'], function (cb) {
-  var mochaErr;
+  let mochaErr;
 
   gulp.src('test/**/*.js')
     .pipe(plumber())
@@ -45,10 +45,6 @@ gulp.task('test', ['pre-test'], function (cb) {
     });
 });
 
-gulp.task('watch', function () {
-  gulp.watch(['generators/**/*.js', 'test/**'], ['test']);
-});
-
 gulp.task('coveralls', ['test'], function () {
   if (!process.env.CI) {
     return;
@@ -58,5 +54,9 @@ gulp.task('coveralls', ['test'], function () {
     .pipe(coveralls());
 });
 
+gulp.task('watch', function () {
+  gulp.watch(['generators/**/*.js', '!generators/**/templates/**/*', 'test/**'], ['test']);
+});
+
 gulp.task('prepublish', ['nsp']);
-gulp.task('default', ['static', 'test', 'coveralls']);
+gulp.task('default', ['static', 'test']);
