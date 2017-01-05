@@ -57,7 +57,15 @@
   "eslintConfig": {
     "extends": "xo-space",
     "env": {
-      "mocha": true
+      "node": true,
+      "browser": true,
+      "shared-node-browser": true,
+      "mocha": true,
+      "jasmine": true,
+      "protractor": true
+    },
+    "rules": {
+      "object-curly-spacing": 0
     }
   },
   "repository": "demoiselle/generator-demoiselle",
