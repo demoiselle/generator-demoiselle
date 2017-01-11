@@ -24,6 +24,11 @@ export class LoginComponent implements OnInit {
     console.log('[LoginComponent] initialized.');
   }
 
+  onSubmit($event, form){
+    console.log('TODO: handle form feedback.', form);
+    this.login();
+  }
+
   login() {
     this.authService.login(this.user)
       .subscribe(
