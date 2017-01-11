@@ -8,15 +8,15 @@ import { TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { <%= name.capital %>DetailsComponent } from './<%= name.kebab %>-details.component';
+import { <%= entity.name.capital %>FormComponent } from './<%= entity.name.kebab %>-form.component';
 
-describe('<%= name.capital %>DetailsComponent', () => {
+describe('<%= entity.name.capital %>FormComponent', () => {
     let fixture, comp, el;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [
-                <%= name.capital %>DetailsComponent
+                <%= entity.name.capital %>FormComponent
             ],
             providers: [],
             schemas: [ NO_ERRORS_SCHEMA ]
@@ -25,7 +25,7 @@ describe('<%= name.capital %>DetailsComponent', () => {
 
     beforeEach(async(() => {
         TestBed.compileComponents().then(() => {
-            fixture = TestBed.createComponent(<%= name.capital %>DetailsComponent);
+            fixture = TestBed.createComponent(<%= entity.name.capital %>FormComponent);
             comp = fixture.componentInstance;
 
             // el = fixture.debugElement.query(By.css('h1'));

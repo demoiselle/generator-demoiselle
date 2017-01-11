@@ -4,16 +4,16 @@
  */
 
 import { TestBed, async, inject } from '@angular/core/testing';
-import { <%= name.capital %>Service } from './<%= name.kebab %>.service';
+import { <%= entity.name.capital %>Service } from './<%= entity.name.kebab %>.service';
 
-describe('<%= name.capital %>Service', () => {
+describe('<%= entity.name.capital %>Service', () => {
     let service;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [<%= name.capital %>Service],
+            declarations: [<%= entity.name.capital %>Service],
             providers: [
-                <%= name.capital %>Service
+                <%= entity.name.capital %>Service
                 // for additional providers, write as examples below
                 // ServiceName,
                 // { provider: ServiceName, useValue: fakeServiceName },
@@ -27,7 +27,7 @@ describe('<%= name.capital %>Service', () => {
     // it('...', async(inject([...], (...) => {}));
 
     it('should enter the assertion',
-        inject([<%= name.capital %>Service], (s: <%= name.capital %>Service) => {
+        inject([<%= entity.name.capital %>Service], (s: <%= entity.name.capital %>Service) => {
             expect(true).toBe(false);
         })
     );

@@ -5,7 +5,7 @@
   - submitted (show feedback and enable inputs/actions)
 -->
 <div class="form-wrapper">
-  <form (ngSubmit)="onSubmit()" #<%=name.camel %>Form="ngForm">
+  <form (ngSubmit)="onSubmit()" #<%=entity.name.camel %>Form="ngForm">
     <input type="hidden" name="id" [value]="model.id" />
     <div class="form-group">
       <label for="title">Title:</label>
@@ -14,7 +14,7 @@
         <span>Title is required</span>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="!<%=name.camel %>Form.form.valid">Submit</button>
+    <button type="submit" class="btn btn-primary" [disabled]="!<%=entity.name.camel %>Form.form.valid">Submit</button>
     <!--<button type="reset" class="btn btn-default">Reset</button>-->
   </form>
 </div>

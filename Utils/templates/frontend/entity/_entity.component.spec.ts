@@ -7,15 +7,15 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { <%= name.capital %>Component } from './entity.component';
+import { <%= entity.name.capital %>Component } from './<%= entity.name.kebab %>.component';
 
-describe('<%= name.capital %>Component', () => {
+describe('<%= entity.name.capital %>Component', () => {
     let fixture, comp;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [
-                <%= name.capital %>Component
+                <%= entity.name.capital %>Component
             ],
             imports: [
                 RouterTestingModule,
@@ -27,7 +27,7 @@ describe('<%= name.capital %>Component', () => {
 
     beforeEach(async(() => {
         TestBed.compileComponents().then(() => {
-            fixture = TestBed.createComponent(<%= name.capital %>Component);
+            fixture = TestBed.createComponent(<%= entity.name.capital %>Component);
             comp = fixture.componentInstance;
             fixture.detectChanges();
         });

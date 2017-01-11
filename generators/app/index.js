@@ -109,21 +109,21 @@ module.exports = class extends Generator {
    * Where conflicts are handled (used internally)
    */
   conflicts() {
-    this.log('[conflicts] done.');
+    // this.log('[conflicts] done.');
   }
 
   /**
    * Where installation are run (npm, bower)
    */
   install() {
-    // let skipInstall = this.options['skip-install'];
+    let skipInstall = this.options['skip-install'];
 
-    // this.installDependencies({
-    //   skipInstall: skipInstall,
-    //   npm: true,
-    //   bower: false,
-    //   yarn: false
-    // });
+    this.installDependencies({
+      skipInstall: skipInstall,
+      npm: true,
+      bower: false,
+      yarn: false
+    });
 
     this.log('[install] done.');
   }

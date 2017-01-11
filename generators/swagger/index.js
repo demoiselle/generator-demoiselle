@@ -1,109 +1,174 @@
 'use strict';
-var yeoman = require('yeoman-generator');
-var jsonQ = require("jsonq");
-var htmlWiring = require('html-wiring');
-var cheerio = require('cheerio');
+const DemoiselleGenerator = require('../../Utils/generators/demoiselle');
+const htmlWiring = require('html-wiring');
+const jsonQ = require('jsonq');
+// const cheerio = require('cheerio');
+const _ = require('lodash');
 
-module.exports = yeoman.Base.extend({
-    config: function () {
-        this.swagger = htmlWiring.readFileAsString('swagger.json');
-        var family = jsonQ(this.swagger);
-        var definitions = family.find('definitions').value();
-        var paths = family.find('paths').value();
+module.exports = class SwaggerGenerator extends DemoiselleGenerator {
 
-        var lote = {};
-        lote.basePath = family.find('basePath').value();
-        lote.entidades = [];
-        lote.servicos = [];
+  constructor(args, opts) {
+    super(args, opts);
 
-        jsonQ.each(definitions[0], function (key, value) {
-            var entidade = {};
-            entidade.propriedades = [];
-            entidade.nome = key;
+    // Objeto que armazena as informações passadas ao copyTpl(,,this._template)
+    this._template = {};
 
-            var properties = family.find('definitions').find(key).find('properties').value();
-
-            jsonQ.each(properties[0], function (key2, value2) {
-                entidade.propriedades.push(key2);
-            });
-
-            lote.entidades.push(entidade);
-        });
-
-        var servico = {};
-        servico.nome = "";
-        jsonQ.each(paths[0], function (key, value) {
-
-            servico.nome = key.caminho.split("/")[1].charAt(0).toUpperCase() + key.caminho.split("/")[1].slice(1);
-            servico.comandos = [];
-            servico.caminho = key;
-
-
-            var services = family.find('paths').find(key).value();
-
-            jsonQ.each(services[0], function (key2, value2) {
-                servico.comandos.push(key2);
-            });
-
-
-        });
-        lote.servicos.push(servico);
-
-        var html = cheerio.load(htmlWiring.readFileAsString('frontend/app/index.html'), {xmlMode: false});
-
-        lote.entidades.forEach(function (item) {
-            console.log('Entidade: ' + item.nome + ' : ' + item.propriedades);
-            this.fs.copyTpl(
-                    this.templatePath('frontend/app/scripts/routes/_route.js'),
-                    this.destinationPath('frontend/app/scripts/routes/' + item.nome.toLowerCase() + '.js'), {
-                name: item.nome
-            });
-            console.log('--- Route: ok');
-
-            this.fs.copyTpl(
-                    this.templatePath('frontend/app/scripts/controllers/_controller.js'),
-                    this.destinationPath('frontend/app/scripts/controllers/' + item.nome.toLowerCase() + '.js'), {
-                name: item.nome
-            }
-            );
-            console.log('--- Controller: ok');
-
-            this.fs.copyTpl(
-                    this.templatePath('frontend/app/scripts/services/_service.js'),
-                    this.destinationPath('frontend/app/scripts/services/' + item.nome.toLowerCase() + '.js'), {
-                entityName: item.nome
-            }
-            );
-            console.log('--- Service: ok*(ainda somente apps Demoiselle)');
-
-            this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-edit.html'),
-                    this.destinationPath('frontend/app/views/' + item.nome.toLowerCase() + '/edit.html'), {
-                props: item
-            });
-            console.log('--- View-edit: ok');
-
-            this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-list.html'),
-                    this.destinationPath('frontend/app/views/' + item.nome.toLowerCase() + '/list.html'), {
-                props: item
-            });
-            console.log('--- View-list: ok');
-
-            html('<li><a href="#' + item.nome.toLowerCase() + '"><i class="glyphicon glyphicon-stats"></i>' + item.nome + '</a></li>').appendTo('#menu');
-
-
-        }.bind(this));
-
-        this.fs.write('frontend/app/index.html', html.html());
-
-//        lote.servicos.forEach(function (item) {
-//            this.fs.copyTpl(
-//                    this.templatePath('frontend/app/scripts/services/_service.js'),
-//                    this.destinationPath('frontend/app/scripts/services/' + item.caminho.split("/")[1].toLowerCase() + '.js'), {
-//                props: item
-//            }
-//            );
-//            console.log('Services: ' + item.caminho.split("/")[1].charAt(0).toUpperCase() + item.caminho.split("/")[1].slice(1));
-//        }.bind(this));
-
+    // Arguments - passados direto pela cli (ex.: yo demoiselle:swagger custom-swagger.json)
+    this.argument('swaggerPath', {
+      desc: 'Caminho para o arquivo swagger',
+      type: String,
+      required: false
+    });
+    if (!this.swaggerPath) {
+      this.swaggerPath = './swagger.json';
     }
-});
+
+    // Options - parecido com "argument", mas vão como "flags" (--option)
+    this.option('skip-install');
+  }
+
+  /**
+   * Your initialization methods (checking current project state, getting configs, etc)
+   */
+  initializing() {
+    this.log('[initializing] done.');
+
+    // Read swagger spec file
+    if (this.fs.exists(this.swaggerPath)) {
+      this.swagger = htmlWiring.readFileAsString(this.swaggerPath);
+      this.swaggerQ = jsonQ(this.swagger);
+      this._readApiMetas();
+      this._readEntities();
+      // this._readEntpoints();
+    } else {
+      throw new Error('Nenhum "swagger file" especificado (ex.: ./swagger.json).');
+    }
+  }
+
+  /**
+   * Where you prompt users for options (where you'd call this.prompt())
+   * Examples: name of app? which frameworks? which template engine?
+   */
+  prompting() {
+    this.log('[prompting] (not yet)');
+    let prompts = [];
+
+    if (this._entities && this._entities.length > 0) {
+      let options = [];
+      this._entities.forEach(entity => {
+        options.push({
+          name: entity.name.capital,
+          checked: true
+        });
+      });
+
+      prompts.push({
+        type: 'checkbox',
+        name: 'entities',
+        message: 'Quais entidades você quer gerar?',
+        choices: options
+      });
+    }
+
+    return this.prompt(prompts).then(function (answers) {
+      this.answers = answers;
+
+      // Keep only checked entities
+      this._entities = _.intersectionWith(this._entities, answers.entities, (entity, answer) => {
+        return entity.name.capital === answer;
+      });
+    }.bind(this));
+  }
+
+  /**
+  * Where you write the generator specific files (routes, controllers, etc)
+  */
+  writing() {
+    // let lote = {};
+    // lote.basePath = this.swaggerQ.find('basePath').value();
+    // lote.entidades = [];
+    // lote.servicos = [];
+
+    this._generateEntitiesFromDefinitions();
+  }
+
+  /**
+   * Where conflicts are handled (used internally)
+   */
+  conflicts() {
+    this.log('[conflicts] done.');
+  }
+
+  /**
+   * Where installation are run (npm, bower, mvn)
+   */
+  install() {
+    this.log('[install] done.');
+  }
+
+  /**
+   * Called last, cleanup, say good bye, etc
+   */
+  end() {
+    this.log('[end] done.');
+  }
+
+  // ---------------
+  // Private methods
+  // ---------------
+
+  _readApiMetas() {
+    let info = this.swaggerQ.find('info').value()[0];
+    let bashPath = this.swaggerQ.find('basePath').value()[0];
+    let title = info.title;
+    console.log('Gerando arquivos para o projeto:', title);
+    console.log('API:', bashPath);
+  }
+
+  _readEntities() {
+    this._entities = this._entities || [];
+    let definitions = this.swaggerQ.find('definitions').value()[0];
+    jsonQ.each(definitions, (key, value) => {
+      let entity = {
+        name: super._buildTemplateName(key),
+        properties: [],
+        _entity: value
+      };
+
+      jsonQ.each(value.properties, (key, value) => {
+        let prop = {
+          name: super._buildTemplateName(key),
+          type: super._parseType(value.type),
+          description: value.description,
+          isEnum: Array.isArray(value.enum)
+        };
+        console.log('%s.%s:', entity.name.capital, prop.name.camel, prop.type);
+        entity.properties.push(prop);
+      });
+      // if (value.properties) {
+      //   // console.log('value.properties:', value.properties);
+      //   for (let prop of value.properties) {
+      //     if (value.properties.hasOwnPropertie(prop)) {
+      //       console.log('prop:', prop);
+      //     }
+      //   }
+      // }
+
+      this._entities.push(entity);
+    });
+  }
+
+  /**
+   * Para cada entidade encontrada, gerar o model equivalente.
+   */
+  _generateEntitiesFromDefinitions() {
+    this._entities.forEach(entity => {
+      super._generateFrontendEntity(entity);
+      super._generateFrontendEntityShared(entity);
+      super._generateFrontendEntityDetails(entity);
+      super._generateFrontendEntityList(entity);
+      super._generateFrontendEntityForm(entity);
+    });
+  }
+};
+
