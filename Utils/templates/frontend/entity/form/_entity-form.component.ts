@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 
-import { <%= entity.name.capital %> } from '../shared/<%= entity.name.kebab %>.model';
-import { <%= entity.name.capital %>Service } from '../shared/<%= entity.name.kebab %>.service';
+import { <%= name.capital %> } from '../shared/<%= name.kebab %>.model';
+import { <%= name.capital %>Service } from '../shared/<%= name.kebab %>.service';
 
 @Component({
   moduleId: module.id,
-  selector: '<%= entity.name.kebab %>-form',
-  templateUrl: './<%= entity.name.kebab %>-form.component.html',
-  styleUrls: ['./<%= entity.name.kebab %>-form.component.scss'],
-  providers: [ <%= entity.name.capital %> ]
+  selector: '<%= name.kebab %>-form',
+  templateUrl: './<%= name.kebab %>-form.component.html',
+  styleUrls: ['./<%= name.kebab %>-form.component.scss'],
+  providers: [<%= name.capital %>]
 })
-export class <%= entity.name.capital %>FormComponent implements OnInit {
+export class <%= name.capital %>FormComponent implements OnInit {
 
-  // <%= entity.name.kebab %> Model
-  model: <%= entity.name.capital %>;
+  // <%= name.kebab %> Model
+  model: <%= name.capital %>;
 
-  constructor(private service: <%= entity.name.capital %>Service) { }
+  constructor(private service: <%= name.capital %>Service) { }
 
   ngOnInit() {
-    console.log('<%= entity.name.capital %>FormComponent initialized.');
+    console.log('<%= name.capital %>FormComponent initialized.');
   }
 
   onSubmit() {
@@ -29,10 +29,10 @@ export class <%= entity.name.capital %>FormComponent implements OnInit {
   }
 
   _create() {
-    // <%= entity.name.capital %>Service.create(this.model);
+    // <%= name.capital %>Service.create(this.model);
   }
 
   _update() {
-    // <%= entity.name.capital %>Service.update(this.model);
+    // <%= name.capital %>Service.update(this.model);
   }
 }

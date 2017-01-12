@@ -1,4 +1,4 @@
-<div class="<%= entity.name.kebab %>-list">
+<div class="<%= name.kebab %>--list">
   <div class="table-responsive">
     <!-- TODO: filter, sort, showArchivedItems -->
     <!-- TODO: deleteAll, archiveAll -->
@@ -7,28 +7,28 @@
         <tr>
           <th>
             <input type="checkbox" name="select-all" title="Select All" (change)="toggleAll()"/>
-          </th><% entity.properties.forEach(function(property) { %>
+          </th><% properties.forEach(function(property) { %>
           <th><%= property.name.capital %></th><% }) %>
           <th>Actions</th>
         </tr>
       </thead>
       <tfoot>
         <tr>
-          <td><!-- checkbox --></td><% entity.properties.forEach(function(property) { %>
+          <td><!-- checkbox --></td><% properties.forEach(function(property) { %>
           <td><%= property.name.capital %></td><% }) %>
           <td><!-- Actions --></td>
         </tr>
       </tfoot>
       <tbody>
-        <tr *ngFor="let row of list" id="<%= entity.name.kebab %>-{{ row.id }}">
+        <tr *ngFor="let row of list" id="<%= name.kebab %>-{{ row.id }}">
           <td>
             <input type="checkbox" name="select-{{ row.id }}" title="Select item {{ row.id }}" (change)="toggleRow(row)"/>
-          </td><% entity.properties.forEach(function(property) { %>
+          </td><% properties.forEach(function(property) { %>
           <td>{{ row.<%= property.name.camel %> }}</td><% }) %>
           <td>
-            <button (ngClick)="edit(row)" title="Edit <%= entity.name.capital %> {{ row.id }}">Edit</button>
-            <button (ngClick)="remove(row)" title="Remove <%= entity.name.capital %> {{ row.id }}">Remove</button>
-            <button (ngClick)="archive(row)" title="Archive <%= entity.name.capital %> {{ row.id }}">Archive</button>
+            <button (ngClick)="edit(row)" title="Edit <%= name.capital %> {{ row.id }}">Edit</button>
+            <button (ngClick)="remove(row)" title="Remove <%= name.capital %> {{ row.id }}">Remove</button>
+            <button (ngClick)="archive(row)" title="Archive <%= name.capital %> {{ row.id }}">Archive</button>
           </td>
         </tr>
       </tbody>

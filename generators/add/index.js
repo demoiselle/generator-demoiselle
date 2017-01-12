@@ -1,16 +1,14 @@
-'use strict';
-// const Generator = require('yeoman-generator');
-const DemoiselleGenerator = require('../../Utils/generators/demoiselle');
-// const cheerio = require('cheerio');
-// const htmlWiring = require('html-wiring');
+const Generator = require('yeoman-generator');
+const Util = require('../../Utils/util');
+const FrontendUtil = require('../../Utils/frontend');
 const _ = require('lodash');
 
 /**
- * yo demoiselle:add <entity-name>
+ * yo demoiselle:add entity-name
  *
  * Demoiselle generator for new entities.
  */
-module.exports = class extends DemoiselleGenerator {
+module.exports = class AddGenerator extends Generator {
 
   constructor(args, opts) {
     super(args, opts);

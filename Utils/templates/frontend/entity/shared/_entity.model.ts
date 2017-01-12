@@ -1,11 +1,11 @@
 /**
- * <%= entity.name.capital %> Model
+ * <%= name.capital %> Model
  */
-export class <%= entity.name.capital %> {
-  <% entity.properties.forEach(function(property) { %><%= property.name.camel %>: <%= property.type %>;
+export class <%= name.capital %> {
+  <% properties.forEach(function(property) { %><%= property.name.camel %>: <%= property.type %>;
   <% }) %>
   constructor(
-    <% entity.properties.forEach(function(property, index, props) { %><%= property.name.camel %>?: <%= property.type %><% if (index < entity.properties.length-1) { %>,<% } %>
+    <% properties.forEach(function(property, index, props) { %><%= property.name.camel %>?: <%= property.type %><% if (index < properties.length-1) { %>,<% } %>
     <% }) %>
   ) { }
 }

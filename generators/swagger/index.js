@@ -1,14 +1,17 @@
-'use strict';
-const DemoiselleGenerator = require('../../Utils/generators/demoiselle');
+const Generator = require('yeoman-generator');
+const Util = require('../../Utils/util');
+const FrontendUtil = require('../../Utils/frontend');
 const htmlWiring = require('html-wiring');
 const jsonQ = require('jsonq');
-// const cheerio = require('cheerio');
 const _ = require('lodash');
+// const cheerio = require('cheerio');
 
-module.exports = class SwaggerGenerator extends DemoiselleGenerator {
+module.exports = class SwaggerGenerator extends Generator {
 
   constructor(args, opts) {
     super(args, opts);
+
+    this.frontendUtil = new FrontendUtil(this);
 
     // Objeto que armazena as informações passadas ao copyTpl(,,this._template)
     this._template = {};
@@ -127,32 +130,25 @@ module.exports = class SwaggerGenerator extends DemoiselleGenerator {
 
   _readEntities() {
     this._entities = this._entities || [];
+
     let definitions = this.swaggerQ.find('definitions').value()[0];
     jsonQ.each(definitions, (key, value) => {
       let entity = {
-        name: super._buildTemplateName(key),
+        name: Util.createNames(key),
         properties: [],
         _entity: value
       };
 
       jsonQ.each(value.properties, (key, value) => {
-        let prop = {
-          name: super._buildTemplateName(key),
-          type: super._parseType(value.type),
+        let property = {
+          name: Util.createNames(key),
+          type: Util.parseType(value.type),
           description: value.description,
           isEnum: Array.isArray(value.enum)
         };
-        console.log('%s.%s:', entity.name.capital, prop.name.camel, prop.type);
-        entity.properties.push(prop);
+        console.log('%s.%s:', entity.name.capital, property.name.camel, property.type);
+        entity.properties.push(property);
       });
-      // if (value.properties) {
-      //   // console.log('value.properties:', value.properties);
-      //   for (let prop of value.properties) {
-      //     if (value.properties.hasOwnPropertie(prop)) {
-      //       console.log('prop:', prop);
-      //     }
-      //   }
-      // }
 
       this._entities.push(entity);
     });
@@ -163,11 +159,7 @@ module.exports = class SwaggerGenerator extends DemoiselleGenerator {
    */
   _generateEntitiesFromDefinitions() {
     this._entities.forEach(entity => {
-      super._generateFrontendEntity(entity);
-      super._generateFrontendEntityShared(entity);
-      super._generateFrontendEntityDetails(entity);
-      super._generateFrontendEntityList(entity);
-      super._generateFrontendEntityForm(entity);
+      this.frontendUtil.createEntity(entity).bind(this);
     });
   }
 };

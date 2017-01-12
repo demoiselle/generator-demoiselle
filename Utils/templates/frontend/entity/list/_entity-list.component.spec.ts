@@ -2,30 +2,29 @@
  * Testing a simple Angular 2 component
  * More info: https://angular.io/docs/ts/latest/guide/testing.html#!#simple-component-test
  */
-
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { <%= entity.name.capital %>ListComponent } from './<%= entity.name.kebab %>-list.component';
+import { <%= name.capital %>ListComponent } from './<%= name.kebab %>-list.component';
 
-describe('<%= entity.name.capital %>ListComponent', () => {
+describe('<%= name.capital %>ListComponent', () => {
     let fixture, comp, el;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [
-                <%= entity.name.capital %>ListComponent
+                <%= name.capital %>ListComponent
             ],
             providers: [],
-            schemas: [ NO_ERRORS_SCHEMA ]
+            schemas: [NO_ERRORS_SCHEMA]
         });
     });
 
     beforeEach(async(() => {
         TestBed.compileComponents().then(() => {
-            fixture = TestBed.createComponent(<%= entity.name.capital %>ListComponent);
+            fixture = TestBed.createComponent(<%= name.capital %>ListComponent);
             comp = fixture.componentInstance;
 
             // el = fixture.debugElement.query(By.css('h1'));

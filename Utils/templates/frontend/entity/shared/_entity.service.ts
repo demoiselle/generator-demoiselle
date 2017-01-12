@@ -2,22 +2,22 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
-import { <%= entity.name.capital %> } from './<%= entity.name.kebab %>.model';
+import { <%= name.capital %> } from './<%= name.kebab %>.model';
 
 /**
- * <%= entity.name.capital %> Data Service
+ * <%= name.capital %> Data Service
  *
  * Requests:
- * - GET     ~/api/<%= entity.name.kebab %>
- * - GET     ~/api/<%= entity.name.kebab %>/:id
- * - POST    ~/api/<%= entity.name.kebab %>
- * - PUT     ~/api/<%= entity.name.kebab %>/:id
- * - DELETE  ~/api/<%= entity.name.kebab %>/:id
+ * - GET     ~/api/<%= name.kebab %>
+ * - GET     ~/api/<%= name.kebab %>/:id
+ * - POST    ~/api/<%= name.kebab %>
+ * - PUT     ~/api/<%= name.kebab %>/:id
+ * - DELETE  ~/api/<%= name.kebab %>/:id
  */
 @Injectable()
-export class <%= entity.name.capital %>Service {
+export class <%= name.capital %>Service {
 
-  private endpoint: string = 'api/<%= entity.name.kebab %>';
+  private endpoint: string = 'api/<%= name.kebab %>';
 
   constructor(private http: Http) {
   }
@@ -25,24 +25,24 @@ export class <%= entity.name.capital %>Service {
   list() {
     // TODO: paginação, ordenação, etc.
     return this.http.get(this.endpoint)
-      .map((response: Response) => <<%= entity.name.capital %>[]>response.json().data);
+      .map((response: Response) => <<%= name.capital %>[]>response.json().data);
   }
 
   get(id: number) {
     let resource = this.endpoint + '/' + id;
     return this.http.get(resource)
-      .map((response: Response) => <<%= entity.name.capital %>>response.json().data);
+      .map((response: Response) => <<%= name.capital %>>response.json().data);
   }
 
-  create(<%= entity.name.camel %>: <%= entity.name.capital %>) {
-    return this.http.post(this.endpoint, <%= entity.name.capital %>);
+  create(<%= name.camel %>: <%= name.capital %>) {
+    return this.http.post(this.endpoint, <%= name.capital %>);
   }
 
-  update(<%= entity.name.camel %>: <%= entity.name.capital %>) {
-    return this.http.put(this.endpoint, <%= entity.name.camel %>);
+  update(<%= name.camel %>: <%= name.capital %>) {
+    return this.http.put(this.endpoint, <%= name.camel %>);
   }
 
-  delete(<%= entity.name.camel %>: <%= entity.name.capital %>) {
-    return this.http.delete(this.endpoint + '/' + <%= entity.name.camel %>.id);
+  delete(<%= name.camel %>: <%= name.capital %>) {
+    return this.http.delete(this.endpoint + '/' + <%= name.camel %>.id);
   }
 }

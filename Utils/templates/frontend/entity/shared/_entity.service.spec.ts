@@ -2,18 +2,17 @@
  * Testing a Service
  * More info: https://angular.io/docs/ts/latest/guide/testing.html
  */
-
 import { TestBed, async, inject } from '@angular/core/testing';
-import { <%= entity.name.capital %>Service } from './<%= entity.name.kebab %>.service';
+import { <%= name.capital %>Service } from './<%= name.kebab %>.service';
 
-describe('<%= entity.name.capital %>Service', () => {
+describe('<%= name.capital %>Service', () => {
     let service;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            declarations: [<%= entity.name.capital %>Service],
+            declarations: [<%= name.capital %>Service],
             providers: [
-                <%= entity.name.capital %>Service
+                <%= name.capital %>Service
                 // for additional providers, write as examples below
                 // ServiceName,
                 // { provider: ServiceName, useValue: fakeServiceName },
@@ -27,7 +26,7 @@ describe('<%= entity.name.capital %>Service', () => {
     // it('...', async(inject([...], (...) => {}));
 
     it('should enter the assertion',
-        inject([<%= entity.name.capital %>Service], (s: <%= entity.name.capital %>Service) => {
+        inject([<%= name.capital %>Service], (s: <%= name.capital %>Service) => {
             expect(true).toBe(false);
         })
     );

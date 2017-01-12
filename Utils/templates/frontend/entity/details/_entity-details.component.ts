@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 
-import { <%= entity.name.capital %> } from '../shared/<%= entity.name.kebab %>.model';
-import { <%= entity.name.capital %>Service } from '../shared/<%= entity.name.kebab %>.service';
+import { <%= name.capital %> } from '../shared/<%= name.kebab %>.model';
+import { <%= name.capital %>Service } from '../shared/<%= name.kebab %>.service';
 
 @Component({
   moduleId: module.id,
-  selector: '<%= entity.name.kebab %>-details',
-  templateUrl: './<%= entity.name.kebab %>-details.component.html',
-  styleUrls: ['./<%= entity.name.kebab %>-details.component.scss'],
-  providers: [ <%= entity.name.capital %> ]
+  selector: '<%= name.kebab %>-details',
+  templateUrl: './<%= name.kebab %>-details.component.html',
+  styleUrls: ['./<%= name.kebab %>-details.component.scss'],
+  providers: [ <%= name.capital %> ]
 })
-export class <%= entity.name.capital %>DetailsComponent implements OnInit {
+export class <%= name.capital %>DetailsComponent implements OnInit {
 
-  // <%= entity.name.capital %> Model
-  model: <%= entity.name.capital %>;
+  // <%= name.capital %> Model
+  model: <%= name.capital %>;
 
-  constructor(private service: <%= entity.name.capital %>Service) { }
+  constructor(private service: <%= name.capital %>Service) { }
 
   ngOnInit() {
-    console.log('<%= entity.name.capital %>DetailsComponent initialized.');
+    console.log('<%= name.capital %>DetailsComponent initialized.');
   }
 }
