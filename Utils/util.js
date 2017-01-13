@@ -7,7 +7,6 @@ module.exports = class Util {
 
     // Set sourceRoot to Utils/templates
     let oldPath = this.vm.sourceRoot();
-    console.log('oldPath', oldPath);
     this.vm.sourceRoot(oldPath + '/../../../Utils/templates');
   }
 

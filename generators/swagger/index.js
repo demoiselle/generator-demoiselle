@@ -1,6 +1,7 @@
 const Generator = require('yeoman-generator');
 const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
+const SwaggerParser = new (require('swagger-parser'))();
 const htmlWiring = require('html-wiring');
 const jsonQ = require('jsonq');
 const _ = require('lodash');
@@ -46,14 +47,23 @@ module.exports = class SwaggerGenerator extends Generator {
     this.registerTransformStream(htmlFilter.restore);
 
     // Read swagger spec file
-    if (this.fs.exists(this.swaggerPath)) {
-      this.swagger = htmlWiring.readFileAsString(this.swaggerPath);
-      this.swaggerQ = jsonQ(this.swagger);
-      this._readApiMetas();
-      this._readEntities();
-      // this._readEntpoints();
+    let filePath = __dirname + this.options.swaggerPath;
+    if (this.fs.exists(filePath)) {
+      // this.swagger = htmlWiring.readFileAsString(filePath);
+      let promise = SwaggerParser.parse(filePath);
+
+      promise.then(function (api) {
+        this.swagger = api;
+        this.swaggerQ = jsonQ(this.swagger);
+        this._readApiMetas();
+        this._readEntities();
+        // this._readEntpoints();
+      }.bind(this))
+        .catch(function (err) {
+          console.log('[Swagger] Error:', err);
+        });
     } else {
-      throw new Error('Nenhum "swagger file" especificado (ex.: ./swagger.json).');
+      throw new Error('Nenhum "swagger file" encontrado:' + filePath);
     }
   }
 
