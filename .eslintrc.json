@@ -2,6 +2,7 @@
     "env": {
         "browser": true,
         "commonjs": true,
+        "mocha": true,
         "es6": true,
         "node": true
     },
