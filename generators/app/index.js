@@ -1,7 +1,7 @@
 'use strict';
 const Generator = require('yeoman-generator');
-const chalk = require('chalk');
-const yosay = require('yosay');
+// const chalk = require('chalk');
+// const yosay = require('yosay');
 // const htmlWiring = require('html-wiring');
 const _ = require('lodash');
 
@@ -40,10 +40,10 @@ module.exports = class extends Generator {
    * Your initialization methods (checking current project state, getting configs, etc)
    */
   initializing() {
-    this.log(yosay(
-      'Bem vindo ao ' + chalk.red('generator-demoiselle') + '. Crie sua app aqui!'
-    ));
-    this.log('[initializing] done.');
+    // this.log(yosay(
+    //   'Bem vindo ao ' + chalk.red('generator-demoiselle') + '. Crie sua app aqui!'
+    // ));
+    // this.log('[initializing] done.');
   }
 
   /**
