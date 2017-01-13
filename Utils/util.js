@@ -3,7 +3,12 @@ const _ = require('lodash');
 module.exports = class Util {
 
   constructor(vm) {
+    this.vm = vm;
 
+    // Set sourceRoot to Utils/templates
+    let oldPath = this.vm.sourceRoot();
+    console.log('oldPath', oldPath);
+    this.vm.sourceRoot(oldPath + '/../../../Utils/templates');
   }
 
   static createNames(name) {
@@ -45,18 +50,37 @@ module.exports = class Util {
     return template;
   }
 
-  static parseType(type) {
-    let resultType;
-    switch (type) {
-      case 'integer':
-        resultType = 'number';
-        break;
-      default:
-        resultType = 'string';
-        break;
-    }
-    return resultType;
-  }
+  // static getCommonType(type, format) {
+  //   // Examples of Data Types
+  //   // https://gist.github.com/arno-di-loreto/5a3df2250721fb154060#file-simple_openapi_specification_14_advanced_data_modeling-yaml
+  //   // ref.: http://apihandyman.io/writing-openapi-swagger-specification-tutorial-part-4-advanced-data-modeling/
+  //   let commonTypes = {
+  //     integer: {
+  //       int32: 'integer',
+  //       int64: 'long'
+  //     },
+  //     number: {
+  //       float: 'float',
+  //       double: 'double'
+  //     },
+  //     string: {
+  //       string: 'string',
+  //       byte: 'byte',
+  //       binary: 'binary'
+  //     },
+  //     boolean: 'boolean'
+  //   };
+
+  //   if (commonTypes[type] && commonTypes[type][format]) {
+  //     return commonTypes[type] && commonTypes[type][format];
+  //   }
+
+  //   // if (commonTypes[type]) {
+  //   //   return commonTypes[type];
+  //   // }
+
+  //   return type;
+  // }
 
   createFiles(paths, template) {
     paths.forEach(path => Util.copyTpl(path.src, path.dest, template));
@@ -64,8 +88,8 @@ module.exports = class Util {
 
   copyTpl(src, dest, template) {
     this.vm.fs.copyTpl(
-      this.templatePath(src),
-      this.destinationPath(dest),
+      this.vm.templatePath(src),
+      this.vm.destinationPath(dest),
       template
     );
   }

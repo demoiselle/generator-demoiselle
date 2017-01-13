@@ -4,6 +4,10 @@ const FrontendUtil = require('../../Utils/frontend');
 const htmlWiring = require('html-wiring');
 const jsonQ = require('jsonq');
 const _ = require('lodash');
+const filter = require('gulp-filter');
+const htmlFilter = filter(['**/*.html'], { restore: true });
+const htmlBeautify = require('gulp-prettify');
+const jsBeautify = require('gulp-beautify');
 // const cheerio = require('cheerio');
 
 module.exports = class SwaggerGenerator extends Generator {
@@ -35,6 +39,11 @@ module.exports = class SwaggerGenerator extends Generator {
    */
   initializing() {
     this.log('[initializing] done.');
+
+    // Configure beautify
+    this.registerTransformStream(htmlFilter);
+    this.registerTransformStream(htmlBeautify());
+    this.registerTransformStream(htmlFilter.restore);
 
     // Read swagger spec file
     if (this.fs.exists(this.swaggerPath)) {
@@ -87,12 +96,7 @@ module.exports = class SwaggerGenerator extends Generator {
   * Where you write the generator specific files (routes, controllers, etc)
   */
   writing() {
-    // let lote = {};
-    // lote.basePath = this.swaggerQ.find('basePath').value();
-    // lote.entidades = [];
-    // lote.servicos = [];
-
-    this._generateEntitiesFromDefinitions();
+    this._writeEntities(this._entities);
   }
 
   /**
@@ -142,11 +146,19 @@ module.exports = class SwaggerGenerator extends Generator {
       jsonQ.each(value.properties, (key, value) => {
         let property = {
           name: Util.createNames(key),
-          type: Util.parseType(value.type),
+          type: value.type,
+          format: value.format,
           description: value.description,
           isEnum: Array.isArray(value.enum)
+          // htmlType: Util.getCommonType(value.type, value.format),
         };
-        console.log('%s.%s:', entity.name.capital, property.name.camel, property.type);
+
+        // STRG      -> input text, text area,
+        // STR/DATE  -> o
+        // BOOL      ->
+        // ENUM      -> select/option
+        // console.log('%s.%s (%s,%s)', entity.name.capital, property.name.camel, property.type, property.format);
+
         entity.properties.push(property);
       });
 
@@ -157,9 +169,9 @@ module.exports = class SwaggerGenerator extends Generator {
   /**
    * Para cada entidade encontrada, gerar o model equivalente.
    */
-  _generateEntitiesFromDefinitions() {
-    this._entities.forEach(entity => {
-      this.frontendUtil.createEntity(entity).bind(this);
+  _writeEntities(entities) {
+    entities.forEach((entity) => {
+      this.frontendUtil.createEntity(entity);
     });
   }
 };

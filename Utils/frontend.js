@@ -1,15 +1,13 @@
 const Util = require('./util');
 const _ = require('lodash');
 
-/**
- * 
- */
 module.exports = class FrontendUtil {
 
-    constructor(vm){
+    constructor(vm) {
+        this.vm = vm;
         this.util = new Util(vm);
     }
-    
+
     createEntity(entity, config) {
         config = config || {};
         config.dest = config.dest || 'frontend/src/app/entity/';
@@ -87,6 +85,5 @@ module.exports = class FrontendUtil {
 
             this.util.copyTpl(from, to, template);
         });
-
     }
 };

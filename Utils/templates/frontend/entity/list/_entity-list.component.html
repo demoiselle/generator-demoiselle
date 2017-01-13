@@ -7,15 +7,21 @@
         <tr>
           <th>
             <input type="checkbox" name="select-all" title="Select All" (change)="toggleAll()"/>
-          </th><% properties.forEach(function(property) { %>
-          <th><%= property.name.capital %></th><% }) %>
+          </th>
+          <% properties.forEach(function(property) { %>
+          <th><%= property.name.capital %></th>
+          <% }) %>
           <th>Actions</th>
         </tr>
       </thead>
       <tfoot>
         <tr>
-          <td><!-- checkbox --></td><% properties.forEach(function(property) { %>
-          <td><%= property.name.capital %></td><% }) %>
+          <td><!-- checkbox --></td>
+          
+          <% properties.forEach(function(property) { %>
+          <td><%= property.name.capital %></td>
+          <% }) %>
+          
           <td><!-- Actions --></td>
         </tr>
       </tfoot>
