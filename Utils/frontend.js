@@ -13,7 +13,7 @@ module.exports = class FrontendUtil {
     config = config || {};
     config.dest = config.dest || 'frontend/src/app/entity/';
     const fromPath = 'frontend/entity/';
-    const template = Util.buildEntityTemplate(entity);
+    const template = entity;
     const files = [
       // ENTITY
       '_entity.module.ts',
@@ -83,6 +83,22 @@ module.exports = class FrontendUtil {
     files.map((file) => {
       let from = fromPath + file;
       let to = config.dest + template.name.kebab + '/' + _.replace(file, /_page/g, template.name.kebab);
+
+      this.util.copyTpl(from, to, template);
+    });
+  }
+
+  createService(endpoint, config) {
+    config = config || {};
+    config.dest = config.dest || 'frontend/src/app/provider/';
+    const fromPath = 'frontend/provider/';
+    const template = endpoint;
+    const files = [
+      '_provider.service.ts'
+    ];
+    files.map((file) => {
+      let from = path.join(fromPath, file);
+      let to = path.join(config.dest, template.name.kebab, _.replace(file, /_provider/g, template.name.kebab));
 
       this.util.copyTpl(from, to, template);
     });

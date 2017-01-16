@@ -9,7 +9,9 @@ const _ = require('lodash');
 const filter = require('gulp-filter');
 const htmlFilter = filter(['**/*.html'], { restore: true });
 const htmlBeautify = require('gulp-prettify');
-const jsBeautify = require('gulp-beautify');
+const tsFilter = filter(['**/*.ts'], { restore: true });
+const tsBeautify = require('gulp-typescript-formatter');
+// const tsBeautify = require('pretty-typescript');
 // const cheerio = require('cheerio');
 
 /**
@@ -53,10 +55,19 @@ module.exports = class SwaggerGenerator extends Generator {
     this.log('[initializing] done.');
 
     // Configure beautify
-    if(!this.options['skip-transform']){
+    if (!this.options['skip-transform']) {
+      // HTML
       this.registerTransformStream(htmlFilter);
       this.registerTransformStream(htmlBeautify());
       this.registerTransformStream(htmlFilter.restore);
+      // TS
+      this.registerTransformStream(tsFilter);
+      this.registerTransformStream(tsBeautify({
+        tslint: false, // use tslint.json file?
+        tsfmt: false, // use tsfmt.json file? Overrides settings in tslint.json (at least indentSize)
+        editorconfig: false
+      }));
+      this.registerTransformStream(tsFilter.restore);
     }
 
     // Read swagger.json
@@ -101,6 +112,7 @@ module.exports = class SwaggerGenerator extends Generator {
   */
   writing() {
     this._writeEntities(this._entities);
+    this._writeEndpoints(this._endpoints);
   }
 
   /**
@@ -140,7 +152,7 @@ module.exports = class SwaggerGenerator extends Generator {
         generator.swaggerQ = jsonQ(generator.swagger);
         generator._readApiMetas();
         generator._readEntities();
-        // generator._readEntpoints();
+        generator._readEndpoints();
         done();
       }).catch(function (err) {
         console.log('[Swagger] Error:', err);
@@ -202,6 +214,38 @@ module.exports = class SwaggerGenerator extends Generator {
     entities.forEach((entity) => {
       this.frontendUtil.createEntity(entity);
     });
+  }
+
+  _readEndpoints() {
+    let generator = this;
+    generator._endpoints = generator._endpoints || [];
+
+    let paths = generator.swaggerQ.find('paths').value()[0];
+    jsonQ.each(paths, (key, value) => {
+      let endpoint = {
+        name: Util.createNames(key),
+        methods: [],
+        _endpoint: value
+      };
+
+      let swaggerEndpoint = jsonQ(value).value()[0];
+      jsonQ.each(swaggerEndpoint, (key, value) => {
+        let method = {
+          name: Util.createNames(key),
+          value: value
+        };
+        endpoint.methods.push(method);
+      });
+
+      generator._endpoints.push(endpoint);
+    });
+  }
+
+  _writeEndpoints(endpoints) {
+    endpoints.forEach((endpoint) => {
+      this.frontendUtil.createService(endpoint);
+    });
+
   }
 };
 

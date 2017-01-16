@@ -1,13 +1,15 @@
 <div class="<%= name.kebab %>--form">
   <form (ngSubmit)="onSubmit()" #<%= name.camel %>Form="ngForm">
     <input type="hidden" name="id" [value]="model.id" />
+    <% properties.forEach(function(property) { %>
     <div class="form-group">
-      <label for="title">Title:</label>
-      <input type="text" id="title" name="title" class="form-control" placeholder="Title" required [(ngModel)]="model.title" #title="ngModel"/>
-      <div [hidden]="title.valid || title.pristine" class="alert alert-danger">
-        <span>Title is required</span>
+      <label for="<%= property.name.kebab %>"><%= property.name.capital %>:</label>
+      <input type="text" id="<%= property.name.kebab %>" name="<%= property.name.kebab %>" class="form-control" placeholder="<%= property.name.capital %>" required [(ngModel)]="model.<%= property.name.camel %>" #title="ngModel"/>
+      <div [hidden]="<%= property.name.camel %>.valid || <%= property.name.camel %>.pristine" class="alert alert-danger">
+        <span><%= property.name.capital %> is required</span>
       </div>
     </div>
+    <% }) %>
     <button type="submit" class="btn btn-primary" [disabled]="!<%= name.camel %>Form.form.valid">Submit</button>
     <!--<button type="reset" class="btn btn-default">Reset</button>-->
   </form>

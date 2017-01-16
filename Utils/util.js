@@ -32,16 +32,6 @@ module.exports = class Util {
     return entity;
   }
 
-  static buildEntityTemplate(entity) {
-    Util.parseEntity(entity);
-
-    let template = {
-      name: entity.name,
-      properties: entity.properties || []
-    };
-    return template;
-  }
-
   static buildComponentTemplate(component) {
     let template = {
       name: component.name

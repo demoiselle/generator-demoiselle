@@ -49,6 +49,10 @@ describe('yo demoiselle:swagger', () => {
     it('NÃO DEVE criar os arquivos da entidade "Activity"', () => {
       assert.noFile('frontend/src/app/entity/activity/activity.ts');
     });
+
+    // it('DEVE criar os providers (frontend) para consumir serviços', () => {
+    //   assert(false);
+    // });
   });
 
 
