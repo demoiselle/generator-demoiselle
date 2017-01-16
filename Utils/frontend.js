@@ -1,5 +1,6 @@
 const Util = require('./util');
 const _ = require('lodash');
+const path = require('path');
 
 module.exports = class FrontendUtil {
 
@@ -17,33 +18,33 @@ module.exports = class FrontendUtil {
       // ENTITY
       '_entity.module.ts',
       '_entity-routing.module.ts',
-      '_entity.component.ts',
-      '_entity.component.spec.ts',
-      '_entity.component.html',
-      '_entity.component.scss',
+      '_entity.ts',
+      '_entity.spec.ts',
+      '_entity.html',
+      '_entity.scss',
       // shared
       'shared/_entity.model.ts',
       'shared/_entity.service.ts',
       'shared/_entity.service.spec.ts',
       // details
-      'details/_entity-details.component.ts',
-      'details/_entity-details.component.spec.ts',
-      'details/_entity-details.component.html',
-      'details/_entity-details.component.scss',
+      'details/_entity-details.ts',
+      'details/_entity-details.spec.ts',
+      'details/_entity-details.html',
+      'details/_entity-details.scss',
       // form
-      'form/_entity-form.component.ts',
-      'form/_entity-form.component.spec.ts',
-      'form/_entity-form.component.html',
-      'form/_entity-form.component.scss',
+      'form/_entity-form.ts',
+      'form/_entity-form.spec.ts',
+      'form/_entity-form.html',
+      'form/_entity-form.scss',
       // list
-      'list/_entity-list.component.ts',
-      'list/_entity-list.component.spec.ts',
-      'list/_entity-list.component.html',
-      'list/_entity-list.component.scss'
+      'list/_entity-list.ts',
+      'list/_entity-list.spec.ts',
+      'list/_entity-list.html',
+      'list/_entity-list.scss'
     ];
     files.map((file) => {
-      let from = fromPath + file;
-      let to = config.dest + _.replace(file, /_entity/g, template.name.kebab);
+      let from = path.join(fromPath, file);
+      let to = path.join(config.dest, template.name.kebab, _.replace(file, /_entity/g, template.name.kebab));
 
       this.util.copyTpl(from, to, template);
     });
@@ -55,11 +56,11 @@ module.exports = class FrontendUtil {
     const fromPath = 'frontend/component/';
     const template = Util.buildComponentTemplate(component);
     const files = [
-      '_component.component.e2e.ts',
-      '_component.component.html',
-      '_component.component.scss',
-      '_component.component.spec.ts',
-      '_component.component.ts'
+      '_component.e2e.ts',
+      '_component.html',
+      '_component.scss',
+      '_component.spec.ts',
+      '_component.ts'
     ];
     files.map((file) => {
       let from = fromPath + file;
