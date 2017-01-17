@@ -29,7 +29,13 @@ gulp.task('static', () => {
 });
 
 gulp.task('nsp', (cb) => {
-  nsp({ package: path.resolve('package.json') }, cb);
+  if(process.env.TRAVIS_CI){
+    cb();
+  } else {
+    nsp({
+      package: path.resolve('package.json')
+    }, cb);
+  }
 });
 
 gulp.task('pre-test', () => {

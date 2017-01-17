@@ -5,3 +5,5 @@ node_js:
   - v5
   - v4
   - '0.12'
+env:
+- TRAVIS_CI=1
