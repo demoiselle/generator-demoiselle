@@ -10,8 +10,13 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/**
+ * <%= name.capital %> Entity
+ *
+ * @author demoiselle-generator
+ */
 @Entity
-public class <%=name%> implements Serializable {
+public class <%= name.capital %> implements Serializable {
 
     private static final long serialVersionUID = 7L;
 
@@ -26,7 +31,7 @@ public class <%=name%> implements Serializable {
 
     /**
      *
-     * @return
+     * @return id
      */
     public Long getId() {
         return id;
@@ -42,7 +47,7 @@ public class <%=name%> implements Serializable {
 
     /**
      *
-     * @return
+     * @return descricao
      */
     public String getDescricao() {
         return descricao;
@@ -58,7 +63,7 @@ public class <%=name%> implements Serializable {
 
     @Override
     public String toString() {
-        return "<%=name%>{" + "id=" + id + ", descricao=" + descricao + '}';
+        return "<%= name.capital %>{" + "id=" + id + ", descricao=" + descricao + '}';
     }
 
     @Override
@@ -79,7 +84,7 @@ public class <%=name%> implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final <%=name%> other = (<%=name%>) obj;
+        final <%= name.capital %> other = (<%= name.capital %>) obj;
         return Objects.equals(this.id, other.id);
     }
 }

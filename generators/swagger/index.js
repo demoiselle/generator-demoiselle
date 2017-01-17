@@ -3,7 +3,6 @@ const path = require('path');
 const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
 const SwaggerParser = new (require('swagger-parser'))();
-const htmlWiring = require('html-wiring');
 const jsonQ = require('jsonq');
 const _ = require('lodash');
 const filter = require('gulp-filter');
@@ -11,11 +10,13 @@ const htmlFilter = filter(['**/*.html'], { restore: true });
 const htmlBeautify = require('gulp-prettify');
 const tsFilter = filter(['**/*.ts'], { restore: true });
 const tsBeautify = require('gulp-typescript-formatter');
-// const tsBeautify = require('pretty-typescript');
+// const htmlWiring = require('html-wiring');
 // const cheerio = require('cheerio');
 
 /**
  * SwaggerGenerator é o gerador demoiselle que utiliza uma spec swagger como 'input'
+ *
+ * yo demoiselle:swagger swagger.json
  *
  * Estratégias:
  * 1) procura primeiro se um arquivo swagger.[json|yml] existe.
@@ -29,6 +30,7 @@ module.exports = class SwaggerGenerator extends Generator {
     super(args, opts);
 
     this.frontendUtil = new FrontendUtil(this);
+    Util.changeRootPath(this);
 
     // Objeto que armazena as informações passadas aos arquivos templates
     this._template = {};

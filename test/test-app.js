@@ -1,6 +1,6 @@
-const path = require('path');
-const assert = require('yeoman-assert');
-const helpers = require('yeoman-test');
+// const path = require('path');
+// const assert = require('yeoman-assert');
+// const helpers = require('yeoman-test');
 
 describe('yo demoiselle:app', () => {
   describe('quando gerar um projeto em branco (Blank)', () => {
