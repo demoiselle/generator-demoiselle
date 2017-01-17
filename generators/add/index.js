@@ -1,7 +1,6 @@
 const Generator = require('yeoman-generator');
-const Util = require('../../Utils/util');
-const FrontendUtil = require('../../Utils/frontend');
-const _ = require('lodash');
+// const BackendUtil = require('../../Utils/backend');
+// const _ = require('lodash');
 
 /**
  * yo demoiselle:add entity-name
