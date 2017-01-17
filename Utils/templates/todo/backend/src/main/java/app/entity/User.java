@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -30,8 +25,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 
 /**
+ * User Entity Model
  *
- * @author gladson
+ * @author Demoiselle Generator
  */
 @Entity
 @Table(name = "usuario")

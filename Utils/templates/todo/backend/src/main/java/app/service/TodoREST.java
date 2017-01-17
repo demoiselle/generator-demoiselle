@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package app.service;
 
 import app.entity.Todo;
@@ -17,8 +12,9 @@ import org.demoiselle.jee.security.annotation.Authenticated;
 import org.demoiselle.jee.security.annotation.RequiredRole;
 
 /**
+ * Todo REST
  *
- * @author gladson
+ * @author Demoiselle Generator
  */
 @Api("Todo")
 @Path("todo")

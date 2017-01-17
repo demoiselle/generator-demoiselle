@@ -1,9 +1,8 @@
-'use strict';
 const Generator = require('yeoman-generator');
-// const chalk = require('chalk');
-// const yosay = require('yosay');
-// const htmlWiring = require('html-wiring');
-const _ = require('lodash');
+const Util = require('../../Utils/util');
+// const _ = require('lodash');
+const chalk = require('chalk');
+const yosay = require('yosay');
 
 /**
  * yo demoiselle <project-name>
@@ -13,6 +12,9 @@ const _ = require('lodash');
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
+
+    // Muda o caminho dos arquivos de templates.
+    Util.changeRootPath(this);
 
     // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
     this.argument('project', {
@@ -28,22 +30,22 @@ module.exports = class extends Generator {
     });
 
     // Options - parecido com "argument", mas vão como "flags" (--option)
+    this.option('skip-message');
     this.option('skip-install');
-    // this.option('template', {
-    //   desc: '[Todo,Store] - Template a ser utilizado',
-    //   alias: 't',
-    //   type: String
-    // });
+    this.option('skip-frontend');
+    this.option('skip-backend');
   }
 
   /**
    * Your initialization methods (checking current project state, getting configs, etc)
    */
   initializing() {
-    // this.log(yosay(
-    //   'Bem vindo ao ' + chalk.red('generator-demoiselle') + '. Crie sua app aqui!'
-    // ));
     // this.log('[initializing] done.');
+    if (!this.options['skip-message']) {
+      this.log(yosay(
+        'Bem vindo ao ' + chalk.red('generator-demoiselle') + '. Começe seu projeto!'
+      ));
+    }
   }
 
   /**
@@ -71,28 +73,10 @@ module.exports = class extends Generator {
       });
     }
 
-    // if (!this.options.template) {
-    //   prompts.push({
-    //     type: 'list',
-    //     name: 'template',
-    //     message: 'Qual modelo você deseja gerar?',
-    //     choices: [{
-    //       name: 'Todo - Aplicação simples com usuário e uma entidade (TodoEntity)',
-    //       value: 'todo',
-    //       short: 'todo'
-    //     }, {
-    //       name: 'Store - Loja simples',
-    //       value: 'store',
-    //       short: 'store'
-    //     }]
-    //   });
-    // }
-
     return this.prompt(prompts).then(function (answers) {
       this.answers = answers;
       this.name = this.options.project || answers.project;
       this.prefix = this.options.prefix || answers.prefix;
-      // this.template = this.options.template || answers.template;
     }.bind(this));
   }
 
@@ -101,8 +85,13 @@ module.exports = class extends Generator {
    */
   writing() {
     // Generate Project
-    this._generateTodoProjectFrontend();
-    // this._generateTodoProjectBackend(name);
+    if(!this.options['skip-frontend']){
+      this._generateTodoProjectFrontend();
+    }
+
+    if(!this.options['skip-backend']){
+      this._generateTodoProjectBackend();
+    }
   }
 
   /**
@@ -132,34 +121,25 @@ module.exports = class extends Generator {
   // PRIVATE methods
   // ---------------
 
-  _buildTemplateName(name) {
-    return {
-      name: name,
-      kebab: _.kebabCase(name),
-      snake: _.snakeCase(name),
-      camel: _.camelCase(name),
-      capital: _.upperFirst(_.camelCase(name))
-    };
-  }
-
   _generateTodoProjectFrontend() {
     let template = {
-      name: this._buildTemplateName(this.name),
-      prefix: this._buildTemplateName(this.prefix)
+      name: Util.createNames(this.name),
+      prefix: Util.createNames(this.prefix)
     };
 
-    this.fs.copyTpl(this.templatePath('todo/frontend/'), this.destinationPath('frontend/'), template);
+    let from = this.templatePath('todo/frontend/');
+    let to = this.destinationPath('frontend/');
+    this.fs.copyTpl(from, to, template);
   }
 
-  _generateTodoProjectBackend(name) {
-    this.log('TODO: generate frontend project for', name);
+  _generateTodoProjectBackend() {
+    let template = {
+      name: Util.createNames(this.name)
+    };
 
-    let template = this._buildTemplateName(name);
-    // TODO: create --prefix option
-    if (!template.prefix) {
-      template.prefix = template.name;
-    }
-    this.fs.copyTpl(this.templatePath('todo/backend/'), this.destinationPath('backend/'), template);
+    let from = this.templatePath('todo/backend/');
+    let to = this.destinationPath('backend/');
+    this.fs.copyTpl(from, to, template);
   }
 };
 

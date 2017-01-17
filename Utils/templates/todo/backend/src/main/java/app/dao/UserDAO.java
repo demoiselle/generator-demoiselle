@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package app.dao;
 
 import app.entity.User;
@@ -29,8 +24,9 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
 /**
+ * User Persistence Controller
  *
- * @author gladson
+ * @author Demoiselle Generator
  */
 public class UserDAO extends AbstractDAO<User, String> {
 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package app.service;
 
 import app.dao.UserDAO;
@@ -22,8 +17,9 @@ import javax.ws.rs.core.Response;
 import org.demoiselle.jee.security.annotation.Authenticated;
 
 /**
+ * Auth REST
  *
- * @author 70744416353
+ * @author Demoiselle Generator
  */
 @Api("Auth")
 @Path("auth")
