@@ -50,13 +50,20 @@ describe('yo demoiselle:swagger', () => {
       assert.noFile('frontend/src/app/entity/activity/activity.ts');
     });
 
-    // it('DEVE criar os providers (frontend) para consumir serviços', () => {
-    //   assert(false);
-    // });
+    it('DEVE criar os providers (frontend) para consumir serviços', () => {
+      let providers = [
+        'frontend/src/app/provider/estimates-price/estimates-price.service.ts',
+        'frontend/src/app/provider/estimates-time/estimates-time.service.ts',
+        'frontend/src/app/provider/history/history.service.ts',
+        'frontend/src/app/provider/me/me.service.ts',
+        'frontend/src/app/provider/products/products.service.ts'
+      ];
+      assert.file(providers);
+      assert.noFile('frontend/src/app/provider/no-provider/no-provider.service.ts');
+    });
   });
 
-
-  // it('DEVE passar nos testes', () => {
+  // it('DEVE executar e passar nos testes unitários gerados', () => {
   // });
 
   // it('DEVE compilar para produção', () => {
