@@ -1,7 +1,7 @@
 const Generator = require('yeoman-generator');
 const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
-// const BackendUtil = require('../../Utils/backend');
+const BackendUtil = require('../../Utils/backend');
 // const _ = require('lodash');
 
 /**
@@ -19,6 +19,8 @@ module.exports = class AddGenerator extends Generator {
     super(args, opts);
 
     this.frontendUtil = new FrontendUtil(this);
+    this.backendUtil = new BackendUtil(this);
+    Util.changeRootPath(this);
 
     // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
     this.argument('template', { required: false });
@@ -139,13 +141,13 @@ module.exports = class AddGenerator extends Generator {
       }]
     };
 
-    // Generate Frontend CRUD
+    // Generate Entity CRUD
     if (!this.options['skip-frontend']) {
       this.frontendUtil.createEntity(entity);
     }
-    // if (!this.options['skip-backend']) {
-    //   this.backendUtil.createEntity(entity);
-    // }
+    if (!this.options['skip-backend']) {
+      this.backendUtil.createEntity(entity);
+    }
   }
 
   _writeComponent() {

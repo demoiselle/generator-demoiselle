@@ -5,7 +5,6 @@ const path = require('path');
 module.exports = class FrontendUtil {
 
   constructor(vm) {
-    this.vm = vm;
     this.util = new Util(vm);
   }
 
@@ -56,7 +55,7 @@ module.exports = class FrontendUtil {
     const fromPath = 'frontend/component/';
     const template = component;
     const files = [
-      '_component.e2e.ts',
+      '_component.e2e-spec.ts',
       '_component.html',
       '_component.scss',
       '_component.spec.ts',
@@ -76,7 +75,7 @@ module.exports = class FrontendUtil {
     const fromPath = 'frontend/page/';
     const template = page;
     const files = [
-      '_page.e2e.ts',
+      '_page.e2e-spec.ts',
       '_page.html',
       '_page.ts'
     ];

@@ -1,13 +1,16 @@
 const _ = require('lodash');
+const path = require('path');
 
 module.exports = class Util {
 
   constructor(vm) {
     this.vm = vm;
+  }
 
+  static changeRootPath(vm) {
     // Set sourceRoot to Utils/templates
-    let oldPath = this.vm.sourceRoot();
-    this.vm.sourceRoot(oldPath + '/../../../Utils/templates');
+    let oldPath = vm.sourceRoot();
+    vm.sourceRoot(path.join(oldPath, '/../../../Utils/templates'));
   }
 
   static createNames(name) {

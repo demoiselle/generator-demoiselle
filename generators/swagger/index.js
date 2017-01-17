@@ -30,6 +30,7 @@ module.exports = class SwaggerGenerator extends Generator {
     super(args, opts);
 
     this.frontendUtil = new FrontendUtil(this);
+    Util.changeRootPath(this);
 
     // Objeto que armazena as informações passadas aos arquivos templates
     this._template = {};
