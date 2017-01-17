@@ -1,0 +1,6 @@
+<div class="<%= name.kebab %>--details">
+  <dl class="dl-horizontal"><% properties.forEach(function(property) { %>
+    <dt><%= property.name.capital %></dt>
+    <dd>{{ model.<%= property.name.camel %> }}</dd><% }) %>
+  </dl>
+</div>

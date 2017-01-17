@@ -1,15 +1,14 @@
-'use strict';
 const Generator = require('yeoman-generator');
-const cheerio = require('cheerio');
-const htmlWiring = require('html-wiring');
+const Util = require('../../Utils/util');
+const FrontendUtil = require('../../Utils/frontend');
 const _ = require('lodash');
 
 /**
- * yo demoiselle:add <entity-name>
+ * yo demoiselle:add entity-name
  *
  * Demoiselle generator for new entities.
  */
-module.exports = class extends Generator {
+module.exports = class AddGenerator extends Generator {
 
   constructor(args, opts) {
     super(args, opts);
@@ -62,11 +61,13 @@ module.exports = class extends Generator {
         choices: [{
           name: 'Backend - Demoiselle 3 Server JEE7 (REST)',
           value: 'backend',
-          short: 'backend'
+          short: 'backend',
+          checked: true
         }, {
           name: 'Frontend - Angular2',
           value: 'frontend',
-          short: 'frontend'
+          short: 'frontend',
+          checked: true
         }]
       });
     }
@@ -83,14 +84,17 @@ module.exports = class extends Generator {
    */
   writing() {
     // entityName
-    let name = this.name;
+    let entity = {
+      name: super._buildTemplateName(this.name),
+      properties: []
+    };
 
     // Generate Frontend CRUD?
-    this._generateFrontendEntity(name);
-    this._generateFrontendEntityShared(name);
-    this._generateFrontendEntityList(name);
-    this._generateFrontendEntityForm(name);
-    this._generateFrontendEntityDetails(name);
+    super._generateFrontendEntity(entity);
+    super._generateFrontendEntityShared(entity);
+    super._generateFrontendEntityList(entity);
+    super._generateFrontendEntityForm(entity);
+    super._generateFrontendEntityDetails(entity);
   }
 
   /**
@@ -118,115 +122,19 @@ module.exports = class extends Generator {
   // PRIVATE methods
   // ---------------
 
-  _buildTemplateName(name) {
-    return {
-      name: {
-        name: name,
-        kebab: _.kebabCase(name),
-        snake: _.snakeCase(name),
-        camel: _.camelCase(name),
-        capital: _.upperFirst(_.camelCase(name))
-      }
-    };
-  }
-
-  _generateBackend(name) {
-    let template = this._buildTemplateName(name);
-    let backendFileMap = {
-      'backend/src/main/java/app/business/_pojoBC.java': 'backend/src/main/java/app/business/' + template.name.capital + 'BC.java',
-      'backend/src/main/java/app/entity/_pojo.java': 'backend/src/main/java/app/entity/' + template.name.capital + '.java',
-      'backend/src/main/java/app/persistence/_pojoDAO.java': 'backend/src/main/java/app/persistence/' + template.name.capital + 'DAO.java',
-      'backend/src/main/java/app/service/_pojoREST.java': 'backend/src/main/java/app/service/' + template.name.capital + 'REST.java'
-    };
-    this._generateFiles(backendFileMap, template);
-    // include feature on persistence XML
-    let persistenceXML = cheerio.load(htmlWiring.readFileAsString('backend/src/main/resources/META-INF/persistence.xml'), {xmlMode: true});
-    persistenceXML('jta-data-source').after('<class>app.entity.' + template.name.capital + '</class>');
-    this.fs.write('backend/src/main/resources/META-INF/persistence.xml', persistenceXML.html());
-  }
-
-  _generateFrontendEntity(name) {
-    let template = this._buildTemplateName(name);
-    let path = 'frontend/src/app/' + template.name.kebab + '/';
-
-    let fileMap = {
-      'frontend/entity/_entity.module.ts': path + template.name.kebab + '.module.ts',
-      'frontend/entity/_entity-routing.module.ts': path + template.name.kebab + '-routing.module.ts',
-      'frontend/entity/_entity.component.ts': path + template.name.kebab + '.component.ts',
-      'frontend/entity/_entity.component.spec.ts': path + template.name.kebab + '.component.spec.ts',
-      'frontend/entity/_entity.component.html': path + template.name.kebab + '.component.html',
-      'frontend/entity/_entity.component.scss': path + template.name.kebab + '.component.scss'
-    };
-
-    this._generateFiles(fileMap, template);
-  }
-
-  _generateFrontendEntityShared(name) {
-    let template = this._buildTemplateName(name);
-    let path = 'frontend/src/app/' + template.name.kebab + '/shared/';
-
-    let fileMap = {
-      'frontend/entity/shared/_entity.model.ts': path + template.name.kebab + '.model.ts',
-      'frontend/entity/shared/_entity.service.ts': path + template.name.kebab + '.service.ts',
-      'frontend/entity/shared/_entity.service.spec.ts': path + template.name.kebab + '.service.spec.ts'
-    };
-
-    this._generateFiles(fileMap, template);
-  }
-
-  _generateFrontendEntityDetails(name) {
-    let template = this._buildTemplateName(name);
-    let path = 'frontend/src/app/' + template.name.kebab + '/details/';
-
-    let fileMap = {
-      'frontend/entity/details/_entity-details.component.ts': path + template.name.kebab + '-details.component.ts',
-      'frontend/entity/details/_entity-details.component.spec.ts': path + template.name.kebab + '-details.component.spec.ts',
-      'frontend/entity/details/_entity-details.component.html': path + template.name.kebab + '-details.component.html',
-      'frontend/entity/details/_entity-details.component.scss': path + template.name.kebab + '-details.component.scss'
-    };
-
-    this._generateFiles(fileMap, template);
-  }
-
-  _generateFrontendEntityForm(name) {
-    let template = this._buildTemplateName(name);
-    let path = 'frontend/src/app/' + template.name.kebab + '/form/';
-
-    let fileMap = {
-      'frontend/entity/form/_entity-form.component.ts': path + template.name.kebab + '-form.component.ts',
-      'frontend/entity/form/_entity-form.component.spec.ts': path + template.name.kebab + '-form.component.spec.ts',
-      'frontend/entity/form/_entity-form.component.html': path + template.name.kebab + '-form.component.html',
-      'frontend/entity/form/_entity-form.component.scss': path + template.name.kebab + '-form.component.scss'
-    };
-
-    this._generateFiles(fileMap, template);
-  }
-
-  _generateFrontendEntityList(name) {
-    let template = this._buildTemplateName(name);
-    let path = 'frontend/src/app/' + template.name.kebab + '/list/';
-
-    let fileMap = {
-      'frontend/entity/list/_entity-list.component.ts': path + template.name.kebab + '-list.component.ts',
-      'frontend/entity/list/_entity-list.component.spec.ts': path + template.name.kebab + '-list.component.spec.ts',
-      'frontend/entity/list/_entity-list.component.html': path + template.name.kebab + '-list.component.html',
-      'frontend/entity/list/_entity-list.component.scss': path + template.name.kebab + '-list.component.scss'
-    };
-
-    this._generateFiles(fileMap, template);
-  }
-
-  _generateFiles(fileMap, template) {
-    for (let key in fileMap) {
-      if (Object.prototype.hasOwnProperty.call(fileMap, key)) {
-        let dest = fileMap[key];
-        this.fs.copyTpl(
-          this.templatePath(key),
-          this.destinationPath(dest),
-          template
-        );
-      }
-    }
-  }
+  // _generateBackend(name) {
+  //   let template = super._buildTemplateName(name);
+  //   let backendFileMap = {
+  //     'backend/src/main/java/app/business/_pojoBC.java': 'backend/src/main/java/app/business/' + template.name.capital + 'BC.java',
+  //     'backend/src/main/java/app/entity/_pojo.java': 'backend/src/main/java/app/entity/' + template.name.capital + '.java',
+  //     'backend/src/main/java/app/persistence/_pojoDAO.java': 'backend/src/main/java/app/persistence/' + template.name.capital + 'DAO.java',
+  //     'backend/src/main/java/app/service/_pojoREST.java': 'backend/src/main/java/app/service/' + template.name.capital + 'REST.java'
+  //   };
+  //   this._generateFiles(backendFileMap, template);
+  //   // include feature on persistence XML
+  //   let persistenceXML = cheerio.load(htmlWiring.readFileAsString('backend/src/main/resources/META-INF/persistence.xml'), {xmlMode: true});
+  //   persistenceXML('jta-data-source').after('<class>app.entity.' + template.name.capital + '</class>');
+  //   this.fs.write('backend/src/main/resources/META-INF/persistence.xml', persistenceXML.html());
+  // }
 };
 
