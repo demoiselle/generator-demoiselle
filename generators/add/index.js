@@ -1,37 +1,39 @@
 const Generator = require('yeoman-generator');
+const Util = require('../../Utils/util');
+const FrontendUtil = require('../../Utils/frontend');
 // const BackendUtil = require('../../Utils/backend');
 // const _ = require('lodash');
 
 /**
  * yo demoiselle:add entity-name
  *
- * Demoiselle generator for new entities.
+ * Gerador para:
+ * - components
+ * - entities
+ * - pages
+ * - ? -> peça o seu via issue ou envie um PR.
  */
 module.exports = class AddGenerator extends Generator {
 
   constructor(args, opts) {
     super(args, opts);
 
+    this.frontendUtil = new FrontendUtil(this);
+
     // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
-    this.argument('entity', {
-      desc: 'Nome da entidade a ser criada. (ex.: Pessoa)',
-      type: String,
-      required: false
-    });
+    this.argument('template', { required: false });
+    this.argument('name', { required: false });
 
     // Options - parecido com "argument", mas vão como "flags" (--option)
-    this.option('output', {
-      desc: '[backend,frontend] - Camadas a serem geradas',
-      alias: 'o',
-      type: String
-    });
+    this.option('skip-frontend');
+    this.option('skip-backend');
   }
 
   /**
    * Your initialization methods (checking current project state, getting configs, etc)
    */
   initializing() {
-    this.log('[initializing] done.');
+    // this.log('[initializing] done.');
   }
 
   /**
@@ -41,40 +43,41 @@ module.exports = class AddGenerator extends Generator {
   prompting() {
     let prompts = [];
 
-    if (!this.options.entity) {
+    if (!this.options.template) {
       prompts.push({
-        type: 'input',
-        name: 'entity',
-        message: 'Dê um nome para a nova entidade:',
-        default: 'Todo'
+        type: 'list',
+        name: 'template',
+        message: 'Qual template você quer gerar?',
+        default: 'entity',
+        choices: [{
+          name: 'Entidade (CRUD)',
+          value: 'entity'
+        }, {
+          name: 'Componente',
+          value: 'component'
+        }, {
+          name: 'Página',
+          value: 'page'
+        }/*, {
+          name: 'Serviço',
+          value: 'service'
+        }*/]
       });
     }
 
-    if (this.options.output) {
-      this.options.output = this.options.output.split(',');
-    } else {
+    if (!this.options.name) {
       prompts.push({
-        type: 'checkbox',
-        name: 'output',
-        message: 'Quais camadas você quer gerar?',
-        choices: [{
-          name: 'Backend - Demoiselle 3 Server JEE7 (REST)',
-          value: 'backend',
-          short: 'backend',
-          checked: true
-        }, {
-          name: 'Frontend - Angular2',
-          value: 'frontend',
-          short: 'frontend',
-          checked: true
-        }]
+        type: 'input',
+        name: 'name',
+        message: 'Dê um nome para o novo template:',
+        default: 'MyExample'
       });
     }
 
     return this.prompt(prompts).then(function (answers) {
       this.answers = answers;
-      this.name = this.options.entity || answers.entity;
-      this.output = this.options.output || answers.output;
+      this.options.template = this.options.template || answers.template;
+      this.options.name = this.options.name || answers.name;
     }.bind(this));
   }
 
@@ -82,18 +85,18 @@ module.exports = class AddGenerator extends Generator {
    * Where you write the generator specific files (routes, controllers, etc)
    */
   writing() {
-    // entityName
-    let entity = {
-      name: super._buildTemplateName(this.name),
-      properties: []
+    let fn = {
+      entity: this._writeEntity,
+      component: this._writeComponent,
+      page: this._writePage,
     };
 
-    // Generate Frontend CRUD?
-    super._generateFrontendEntity(entity);
-    super._generateFrontendEntityShared(entity);
-    super._generateFrontendEntityList(entity);
-    super._generateFrontendEntityForm(entity);
-    super._generateFrontendEntityDetails(entity);
+    let template = this.options.template;
+    if (template in fn) {
+      fn[template].bind(this)();
+    } else {
+      this.log('Template não implementado:' + this.options.template);
+    }
   }
 
   /**
@@ -121,19 +124,48 @@ module.exports = class AddGenerator extends Generator {
   // PRIVATE methods
   // ---------------
 
-  // _generateBackend(name) {
-  //   let template = super._buildTemplateName(name);
-  //   let backendFileMap = {
-  //     'backend/src/main/java/app/business/_pojoBC.java': 'backend/src/main/java/app/business/' + template.name.capital + 'BC.java',
-  //     'backend/src/main/java/app/entity/_pojo.java': 'backend/src/main/java/app/entity/' + template.name.capital + '.java',
-  //     'backend/src/main/java/app/persistence/_pojoDAO.java': 'backend/src/main/java/app/persistence/' + template.name.capital + 'DAO.java',
-  //     'backend/src/main/java/app/service/_pojoREST.java': 'backend/src/main/java/app/service/' + template.name.capital + 'REST.java'
-  //   };
-  //   this._generateFiles(backendFileMap, template);
-  //   // include feature on persistence XML
-  //   let persistenceXML = cheerio.load(htmlWiring.readFileAsString('backend/src/main/resources/META-INF/persistence.xml'), {xmlMode: true});
-  //   persistenceXML('jta-data-source').after('<class>app.entity.' + template.name.capital + '</class>');
-  //   this.fs.write('backend/src/main/resources/META-INF/persistence.xml', persistenceXML.html());
-  // }
+  _writeEntity() {
+    let entity = {
+      name: Util.createNames(this.options.name),
+      properties: [{
+        name: 'id',
+        type: 'integer',
+        format: 'int32',
+        description: 'Unique identifier',
+      }, {
+        name: 'description',
+        type: 'string',
+        description: 'Description of entity',
+      }]
+    };
+
+    // Generate Frontend CRUD
+    if (!this.options['skip-frontend']) {
+      this.frontendUtil.createEntity(entity);
+    }
+    // if (!this.options['skip-backend']) {
+    //   this.backendUtil.createEntity(entity);
+    // }
+  }
+
+  _writeComponent() {
+    let component = {
+      name: Util.createNames(this.options.name)
+    };
+
+    if (!this.options['skip-frontend']) {
+      this.frontendUtil.createComponent(component);
+    }
+  }
+
+  _writePage() {
+    let page = {
+      name: Util.createNames(this.options.name)
+    };
+
+    if (!this.options['skip-frontend']) {
+      this.frontendUtil.createPage(page);
+    }
+  }
 };
 

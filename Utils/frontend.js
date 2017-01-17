@@ -54,7 +54,7 @@ module.exports = class FrontendUtil {
     config = config || {};
     config.dest = config.dest || 'frontend/src/app/component/';
     const fromPath = 'frontend/component/';
-    const template = Util.buildComponentTemplate(component);
+    const template = component;
     const files = [
       '_component.e2e.ts',
       '_component.html',
@@ -63,8 +63,8 @@ module.exports = class FrontendUtil {
       '_component.ts'
     ];
     files.map((file) => {
-      let from = fromPath + file;
-      let to = config.dest + _.replace(file, /_component/g, template.name.kebab);
+      let from = path.join(fromPath, file);
+      let to = path.join(config.dest, template.name.kebab, _.replace(file, /_component/g, template.name.kebab));
 
       this.util.copyTpl(from, to, template);
     });
@@ -74,15 +74,15 @@ module.exports = class FrontendUtil {
     config = config || {};
     config.dest = config.dest || 'frontend/src/app/page/';
     const fromPath = 'frontend/page/';
-    const template = { name: Util.createNames(page.name) };
+    const template = page;
     const files = [
       '_page.e2e.ts',
       '_page.html',
       '_page.ts'
     ];
     files.map((file) => {
-      let from = fromPath + file;
-      let to = config.dest + template.name.kebab + '/' + _.replace(file, /_page/g, template.name.kebab);
+      let from = path.join(fromPath, file);
+      let to = path.join(config.dest, template.name.kebab, _.replace(file, /_page/g, template.name.kebab));
 
       this.util.copyTpl(from, to, template);
     });

@@ -16,6 +16,8 @@ const tsBeautify = require('gulp-typescript-formatter');
 /**
  * SwaggerGenerator é o gerador demoiselle que utiliza uma spec swagger como 'input'
  *
+ * yo demoiselle:swagger swagger.json
+ *
  * Estratégias:
  * 1) procura primeiro se um arquivo swagger.[json|yml] existe.
  * 1.1) caso não encontre, pergunta o caminho do arquivo.
