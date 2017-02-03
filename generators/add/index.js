@@ -105,21 +105,21 @@ module.exports = class AddGenerator extends Generator {
    * Where conflicts are handled (used internally)
    */
   conflicts() {
-    this.log('[conflicts] done.');
+    // this.log('[conflicts] ignored.');
   }
 
   /**
    * Where installation are run (npm, bower)
    */
   install() {
-    this.log('[install] done.');
+    // this.log('[install] ignored.');
   }
 
   /**
    * Called last, cleanup, say good bye, etc
    */
   end() {
-    this.log('[end] done.');
+    // this.log('[end] ignored.');
   }
 
   // ---------------
