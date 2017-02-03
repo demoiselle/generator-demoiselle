@@ -9,7 +9,7 @@ const yosay = require('yosay');
  *
  * Demoiselle generator for new projects.
  */
-module.exports = class extends Generator {
+module.exports = class AppGenerator extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
@@ -85,11 +85,11 @@ module.exports = class extends Generator {
    */
   writing() {
     // Generate Project
-    if(!this.options['skip-frontend']){
+    if (!this.options['skip-frontend']) {
       this._generateTodoProjectFrontend();
     }
 
-    if(!this.options['skip-backend']){
+    if (!this.options['skip-backend']) {
       this._generateTodoProjectBackend();
     }
   }
