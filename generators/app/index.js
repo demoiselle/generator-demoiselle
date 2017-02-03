@@ -66,7 +66,7 @@ module.exports = class AppGenerator extends Generator {
     if (!this.options.prefix) {
       prompts.push({
         type: 'input',
-        name: 'project',
+        name: 'prefix',
         message: 'Dê um prefixo para os seus componentes:',
         default: 'my'
       });

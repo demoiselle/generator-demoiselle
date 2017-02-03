@@ -76,7 +76,7 @@ gulp.task('watch', () => {
   gulp.watch(['generators/**/*.js', '!generators/**/templates/**/*', 'test/**'], ['test']);
 });
 
-gulp.task('prepublish', ['nsp']);
+gulp.task('prepublish', []);
 gulp.task('default', () => {
   runSequence('static', 'test');
 });
