@@ -1,109 +1,141 @@
-'use strict';
-var yeoman = require('yeoman-generator');
-var cheerio = require('cheerio');
-var htmlWiring = require('html-wiring');
-var fs = require('fs');
+const Generator = require('yeoman-generator');
+const Util = require('../../Utils/util');
+const FrontendUtil = require('../../Utils/frontend');
+const BackendUtil = require('../../Utils/backend');
+const path = require('path');
+const fs = require('fs');
 
-module.exports = yeoman.Base.extend({
-    prompting: function () {
+/**
+ * yo demoiselle:fromEntity
+ *
+ * Demoiselle generator for new entities.
+ */
+module.exports = class FromEntityGenerator extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
 
-        var prompts = [{
-                type: 'input',
-                name: 'name',
-                message: 'Qual o nome do pacote onde estão as entidades ?',
-                default: 'entity'
-            }];
+    this._entities = [];
+    this.frontendUtil = new FrontendUtil(this);
+    this.backendUtil = new BackendUtil(this);
 
-        return this.prompt(prompts).then(function (props) {
-            this.props = props;
-        }.bind(this));
-    },
-    config: function () {
+    // Muda o caminho dos arquivos de templates.
+    Util.changeRootPath(this);
 
-        var dir = 'backend/src/main/java/app/';
-        fs.readdirSync(dir + this.props.name).forEach(function (file) {
+    // Arguments - passados direto pela cli (ex.: yo demoiselle:fromEntity my-feature)
+    // this.argument('entity-path', {
+    //   desc: 'Caminho do pacote de entidades',
+    //   type: String,
+    //   required: false
+    // });
 
-            var entityName = file.split('.')[0];
-            var fileName = dir + this.props.name + '/' + file;
+    // Options - parecido com "argument", mas vão como "flags" (--option)
+    this.option('skip-frontend');
+    this.option('skip-backend');
+  }
 
-            if (entityName !== 'User') {
+  /**
+   * Your initialization methods (checking current project state, getting configs, etc)
+   */
+  initializing() {
+    // this.log('[initializing] done.');
+  }
 
-                var entidade = {};
-                entidade.propriedades = [];
-                entidade.nome = entityName;
+  /**
+   * Where you prompt users for options (where you'd call this.prompt())
+   * Examples: name of app? which frameworks? which template engine?
+   */
+  prompting() {
+    let prompts = [];
 
-                fs.readFileSync(fileName).toString().split('\n').forEach(function (line) {
-                    if (line.indexOf('private') > -1) {
-                        if (line.trim().split(' ')[2].replace(';', '') !== 'final')
-                            entidade.propriedades.push(line.trim().split(' ')[2].replace(';', ''));
-                    }
-                });
+    // if (!this.options['entity-path']) {
+    //   prompts.push({
+    //     type: 'input',
+    //     name: 'entity-path',
+    //     message: 'Qual o nome do pacote onde estão as entidades ?',
+    //     default: 'entity'
+    //   });
+    // }
 
-                console.log('Entidade: ' + entityName);
+    return this.prompt(prompts).then(function (answers) {
+      this.answers = answers;
+      this.entityPath = this.options['entity-path'] || answers['entity-path'];
+    }.bind(this));
+  }
 
-                this.fs.copyTpl(
-                        this.templatePath('backend/src/main/java/app/business/_pojoBC.java'),
-                        this.destinationPath('backend/src/main/java/app/business/' + entityName + 'BC.java'), {
-                    name: entityName
-                }
-                );
-                console.log('--- BC ok');
+  /**
+   * Where you write the generator specific files (routes, controllers, etc)
+   */
+  writing() {
+    // read
+    this._readEntities();
 
-                this.fs.copyTpl(
-                        this.templatePath('backend/src/main/java/app/persistence/_pojoDAO.java'),
-                        this.destinationPath('backend/src/main/java/app/persistence/' + entityName + 'DAO.java'), {
-                    name: entityName
-                }
-                );
-                console.log('--- DAO ok');
-                this.fs.copyTpl(
-                        this.templatePath('backend/src/main/java/app/service/_pojoREST.java'),
-                        this.destinationPath('backend/src/main/java/app/service/' + entityName + 'REST.java'), {
-                    name: entityName
-                }
-                );
-                console.log('--- Rest ok');
-                this.fs.copyTpl(
-                        this.templatePath('frontend/app/scripts/routes/_route.js'),
-                        this.destinationPath('frontend/app/scripts/routes/' + entityName.toLowerCase() + '.js'), {
-                    name: entityName
-                });
-                console.log('--- Route: ok');
+    // write
+    this._writeEntities();
+  }
 
-                this.fs.copyTpl(
-                        this.templatePath('frontend/app/scripts/controllers/_controller.js'),
-                        this.destinationPath('frontend/app/scripts/controllers/' + entityName.toLowerCase() + '.js'), {
-                    name: entityName
-                }
-                );
-                console.log('--- Controller: ok');
+  _readEntities() {
+    const generator = this;
+    const dir = 'backend/src/main/java/app/';
+    const entityPath = path.join(dir, 'entity');
 
-                this.fs.copyTpl(
-                        this.templatePath('frontend/app/scripts/services/_service.js'),
-                        this.destinationPath('frontend/app/scripts/services/' + entityName.toLowerCase() + '.js'), {
-                    name: entityName
-                }
-                );
-                console.log('--- Service: ok*(ainda somente apps Demoiselle)');
+    fs.readdirSync(entityPath).forEach(function (entityFilename) {
 
-                this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-edit.html'),
-                        this.destinationPath('frontend/app/views/' + entityName.toLowerCase() + '/edit.html'), {
-                    props: entidade
-                });
-                console.log('--- View-edit: ok');
+      let filePath = path.join(entityPath, entityFilename);
+      let entityName = entityFilename.split('.')[0];
+      if (entityName === 'User') {
+        // Ignore User Entity?!
+        generator.log('User entity ignored.');
+        return;
+      }
 
-                this.fs.copyTpl(this.templatePath('frontend/app/views/view/view-list.html'),
-                        this.destinationPath('frontend/app/views/' + entityName.toLowerCase() + '/list.html'), {
-                    props: entityName
-                });
-                console.log('--- View-list: ok');
+      let template = {
+        name: Util.createNames(entityName),
+        properties: []
+      };
 
-                var pu = cheerio.load(htmlWiring.readFileAsString('frontend/app/index.html'), {xmlMode: false});
-                pu('<li><a href="#' + entityName.toLowerCase() + '"><i class="glyphicon glyphicon-stats"></i>' + entityName + '</a></li>').appendTo('#menu');
-                this.fs.write('frontend/app/index.html', pu.html());
-            }
+      template.properties = generator._extractPropertiesFromFile(filePath);
+      generator._entities.push(template);
+    });
+  }
 
-        }.bind(this));
+  _writeEntities() {
+    this._entities.forEach((entity) => {
 
+      if (!this.options['skip-frontend']) {
+        this.frontendUtil.createEntity(entity);
+      }
+
+      if (!this.options['skip-backend']) {
+        this.backendUtil.createFromEntity(entity);
+      }
+    });
+  }
+
+  _extractPropertiesFromFile(filePath) {
+    let fileContent = fs.readFileSync(filePath).toString();
+    return this._extractPropertiesFromContent(fileContent);
+  }
+
+  _extractPropertiesFromContent(stringContent) {
+    // Previous algorithm:
+    // if (line.indexOf('private') > -1) {
+    //   if (line.trim().split(' ')[2].replace(';', '') !== 'final') {
+    //     properties.push(line.trim().split(' ')[2].replace(';', ''));
+    //   }
+    // }
+    let properties = [];
+    let propertyRegex = /private\s+(\w+)\s+(\w+)\s*;/g;
+    let match;
+    while (match = propertyRegex.exec(stringContent)) {
+      // matched text: match[0]
+      // match start: match.index
+      // capturing group n: match[n]
+      let property = {
+        type: match[1],
+        name: match[2]
+      };
+      properties.push(property);
     }
-});
+    return properties;
+  }
+}
