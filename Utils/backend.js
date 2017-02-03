@@ -8,7 +8,9 @@ module.exports = class BackendUtil {
     this.util = new Util(vm);
   }
 
-  createEntity(entity) {
+  createEntity(entity, config) {
+    config = config || {};
+    config.dest = config.dest || 'backend/src/main/java/app/';
     const fromPath = 'backend/src/main/java/app/';
     const template = entity;
     const files = [
@@ -20,13 +22,15 @@ module.exports = class BackendUtil {
 
     files.map((file) => {
       let from = path.join(fromPath, file);
-      let to = path.join(fromPath, _.replace(file, /_pojo/g, template.name.kebab));
+      let to = path.join(config.dest, _.replace(file, /_pojo/g, template.name.kebab));
 
       this.util.copyTpl(from, to, template);
     });
   }
 
-  createFromEntity(entity) {
+  createFromEntity(entity, config) {
+    config = config || {};
+    config.dest = config.dest || 'backend/src/main/java/app/';
     const fromPath = 'backend/src/main/java/app/';
     const template = entity;
     const files = [
@@ -37,7 +41,7 @@ module.exports = class BackendUtil {
 
     files.map((file) => {
       let from = path.join(fromPath, file);
-      let to = path.join(fromPath, _.replace(file, /_pojo/g, template.name.kebab));
+      let to = path.join(config.dest, _.replace(file, /_pojo/g, template.name.kebab));
 
       this.util.copyTpl(from, to, template);
     });

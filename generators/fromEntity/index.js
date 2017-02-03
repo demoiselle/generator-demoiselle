@@ -23,11 +23,11 @@ module.exports = class FromEntityGenerator extends Generator {
     Util.changeRootPath(this);
 
     // Arguments - passados direto pela cli (ex.: yo demoiselle:fromEntity my-feature)
-    // this.argument('entity-path', {
-    //   desc: 'Caminho do pacote de entidades',
-    //   type: String,
-    //   required: false
-    // });
+    this.argument('entity-path', {
+      desc: 'Caminho do pacote de entidades',
+      type: String,
+      required: false
+    });
 
     // Options - parecido com "argument", mas vão como "flags" (--option)
     this.option('skip-frontend');
@@ -38,8 +38,6 @@ module.exports = class FromEntityGenerator extends Generator {
    * Your initialization methods (checking current project state, getting configs, etc)
    */
   initializing() {
-    // Find and read entity files
-    this._readEntities();
   }
 
   /**
@@ -48,6 +46,15 @@ module.exports = class FromEntityGenerator extends Generator {
    */
   prompting() {
     let prompts = [];
+
+    if (!this.options['entity-path']) {
+      prompts.push({
+        type: 'input',
+        name: 'entity-path',
+        message: 'Qual o caminho da sua pasta de entidades?',
+        default: 'backend/src/main/java/org/demoiselle/app/entity/'
+      });
+    }
 
     if (this._entities.length > 0) {
       let options = [];
@@ -89,6 +96,9 @@ module.exports = class FromEntityGenerator extends Generator {
       this._entities = _.intersectionWith(this._entities, answers.entities, (entity, answer) => {
         return entity.name.capital === answer;
       });
+      if(!this.options['entity-path']){
+        this.options['entity-path'] = answers['entity-path'];
+      }
       this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
       this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
     }.bind(this));
@@ -98,17 +108,21 @@ module.exports = class FromEntityGenerator extends Generator {
    * Where you write the generator specific files (routes, controllers, etc)
    */
   writing() {
+    // Find and read entity files
+    this._readEntities();
+
+    // Create files
     this._writeEntities();
   }
 
   _readEntities() {
     const generator = this;
-    const dir = 'backend/src/main/java/app/';
-    const entityPath = path.join(dir, 'entity');
+    const dir = this.options['entity-path'];
+    this._entityPath = path.normalize(dir);
 
-    fs.readdirSync(entityPath).forEach(function (entityFilename) {
+    fs.readdirSync(this._entityPath).forEach(function (entityFilename) {
 
-      let filePath = path.join(entityPath, entityFilename);
+      let filePath = path.join(generator._entityPath, entityFilename);
       let entityName = entityFilename.split('.')[0];
 
       let template = {
@@ -129,7 +143,9 @@ module.exports = class FromEntityGenerator extends Generator {
       }
 
       if (!this.options['skip-backend']) {
-        this.backendUtil.createFromEntity(entity);
+        this.backendUtil.createFromEntity(entity, {
+          dest: path.resolve(this._entityPath, '../')
+        });
       }
     });
   }
