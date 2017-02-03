@@ -1,6 +1,5 @@
 const Generator = require('yeoman-generator');
 const Util = require('../../Utils/util');
-// const _ = require('lodash');
 const chalk = require('chalk');
 const yosay = require('yosay');
 
@@ -13,10 +12,10 @@ module.exports = class AppGenerator extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
-    // Muda o caminho dos arquivos de templates.
+    // Change the path to the Util/templates
     Util.changeRootPath(this);
 
-    // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
+    // Arguments - passados direto pela cli (ex.: yo demoiselle my-project myprefix)
     this.argument('project', {
       desc: 'Nome do projeto',
       type: String,
@@ -73,10 +72,28 @@ module.exports = class AppGenerator extends Generator {
       });
     }
 
+    if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+      prompts.push({
+        type: 'checkbox',
+        name: 'skips',
+        message: 'Você quer gerar arquivos para:',
+        choices: [{
+          name: 'frontend',
+          checked: true
+        }, {
+          name: 'backend',
+          checked: true
+        }]
+      });
+    }
+
     return this.prompt(prompts).then(function (answers) {
       this.answers = answers;
       this.name = this.options.project || answers.project;
       this.prefix = this.options.prefix || answers.prefix;
+
+      this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
+      this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
     }.bind(this));
   }
 
@@ -87,10 +104,14 @@ module.exports = class AppGenerator extends Generator {
     // Generate Project
     if (!this.options['skip-frontend']) {
       this._generateTodoProjectFrontend();
+    } else {
+      this.log('[writing] frontend ignored.');
     }
 
     if (!this.options['skip-backend']) {
       this._generateTodoProjectBackend();
+    } else {
+      this.log('[writing] backend ignored.');
     }
   }
 
@@ -107,14 +128,12 @@ module.exports = class AppGenerator extends Generator {
   install() {
     let skipInstall = this.options['skip-install'];
 
-    this.installDependencies({
-      skipInstall: skipInstall,
-      npm: true,
-      bower: false,
-      yarn: false
-    });
-
-    this.log('[install] done.');
+    if (!skipInstall) {
+      this.spawnCommand('npm', ['install'], { cwd: 'frontend' });
+      this.spawnCommand('mvn', ['install'], { cwd: 'frontend' });
+    } else {
+      this.log('[install] ignored.');
+    }
   }
 
   // ---------------
