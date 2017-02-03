@@ -87,13 +87,25 @@ module.exports = class AppGenerator extends Generator {
       });
     }
 
+    if (!this.options['skip-install']) {
+      prompts.push({
+        type: 'confirm',
+        name: 'skip-install',
+        message: 'Deseja instalar as dependências (isso pode demorar alguns minutos)?',
+        default: false
+      });
+    }
+
     return this.prompt(prompts).then(function (answers) {
       this.answers = answers;
       this.name = this.options.project || answers.project;
       this.prefix = this.options.prefix || answers.prefix;
-
       this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
       this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+
+      if (!this.options['skip-install']) {
+        this.options['skip-install'] = answers['skip-install'];
+      }
     }.bind(this));
   }
 
