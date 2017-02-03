@@ -49,7 +49,7 @@ module.exports = class FromEntityGenerator extends Generator {
   prompting() {
     let prompts = [];
 
-    if (this._entities && this._entities.length > 0) {
+    if (this._entities.length > 0) {
       let options = [];
       this._entities.forEach(entity => {
         options.push({
@@ -64,6 +64,23 @@ module.exports = class FromEntityGenerator extends Generator {
         message: 'Para quais entidades você quer gerar os arquivos?',
         choices: options
       });
+    } else {
+      this.log('Nenhuma entidade encontrada.');
+    }
+
+    if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+      prompts.push({
+        type: 'checkbox',
+        name: 'skips',
+        message: 'Você quer gerar arquivos para:',
+        choices: [{
+          name: 'frontend',
+          checked: true
+        }, {
+          name: 'backend',
+          checked: true
+        }]
+      });
     }
 
     return this.prompt(prompts).then(function (answers) {
@@ -72,6 +89,8 @@ module.exports = class FromEntityGenerator extends Generator {
       this._entities = _.intersectionWith(this._entities, answers.entities, (entity, answer) => {
         return entity.name.capital === answer;
       });
+      this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
+      this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
     }.bind(this));
   }
 
@@ -79,7 +98,6 @@ module.exports = class FromEntityGenerator extends Generator {
    * Where you write the generator specific files (routes, controllers, etc)
    */
   writing() {
-    // write
     this._writeEntities();
   }
 
@@ -122,12 +140,6 @@ module.exports = class FromEntityGenerator extends Generator {
   }
 
   _extractPropertiesFromContent(stringContent) {
-    // Previous algorithm:
-    // if (line.indexOf('private') > -1) {
-    //   if (line.trim().split(' ')[2].replace(';', '') !== 'final') {
-    //     properties.push(line.trim().split(' ')[2].replace(';', ''));
-    //   }
-    // }
     let properties = [];
     let propertyRegex = /private\s+(\w+)\s+(\w+)\s*;/g;
     let match;
@@ -135,6 +147,8 @@ module.exports = class FromEntityGenerator extends Generator {
       // matched text: match[0]
       // match start: match.index
       // capturing group n: match[n]
+      // group 1: property type
+      // group 2: property name
       let property = {
         type: match[1],
         name: match[2]
