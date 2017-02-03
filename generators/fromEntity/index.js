@@ -4,6 +4,7 @@ const FrontendUtil = require('../../Utils/frontend');
 const BackendUtil = require('../../Utils/backend');
 const path = require('path');
 const fs = require('fs');
+const _ = require('lodash');
 
 /**
  * yo demoiselle:fromEntity
@@ -37,7 +38,8 @@ module.exports = class FromEntityGenerator extends Generator {
    * Your initialization methods (checking current project state, getting configs, etc)
    */
   initializing() {
-    // this.log('[initializing] done.');
+    // Find and read entity files
+    this._readEntities();
   }
 
   /**
@@ -47,18 +49,29 @@ module.exports = class FromEntityGenerator extends Generator {
   prompting() {
     let prompts = [];
 
-    // if (!this.options['entity-path']) {
-    //   prompts.push({
-    //     type: 'input',
-    //     name: 'entity-path',
-    //     message: 'Qual o nome do pacote onde estão as entidades ?',
-    //     default: 'entity'
-    //   });
-    // }
+    if (this._entities && this._entities.length > 0) {
+      let options = [];
+      this._entities.forEach(entity => {
+        options.push({
+          name: entity.name.capital,
+          checked: true
+        });
+      });
+
+      prompts.push({
+        type: 'checkbox',
+        name: 'entities',
+        message: 'Para quais entidades você quer gerar os arquivos?',
+        choices: options
+      });
+    }
 
     return this.prompt(prompts).then(function (answers) {
       this.answers = answers;
-      this.entityPath = this.options['entity-path'] || answers['entity-path'];
+      // Keep only checked entities
+      this._entities = _.intersectionWith(this._entities, answers.entities, (entity, answer) => {
+        return entity.name.capital === answer;
+      });
     }.bind(this));
   }
 
@@ -66,9 +79,6 @@ module.exports = class FromEntityGenerator extends Generator {
    * Where you write the generator specific files (routes, controllers, etc)
    */
   writing() {
-    // read
-    this._readEntities();
-
     // write
     this._writeEntities();
   }
@@ -82,11 +92,6 @@ module.exports = class FromEntityGenerator extends Generator {
 
       let filePath = path.join(entityPath, entityFilename);
       let entityName = entityFilename.split('.')[0];
-      if (entityName === 'User') {
-        // Ignore User Entity?!
-        generator.log('User entity ignored.');
-        return;
-      }
 
       let template = {
         name: Util.createNames(entityName),
