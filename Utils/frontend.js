@@ -10,7 +10,7 @@ module.exports = class FrontendUtil {
 
   createEntity(entity, config) {
     config = config || {};
-    config.dest = config.dest || 'frontend/src/app/entity/';
+    config.dest = config.dest || 'frontend/src/app/';
     const fromPath = 'frontend/entity/';
     const template = entity;
     const files = [
@@ -51,7 +51,7 @@ module.exports = class FrontendUtil {
 
   createComponent(component, config) {
     config = config || {};
-    config.dest = config.dest || 'frontend/src/app/component/';
+    config.dest = config.dest || 'frontend/src/app/';
     const fromPath = 'frontend/component/';
     const template = component;
     const files = [
@@ -71,7 +71,7 @@ module.exports = class FrontendUtil {
 
   createPage(page, config) {
     config = config || {};
-    config.dest = config.dest || 'frontend/src/app/page/';
+    config.dest = config.dest || 'frontend/src/app/';
     const fromPath = 'frontend/page/';
     const template = page;
     const files = [
@@ -89,7 +89,7 @@ module.exports = class FrontendUtil {
 
   createService(endpoint, config) {
     config = config || {};
-    config.dest = config.dest || 'frontend/src/app/provider/';
+    config.dest = config.dest || 'frontend/src/app/';
     const fromPath = 'frontend/provider/';
     const template = endpoint;
     const files = [
