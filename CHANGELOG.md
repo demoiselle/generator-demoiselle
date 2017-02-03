@@ -5,4 +5,6 @@
 - features:
   - add: `yo demoiselle`
   - add: `yo demoiselle:add`
-  - add: `yo demoiselle:swagger`
+  - add: `yo demoiselle:fromSwagger`
+  - add: `yo demoiselle:fromEntity`
+  - remove: `yo demoiselle:serpro`

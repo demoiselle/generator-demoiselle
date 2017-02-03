@@ -1,40 +1,51 @@
 # generator-demoiselle [![NPM version][npm-image]] [npm-url]
-> Gerador Demoiselle 3.0
+> Gerador para Demoiselle 3.0
 
 Utilitário para geração de arquivos utilizando os padrôes:
 - Demoiselle 3.0
+- Angular
 - Swagger Spec - [OpenApis](https://openapis.org/specification)
 
-## Instalação
+## Requisitos
 
-- pré-requisitos:
-  - backend: Java8
-  - frontend: node, nvm
+Para rodar apenas o generator, você precisará de: `node, npm e yo`.
+
+Para rodar os projetos em Demoiselle 3.0, você precisará:
+- no backend: Java8, mvn
+- no frontend: node, nvm
+
+## Instalação
 
 ```bash
 npm install -g yo generator-demoiselle
 ```
 
+## Execução
+
+```bash
+# Para criar um novo projeto:
+yo demoiselle
+
+# Para adicionar funcionalidades em um projeto:
+yo demoiselle:add
+
+# Para gerar entidades a partir de uma especificação Swagger
+yo demoiselle:fromSwagger
+
+# Para gerar entidades a partir da pasta de entidades java
+yo demoiselle:fromEntity
+```
+
 ## Funcionalidades
 
-- [ ] `yo demoiselle` - gera novos projetos
-- [ ] `yo demoiselle:add` - gera partes da aplicação
-- [ ] `yo demoiselle:swagger` - gera partes da aplicação usando SwaggerSpec
+- [x] `yo demoiselle` - gera novos projetos
+- [x] `yo demoiselle:add` - gera partes da aplicação
+- [x] `yo demoiselle:fromSwagger` - gera partes da aplicação usando especificação Swagger
+- [x] `yo demoiselle:fromEntity` - gera partes da aplicação usando as entidades java pré-existentes
 
 ## Tutorial
 
 - [ ] **TODO** - Vídeo: criar vídeo para versão nova do generator
-
-### `yo demoiselle` - novo projeto
-- O ideal é criar uma pasta do projeto e executar os comandos a seguir:
-
-```bash
-yo demoiselle
-```
-- Serão criadas duas pastas: `backend` (Demoiselle) e `frontend` (Angular)
-- Para executar o backend faça a importação de app maven na sua IDE preferida
-- Para executar o frontend, entre na pasta `frontend` e digite: `npm install && npm start`
-- Pronto! Agora é só *VOAR*.
 
 ## Roadmap
 
