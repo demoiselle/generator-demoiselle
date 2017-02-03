@@ -2,6 +2,7 @@ const Generator = require('yeoman-generator');
 const path = require('path');
 const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
+const BackendUtil = require('../../Utils/backend');
 const SwaggerParser = new (require('swagger-parser'))();
 const jsonQ = require('jsonq');
 const _ = require('lodash');
@@ -30,10 +31,12 @@ module.exports = class SwaggerGenerator extends Generator {
     super(args, opts);
 
     this.frontendUtil = new FrontendUtil(this);
+    this.backendUtil = new BackendUtil(this);
     Util.changeRootPath(this);
 
     // Objeto que armazena as informações passadas aos arquivos templates
     this._template = {};
+    this._entities = [];
 
     // Arguments - passados direto pela cli (ex.: yo demoiselle:swagger custom-swagger.json)
     this.argument('swaggerPath', {
@@ -46,8 +49,9 @@ module.exports = class SwaggerGenerator extends Generator {
     }
 
     // Options - parecido com "argument", mas vão como "flags" (--option)
-    this.option('skip-install');
     this.option('no-transform');
+    this.option('skip-frontend');
+    this.option('skip-backend');
   }
 
   /**
@@ -83,7 +87,7 @@ module.exports = class SwaggerGenerator extends Generator {
   prompting() {
     let prompts = [];
 
-    if (this._entities && this._entities.length > 0) {
+    if (this._entities.length > 0) {
       let options = [];
       this._entities.forEach(entity => {
         options.push({
@@ -98,6 +102,23 @@ module.exports = class SwaggerGenerator extends Generator {
         message: 'Quais entidades você quer gerar?',
         choices: options
       });
+    } else {
+      this.log('Nenhuma entidade encontrada.');
+    }
+
+    if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+      prompts.push({
+        type: 'checkbox',
+        name: 'skips',
+        message: 'Você quer gerar arquivos para:',
+        choices: [{
+          name: 'frontend',
+          checked: true
+        }, {
+          name: 'backend',
+          checked: true
+        }]
+      });
     }
 
     return this.prompt(prompts).then(function (answers) {
@@ -106,6 +127,8 @@ module.exports = class SwaggerGenerator extends Generator {
       this._entities = _.intersectionWith(this._entities, answers.entities, (entity, answer) => {
         return entity.name.capital === answer;
       });
+      this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
+      this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
     }.bind(this));
   }
 
@@ -113,29 +136,29 @@ module.exports = class SwaggerGenerator extends Generator {
   * Where you write the generator specific files (routes, controllers, etc)
   */
   writing() {
-    this._writeEntities(this._entities);
-    this._writeEndpoints(this._endpoints);
+    this._writeEntities();
+    this._writeEndpoints();
   }
 
   /**
    * Where conflicts are handled (used internally)
    */
   conflicts() {
-    this.log('[conflicts] done.');
+    // this.log('[conflicts] step ignored.');
   }
 
   /**
    * Where installation are run (npm, bower, mvn)
    */
   install() {
-    this.log('[install] done.');
+    // this.log('[install] step ignored.');
   }
 
   /**
    * Called last, cleanup, say good bye, etc
    */
   end() {
-    this.log('[end] done.');
+    // this.log('[end] step ignored.');
   }
 
   // ---------------
@@ -161,10 +184,6 @@ module.exports = class SwaggerGenerator extends Generator {
         done();
       });
     } else {
-      // console.log('Nenhum swagger file encontrado!');
-      // console.log('__dirname', __dirname);
-      // console.log('cwd:', process.cwd());
-      // console.log('filePath:', filePath);
       throw new Error('Nenhum "swagger file" encontrado em ' + filePath);
     }
   }
@@ -212,9 +231,16 @@ module.exports = class SwaggerGenerator extends Generator {
   /**
    * Para cada entidade encontrada, gerar o model equivalente.
    */
-  _writeEntities(entities) {
-    entities.forEach((entity) => {
-      this.frontendUtil.createEntity(entity);
+  _writeEntities() {
+    this._entities.forEach((entity) => {
+
+      if (!this.options['skip-frontend']) {
+        this.frontendUtil.createEntity(entity);
+      }
+
+      if (!this.options['skip-backend']) {
+        this.backendUtil.createFromEntity(entity);
+      }
     });
   }
 
@@ -243,11 +269,17 @@ module.exports = class SwaggerGenerator extends Generator {
     });
   }
 
-  _writeEndpoints(endpoints) {
-    endpoints.forEach((endpoint) => {
-      this.frontendUtil.createService(endpoint);
-    });
+  _writeEndpoints() {
+    this._endpoints.forEach((endpoint) => {
 
+      if (!this.options['skip-frontend']) {
+        this.frontendUtil.createService(endpoint);
+      }
+
+      // if (!this.options['skip-backend']) {
+      //   this.backendUtil.createService(endpoint);
+      // }
+    });
   }
 };
 

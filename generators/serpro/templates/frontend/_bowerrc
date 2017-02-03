@@ -1,7 +1,0 @@
-{
-  "directory": "bower_components",
-"registry" : {
-    "search" : [ "http://ctcta.cetec.serpro/repository/bower" ]
-   },
- "resolvers" : [ "bower-nexus3-resolver" ]
-}
