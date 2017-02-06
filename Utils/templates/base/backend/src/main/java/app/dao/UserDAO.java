@@ -1,5 +1,6 @@
 package app.dao;
 
+import app.constants.Perfil;
 import app.entity.User;
 import app.security.Credentials;
 import java.math.BigInteger;
@@ -81,7 +82,7 @@ public class UserDAO extends AbstractDAO<User, String> {
     @Override
     public User persist(User entity) {
         entity.setPass(md5(entity.getPass()));
-        entity.setRole("USER");
+        entity.setPerfil(Perfil.USUARIO);
         return super.persist(entity);
     }
 
@@ -98,7 +99,7 @@ public class UserDAO extends AbstractDAO<User, String> {
 
         loggedUser.setName(usu.getFirstName());
         loggedUser.setIdentity(usu.getId());
-        loggedUser.addRole(usu.getRole());
+        loggedUser.addRole(usu.getPerfil().getValue());
 
         loggedUser.addParam("Email", usu.getEmail());
         securityContext.setUser(loggedUser);
@@ -125,13 +126,13 @@ public class UserDAO extends AbstractDAO<User, String> {
         return sen;
     }
 
-    @Startup
-    private void init() {
+    //   @Startup
+    public void init() {
         User user = new User();
         user.setFirstName("admin");
         user.setEmail("admin@demoiselle.org");
         user.setPass(md5("12345678"));
-        user.setRole("ADMINISTRADOR");
+        user.setPerfil(Perfil.ADMINISTRADOR);
 
         super.persist(user);
     }

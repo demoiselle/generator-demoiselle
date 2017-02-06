@@ -3,6 +3,7 @@ package app.service;
 import app.dao.UserDAO;
 import app.security.Credentials;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

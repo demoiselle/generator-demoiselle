@@ -1,20 +1,13 @@
 package app.entity;
 
+import app.constants.Perfil;
 import java.io.Serializable;
-import static java.util.Collections.unmodifiableSet;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 import javax.persistence.Basic;
-import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
@@ -32,9 +25,6 @@ import org.hibernate.validator.constraints.Email;
     @UniqueConstraint(columnNames = {"email"})})
 @XmlRootElement
 public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    private static final Logger LOG = getLogger(User.class.getName());
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -61,18 +51,11 @@ public class User implements Serializable {
     @Column(length = 128)
     private String pass;
 
-    @Column(length = 16)
-    private String role;
-
-    @OneToMany(mappedBy = "user", targetEntity = Todo.class, fetch = EAGER, orphanRemoval = true)
-    private Set<Todo> todos = new HashSet<>();
+    @Column
+    private Perfil perfil;
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -99,26 +82,18 @@ public class User implements Serializable {
         this.pass = pass;
     }
 
-    public String getRole() {
-        return role;
+    public Perfil getPerfil() {
+        return perfil;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public Set<Todo> getTodos() {
-        return unmodifiableSet(todos);
-    }
-
-    public void setTodos(Set<Todo> todos) {
-        this.todos = todos;
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 83 * hash + Objects.hashCode(this.id);
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -134,7 +109,15 @@ public class User implements Serializable {
             return false;
         }
         final User other = (User) obj;
-        return Objects.equals(this.id, other.id);
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", firstName=" + firstName + ", email=" + email + ", pass=" + pass + ", perfil=" + perfil + '}';
     }
 
 }
