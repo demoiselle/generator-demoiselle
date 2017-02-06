@@ -15,9 +15,15 @@ module.exports = class AppGenerator extends Generator {
         // Change the path to the Util/templates
         Util.changeRootPath(this);
 
-        // Arguments - passados direto pela cli (ex.: yo demoiselle my-project myprefix)
+        // Arguments - passados direto pela cli (ex.: yo demoiselle my-project package myprefix)
         this.argument('project', {
             desc: 'Nome do projeto',
+            type: String,
+            required: false
+        });
+
+        this.argument('package', {
+            desc: 'Pacote do backend',
             type: String,
             required: false
         });
@@ -59,7 +65,16 @@ module.exports = class AppGenerator extends Generator {
                 type: 'input',
                 name: 'project',
                 message: 'Dê um nome para o seu projeto:',
-                default: 'Todo'
+                default: 'app'
+            });
+        }
+
+        if (!this.options.package) {
+            prompts.push({
+                type: 'input',
+                name: 'package',
+                message: 'Informe o package do backend:',
+                default: 'org.demoiselle'
             });
         }
 
@@ -90,7 +105,7 @@ module.exports = class AppGenerator extends Generator {
         if (!this.options['skip-install']) {
             prompts.push({
                 type: 'confirm',
-                name: 'skip-install',
+                name: 'do-install',
                 message: 'Deseja instalar as dependências (isso pode demorar alguns minutos)?',
                 default: false
             });
@@ -99,12 +114,12 @@ module.exports = class AppGenerator extends Generator {
         return this.prompt(prompts).then(function (answers) {
             this.answers = answers;
             this.name = this.options.project || answers.project;
+            this.package = this.options.package || answers.package;
             this.prefix = this.options.prefix || answers.prefix;
             this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
             this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
-
             if (!this.options['skip-install']) {
-                this.options['skip-install'] = answers['skip-install'];
+                this.options['skip-install'] = !answers['do-install'];
             }
         }.bind(this));
     }
