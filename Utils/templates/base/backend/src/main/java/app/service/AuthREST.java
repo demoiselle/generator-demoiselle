@@ -1,9 +1,9 @@
-package app.service;
+package <%= package.lower %>.service;
 
-import app.dao.UserDAO;
-import app.security.Credentials;
+
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import <%= package.lower %>.dao.UserDAO;
+import <%= package.lower %>.security.Credentials;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -15,10 +15,6 @@ import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.ok;
 import org.demoiselle.jee.security.annotation.Authenticated;
 
-/**
- *
- * @author SERPRO
- */
 @Api("Auth")
 @Path("auth")
 @Produces(APPLICATION_JSON)

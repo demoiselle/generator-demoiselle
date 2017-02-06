@@ -1,17 +1,9 @@
-package app.security;
+package <%= package.lower %>.security;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 
-/**
- *
- * @author 70744416353
- */
 public class Credentials implements Serializable {
-
-    private static final Logger LOG = getLogger(Credentials.class.getName());
 
     private String username;
     private String password;

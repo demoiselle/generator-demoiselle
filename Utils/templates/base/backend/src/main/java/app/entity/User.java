@@ -1,6 +1,6 @@
-package app.entity;
+package <%= package.lower %>.entity;
 
-import app.constants.Perfil;
+import <%= package.lower %>.constants.Perfil;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Basic;
@@ -16,10 +16,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 
-/**
- *
- * @author gladson
- */
 @Entity
 @Table(uniqueConstraints = {
     @UniqueConstraint(columnNames = {"email"})})

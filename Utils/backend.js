@@ -10,7 +10,7 @@ module.exports = class BackendUtil {
 
   createEntity(entity, config) {
     config = config || {};
-    config.dest = config.dest || 'backend/src/main/java/app/';
+    config.dest = config.dest || 'backend/src/main/java/';
     const fromPath = 'backend/src/main/java/app/';
     const template = entity;
     const files = [

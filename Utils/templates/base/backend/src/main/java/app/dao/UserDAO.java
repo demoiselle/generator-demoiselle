@@ -1,8 +1,8 @@
-package app.dao;
+package <%= package.lower %>.dao;
 
-import app.constants.Perfil;
-import app.entity.User;
-import app.security.Credentials;
+import <%= package.lower %>.constants.Perfil;
+import <%= package.lower %>.entity.User;
+import <%= package.lower %>.security.Credentials;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import static java.security.MessageDigest.getInstance;
@@ -20,15 +20,10 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.core.api.security.Token;
-import org.demoiselle.jee.core.lifecycle.annotation.Startup;
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 
-/**
- *
- * @author gladson
- */
 public class UserDAO extends AbstractDAO<User, String> {
 
     private static final Logger LOG = getLogger(UserDAO.class.getName());
@@ -124,17 +119,6 @@ public class UserDAO extends AbstractDAO<User, String> {
         BigInteger hash = new BigInteger(1, md.digest(senha.getBytes()));
         sen = hash.toString(16);
         return sen;
-    }
-
-    //   @Startup
-    public void init() {
-        User user = new User();
-        user.setFirstName("admin");
-        user.setEmail("admin@demoiselle.org");
-        user.setPass(md5("12345678"));
-        user.setPerfil(Perfil.ADMINISTRADOR);
-
-        super.persist(user);
     }
 
 }

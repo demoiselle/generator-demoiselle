@@ -180,11 +180,24 @@ module.exports = class AppGenerator extends Generator {
 
     _generateTodoProjectBackend() {
         let template = {
+            package: Util.createNames(this.package),
             name: Util.createNames(this.name)
         };
 
-        let from = this.templatePath('base/backend/');
-        let to = this.destinationPath('backend/');
+        let from = this.templatePath('base/backend/src/main/java/app/');
+        let to = this.destinationPath('backend/src/main/java/' + this.package.replace(/\./g, '/') + '/');
+        this.fs.copyTpl(from, to, template);
+
+        from = this.templatePath('base/backend/src/main/resources/');
+        to = this.destinationPath('backend/src/main/resources/');
+        this.fs.copyTpl(from, to, template);
+
+        from = this.templatePath('base/backend/src/main/webapp/');
+        to = this.destinationPath('backend/src/main/webapp/');
+        this.fs.copyTpl(from, to, template);
+        
+        from = this.templatePath('base/backend/pom.xml');
+        to = this.destinationPath('backend/pom.xml');
         this.fs.copyTpl(from, to, template);
     }
 };

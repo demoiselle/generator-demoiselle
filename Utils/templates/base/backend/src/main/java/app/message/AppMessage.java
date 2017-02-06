@@ -1,4 +1,4 @@
-package app.message;
+package <%= package.lower %>.message;
 
 import org.apache.deltaspike.core.api.message.MessageBundle;
 import org.apache.deltaspike.core.api.message.MessageTemplate;

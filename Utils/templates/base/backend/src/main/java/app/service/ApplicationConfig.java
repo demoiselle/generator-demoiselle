@@ -1,15 +1,9 @@
-package app.service;
+package <%= package.lower %>.service;
 
 import io.swagger.jaxrs.config.BeanConfig;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-/**
- *
- * @author 70744416353
- */
 @ApplicationPath("api")
 public class ApplicationConfig extends Application {
 
@@ -17,7 +11,7 @@ public class ApplicationConfig extends Application {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion("1.0.0");
         beanConfig.setBasePath("/api");
-        beanConfig.setResourcePackage("app.service");
+        beanConfig.setResourcePackage("<%= package.lower %>.service");
         beanConfig.setScan(true);
     }
 }
