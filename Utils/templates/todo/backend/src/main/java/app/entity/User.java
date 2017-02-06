@@ -1,41 +1,40 @@
 package app.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import static java.util.Collections.unmodifiableSet;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Email;
 
 /**
- * User Entity Model
  *
- * @author Demoiselle Generator
+ * @author gladson
  */
 @Entity
-@Table(name = "usuario")
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"email"})})
 @XmlRootElement
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = getLogger(User.class.getName());
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -46,14 +45,14 @@ public class User implements Serializable {
     @NotNull
     @Basic(optional = false)
     @Size(min = 3, max = 128)
-    @Column(nullable = false, length = 128)
+    @Column(unique = true, nullable = false, length = 128)
     private String firstName;
 
     @Email
     @NotNull
     @Basic(optional = false)
     @Size(min = 5, max = 128)
-    @Column(nullable = false, length = 128)
+    @Column(name = "email", nullable = false, length = 128, unique = true)
     private String email;
 
     @NotNull
@@ -65,8 +64,8 @@ public class User implements Serializable {
     @Column(length = 16)
     private String role;
 
-    @OneToMany(mappedBy = "user", targetEntity = Todo.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Todo> todos;
+    @OneToMany(mappedBy = "user", targetEntity = Todo.class, fetch = EAGER, orphanRemoval = true)
+    private Set<Todo> todos = new HashSet<>();
 
     public String getId() {
         return id;
@@ -109,7 +108,7 @@ public class User implements Serializable {
     }
 
     public Set<Todo> getTodos() {
-        return todos;
+        return unmodifiableSet(todos);
     }
 
     public void setTodos(Set<Todo> todos) {
@@ -135,10 +134,7 @@ public class User implements Serializable {
             return false;
         }
         final User other = (User) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

@@ -1,14 +1,14 @@
 package app.service;
 
 import io.swagger.jaxrs.config.BeanConfig;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-
 /**
- * Application Config
  *
- * @author Demoiselle Generator
+ * @author 70744416353
  */
 @ApplicationPath("api")
 public class ApplicationConfig extends Application {
@@ -16,7 +16,7 @@ public class ApplicationConfig extends Application {
     public ApplicationConfig() {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion("1.0.0");
-        beanConfig.setBasePath("/todo/api");
+        beanConfig.setBasePath("/api");
         beanConfig.setResourcePackage("app.service");
         beanConfig.setScan(true);
     }
