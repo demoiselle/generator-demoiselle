@@ -142,7 +142,7 @@ module.exports = class AppGenerator extends Generator {
 
         if (!skipInstall) {
             this.spawnCommand('npm', ['install'], {cwd: 'frontend'});
-            this.spawnCommand('mvn', ['install'], {cwd: 'frontend'});
+            this.spawnCommand('mvn', ['install'], {cwd: 'backend'});
         } else {
             this.log('[install] ignored.');
         }
