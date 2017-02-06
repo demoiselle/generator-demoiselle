@@ -17,6 +17,7 @@ import { ErrorFormComponent } from './components/error-form.component';
   imports: [
     CommonModule,
     RouterModule,
+    SecurityModule,
     Ng2BootstrapModule.forRoot(),
     DropdownModule.forRoot(),
     PopoverModule.forRoot()
