@@ -102,10 +102,9 @@
         </dependency>
         
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
-            <type>jar</type>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-core</artifactId>
+            <version>1.5.10</version>
         </dependency>
         
     </dependencies>
