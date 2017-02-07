@@ -12,7 +12,7 @@ public class ApplicationConfig extends Application {
         beanConfig.setBasePath("/api");
         beanConfig.setContact("demoiselle.framework@gmail.com");
         beanConfig.setDescription("Sistema base gerado pelo generetor-demoiselle https://github.com/demoiselle/generator-demoiselle ");
-        beanConfig.setHost("demoiselle.io");
+        beanConfig.setHost("localhost:8080");
         beanConfig.setLicense("LGPL v2");
         beanConfig.setVersion("3.0.0");
         beanConfig.setTermsOfServiceUrl("https://demoiselle.gitbooks.io/documentacao-jee/");
