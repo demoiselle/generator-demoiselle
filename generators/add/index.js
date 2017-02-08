@@ -106,6 +106,21 @@ module.exports = class AddGenerator extends Generator {
       });
     }
 
+    if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+            prompts.push({
+                type: 'checkbox',
+                name: 'skips',
+                message: 'Você quer gerar arquivos para:',
+                choices: [{
+                        name: 'frontend',
+                        checked: true
+                    }, {
+                        name: 'backend',
+                        checked: true
+                    }]
+            });
+    }
+
     return this.prompt(prompts).then(function (answers) {
       this.answers = answers;
       this.options.template = this.options.template || answers.template;
@@ -113,7 +128,10 @@ module.exports = class AddGenerator extends Generator {
       this.project = this.config.get('project') || answers.project;
       this.package = this.config.get('package') || answers.package;
       this.prefix = this.config.get('prefix') || answers.prefix;
-
+      if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+        this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
+        this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+      }
       // store config values if needed
       if (!this.config.get('project')) {
         this.config.set('project', this.project);
@@ -187,6 +205,8 @@ module.exports = class AddGenerator extends Generator {
       }]
     };
 
+console.log('add -----------------');   
+console.log(entity);
 
     let configFrontend = {
       project: this.project,
