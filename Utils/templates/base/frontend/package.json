@@ -1,6 +1,6 @@
 {
-  "name": "<%= name.kebab %>",
-  "description": "<%= name.capital %> project.",
+  "name": "<%= project.kebab %>",
+  "description": "<%= project.capital %> project.",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {

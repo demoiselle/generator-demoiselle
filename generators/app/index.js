@@ -113,7 +113,7 @@ module.exports = class AppGenerator extends Generator {
 
         return this.prompt(prompts).then(function (answers) {
             this.answers = answers;
-            this.name = this.options.project || answers.project;
+            this.project = this.options.project || answers.project;
             this.package = this.options.package || answers.package;
             this.prefix = this.options.prefix || answers.prefix;
             this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
@@ -121,6 +121,12 @@ module.exports = class AppGenerator extends Generator {
             if (!this.options['skip-install']) {
                 this.options['skip-install'] = !answers['do-install'];
             }
+
+            // store config values for later use
+            this.config.set('name', this.project);
+            this.config.set('package', this.package);
+            this.config.set('prefix', this.prefix);
+
         }.bind(this));
     }
 
@@ -169,7 +175,7 @@ module.exports = class AppGenerator extends Generator {
 
     _generateTodoProjectFrontend() {
         let template = {
-            name: Util.createNames(this.name),
+            project: Util.createNames(this.project),
             prefix: Util.createNames(this.prefix)
         };
 
@@ -181,11 +187,11 @@ module.exports = class AppGenerator extends Generator {
     _generateTodoProjectBackend() {
         let template = {
             package: Util.createNames(this.package),
-            name: Util.createNames(this.name)
+            project: Util.createNames(this.project)
         };
 
         let from = this.templatePath('base/backend/src/main/java/app/');
-        let to = this.destinationPath('backend/src/main/java/' + this.package.replace(/\./g, '/') + '/');
+        let to = this.destinationPath('backend/src/main/java/' + this.package.replace(/\./g, '/') + '/' + this.project + '/');
         this.fs.copyTpl(from, to, template);
 
         from = this.templatePath('base/backend/src/main/resources/');

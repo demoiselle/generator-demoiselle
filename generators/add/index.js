@@ -43,24 +43,54 @@ module.exports = class AddGenerator extends Generator {
    * Examples: name of app? which frameworks? which template engine?
    */
   prompting() {
+
     let prompts = [];
+
+    if (!this.config.get('name')) {
+      console.log('Nome do projeto não encontrado na configuração...')
+      prompts.push({
+        type: 'input',
+        name: 'project',
+        message: 'Informe o nome do seu projeto:',
+        default: 'app'
+      });
+    }
+    if (!this.config.get('package')) {
+      console.log('Package do backend não encontrado na configuração...')
+      prompts.push({
+        type: 'input',
+        name: 'package',
+        message: 'Informe o package do backend:',
+        default: 'org.demoiselle'
+      });
+    }
+    if (!this.config.get('prefix')) {
+      console.log('Prefixo dos componentes não encontrado na configuração...')
+      prompts.push({
+        type: 'input',
+        name: 'prefix',
+        message: 'Informe um prefixo para seus componentes:',
+        default: 'my'
+      });
+    }
+
 
     if (!this.options.template) {
       prompts.push({
         type: 'list',
         name: 'template',
-        message: 'Qual template você quer gerar?',
-        default: 'entity',
+        message: 'O que você deseja adicionar ao projeto?',
+        default: 'crud',
         choices: [{
-          name: 'Entidade (CRUD)',
-          value: 'entity'
-        }, {
-          name: 'Componente',
+          name: 'Funcionalidade (CRUD)',
+          value: 'crud'
+        }/*, {
+          name: 'Componente apenas (frontend)',
           value: 'component'
         }, {
-          name: 'Página',
+          name: 'Página apenas (frontend)',
           value: 'page'
-        }/*, {
+        }, {
           name: 'Serviço',
           value: 'service'
         }*/]
@@ -71,7 +101,7 @@ module.exports = class AddGenerator extends Generator {
       prompts.push({
         type: 'input',
         name: 'name',
-        message: 'Dê um nome para o novo template:',
+        message: 'Dê um nome para a funcionalidade/entidade:',
         default: 'MyExample'
       });
     }
@@ -80,6 +110,22 @@ module.exports = class AddGenerator extends Generator {
       this.answers = answers;
       this.options.template = this.options.template || answers.template;
       this.options.name = this.options.name || answers.name;
+      this.project = this.config.get('name') || answers.project;
+      this.package = this.config.get('package') || answers.package;
+      this.prefix = this.config.get('prefix') || answers.prefix;
+
+      // store config values if needed
+      if (!this.config.get('name')) {
+        this.config.set('name', this.project);
+      }
+      if (!this.config.get('package')) {
+        this.config.set('package', this.package);
+      }
+      if (!this.config.get('prefix')) {
+        this.config.set('prefix', this.prefix);
+      }
+
+
     }.bind(this));
   }
 
@@ -88,7 +134,7 @@ module.exports = class AddGenerator extends Generator {
    */
   writing() {
     let fn = {
-      entity: this._writeEntity,
+      crud: this._writeCrud,
       component: this._writeComponent,
       page: this._writePage,
     };
@@ -126,7 +172,7 @@ module.exports = class AddGenerator extends Generator {
   // PRIVATE methods
   // ---------------
 
-  _writeEntity() {
+  _writeCrud() {
     let entity = {
       name: Util.createNames(this.options.name),
       properties: [{
@@ -141,12 +187,19 @@ module.exports = class AddGenerator extends Generator {
       }]
     };
 
+
+    let config = {
+      project: this.project,
+      package: this.package,
+      prefix: this.prefix
+    };
+
     // Generate Entity CRUD
     if (!this.options['skip-frontend']) {
-      this.frontendUtil.createEntity(entity);
+      this.frontendUtil.createCrud(entity, config);
     }
     if (!this.options['skip-backend']) {
-      this.backendUtil.createEntity(entity);
+      this.backendUtil.createCrud(entity, config);
     }
   }
 

@@ -139,7 +139,7 @@ module.exports = class FromEntityGenerator extends Generator {
     this._entities.forEach((entity) => {
 
       if (!this.options['skip-frontend']) {
-        this.frontendUtil.createEntity(entity);
+        this.frontendUtil.createCrud(entity);
       }
 
       if (!this.options['skip-backend']) {

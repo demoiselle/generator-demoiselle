@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId><%= package.lower %></groupId>
-    <artifactId><%= name.lower %></artifactId>
+    <artifactId><%= project.lower %></artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
 
-    <name><%= name.capital %></name>
+    <name><%= project.capital %></name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -21,7 +21,7 @@
     </parent>
 
     <build>
-        <finalName><%= name.lower %></finalName>
+        <finalName><%= project.lower %></finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

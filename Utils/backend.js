@@ -8,11 +8,16 @@ module.exports = class BackendUtil {
     this.util = new Util(vm);
   }
 
-  createEntity(entity, config) {
+  createCrud(entity, config) {
     config = config || {};
     config.dest = config.dest || 'backend/src/main/java/';
     const fromPath = 'backend/src/main/java/app/';
-    const template = entity;
+
+    const template = Object.assign(entity, {
+      project: config.project,
+      package: config.package
+    });
+
     const files = [
       'entity/_pojo.java',
       'business/_pojoBC.java',

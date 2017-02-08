@@ -8,11 +8,16 @@ module.exports = class FrontendUtil {
     this.util = new Util(vm);
   }
 
-  createEntity(entity, config) {
+  createCrud(entity, config) {
     config = config || {};
     config.dest = config.dest || 'frontend/src/app/';
     const fromPath = 'frontend/entity/';
-    const template = entity;
+    //const template = entity;
+    const template = Object.assign(entity, {
+      project: config.project,
+      prefix: config.prefix
+    });
+
     const files = [
       // ENTITY
       '_entity.module.ts',
