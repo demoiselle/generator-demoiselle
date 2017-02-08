@@ -3,7 +3,7 @@
   <persistence-unit name="AppPU" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:/jboss/datasources/ExampleDS</jta-data-source>
-    <class>app.entity.User</class>
+    <class><%= package.lower %>.<%= project.lower %>.entity.User</class>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
       <property name="hibernate.show_sql" value="true"/>

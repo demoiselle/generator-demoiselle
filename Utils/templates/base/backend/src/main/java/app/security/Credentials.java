@@ -1,4 +1,4 @@
-package <%= package.lower %>.security;
+package <%= package.lower %>.<%= project.lower %>.security;
 
 import java.io.Serializable;
 import java.util.Objects;

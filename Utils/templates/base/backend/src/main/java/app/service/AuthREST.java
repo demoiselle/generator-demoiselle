@@ -1,9 +1,9 @@
-package <%= package.lower %>.service;
+package <%= package.lower %>.<%= project.lower %>.service;
 
 
 import io.swagger.annotations.Api;
-import <%= package.lower %>.dao.UserDAO;
-import <%= package.lower %>.security.Credentials;
+import <%= package.lower %>.<%= project.lower %>.dao.UserDAO;
+import <%= package.lower %>.<%= project.lower %>.security.Credentials;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

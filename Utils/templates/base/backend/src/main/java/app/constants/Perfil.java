@@ -1,4 +1,4 @@
-package <%= package.lower %>.constants;
+package <%= package.lower %>.<%= project.lower %>.constants;
 
 public enum Perfil {
     

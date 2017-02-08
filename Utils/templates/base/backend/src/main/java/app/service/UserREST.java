@@ -1,6 +1,6 @@
-package <%= package.lower %>.service;
+package <%= package.lower %>.<%= project.lower %>.service;
 
-import <%= package.lower %>.entity.User;
+import <%= package.lower %>.<%= project.lower %>.entity.User;
 import io.swagger.annotations.Api;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;

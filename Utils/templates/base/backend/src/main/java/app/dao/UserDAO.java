@@ -1,8 +1,8 @@
-package <%= package.lower %>.dao;
+package <%= package.lower %>.<%= project.lower %>.dao;
 
-import <%= package.lower %>.constants.Perfil;
-import <%= package.lower %>.entity.User;
-import <%= package.lower %>.security.Credentials;
+import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
+import <%= package.lower %>.<%= project.lower %>.entity.User;
+import <%= package.lower %>.<%= project.lower %>.security.Credentials;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import static java.security.MessageDigest.getInstance;

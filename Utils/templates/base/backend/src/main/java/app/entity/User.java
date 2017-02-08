@@ -1,6 +1,6 @@
-package <%= package.lower %>.entity;
+package <%= package.lower %>.<%= project.lower %>.entity;
 
-import <%= package.lower %>.constants.Perfil;
+import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Basic;
