@@ -10,7 +10,7 @@ module.exports = class BackendUtil {
 
   createCrud(entity, config) {
     config = config || {};
-    config.dest = config.dest || 'backend/src/main/java/';
+    config.dest = config.dest || 'backend/src/main/java/' + config.package.replace(/\./g, '/') + '/' + config.project + '/';
     const fromPath = 'backend/src/main/java/app/';
 
     const template = Object.assign(entity, {
@@ -20,9 +20,9 @@ module.exports = class BackendUtil {
 
     const files = [
       'entity/_pojo.java',
-      'bc/_BC.java',
-      'dao/_DAO.java',
-      'service/_REST.java',
+      'bc/_pojoBC.java',
+      'dao/_pojoDAO.java',
+      'service/_pojoREST.java',
     ];
 
     files.map((file) => {
@@ -35,13 +35,13 @@ module.exports = class BackendUtil {
 
   createFromEntity(entity, config) {
     config = config || {};
-    config.dest = config.dest || 'backend/src/main/java/app/';
+    config.dest = config.dest || 'backend/src/main/java/' + config.package.replace(/\./g, '/') + '/' + config.project + '/';
     const fromPath = 'backend/src/main/java/app/';
     const template = entity;
     const files = [
-      'bc/_BC.java',
-      'dao/_DAO.java',
-      'service/_REST.java',
+      'bc/_pojoBC.java',
+      'dao/_pojoDAO.java',
+      'service/_pojoREST.java',
     ];
 
     files.map((file) => {

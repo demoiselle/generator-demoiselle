@@ -188,18 +188,21 @@ module.exports = class AddGenerator extends Generator {
     };
 
 
-    let config = {
+    let configFrontend = {
       project: this.project,
-      package: this.package,
       prefix: this.prefix
+    };
+    let configBackend = {
+      project: this.project,
+      package: this.package
     };
 
     // Generate Entity CRUD
     if (!this.options['skip-frontend']) {
-      this.frontendUtil.createCrud(entity, config);
+      this.frontendUtil.createCrud(entity, configFrontend);
     }
     if (!this.options['skip-backend']) {
-      this.backendUtil.createCrud(entity, config);
+      this.backendUtil.createCrud(entity, configBackend);
     }
   }
 
