@@ -13,11 +13,11 @@ public class ApplicationConfig extends Application {
         beanConfig.setResourcePackage("<%= package.lower %>.<%= project.lower %>.service");
         beanConfig.setVersion("3.0.0");
         
-        beanConfig.setContact("https://github.com/demoiselle");
-        beanConfig.setDescription("Sistema base gerado pelo generetor-demoiselle https://github.com/demoiselle/generator-demoiselle ");
-        beanConfig.setLicense("LGPL v2");
-        beanConfig.setTermsOfServiceUrl("https://demoiselle.gitbooks.io/documentacao-jee/");
-        beanConfig.setTitle("generetor-demoiselle");
+//        beanConfig.setContact("https://github.com/demoiselle");
+//        beanConfig.setDescription("Sistema base gerado pelo generetor-demoiselle https://github.com/demoiselle/generator-demoiselle ");
+//        beanConfig.setLicense("LGPL v2");
+//        beanConfig.setTermsOfServiceUrl("https://demoiselle.gitbooks.io/documentacao-jee/");
+//        beanConfig.setTitle("generetor-demoiselle");
 
         beanConfig.setScan(true);
     }
