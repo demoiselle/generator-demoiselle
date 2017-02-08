@@ -27,7 +27,7 @@ module.exports = class BackendUtil {
 
     files.map((file) => {
       let from = path.join(fromPath, file);
-      let to = path.join(config.dest, _.replace(file, /_pojo/g, template.name.kebab));
+      let to = path.join(config.dest, _.replace(file, /_pojo/g, template.name.capital));
 
       this.util.copyTpl(from, to, template);
     });
@@ -46,7 +46,7 @@ module.exports = class BackendUtil {
 
     files.map((file) => {
       let from = path.join(fromPath, file);
-      let to = path.join(config.dest, _.replace(file, /_pojo/g, template.name.kebab));
+      let to = path.join(config.dest, _.replace(file, /_pojo/g, template.name.capital));
 
       this.util.copyTpl(from, to, template);
     });
