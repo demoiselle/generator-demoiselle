@@ -205,9 +205,6 @@ module.exports = class AddGenerator extends Generator {
       }]
     };
 
-console.log('add -----------------');   
-console.log(entity);
-
     let configFrontend = {
       project: this.project,
       prefix: this.prefix
