@@ -20,9 +20,9 @@ module.exports = class BackendUtil {
 
     const files = [
       'entity/_pojo.java',
-      'business/_pojoBC.java',
-      'persistence/_pojoDAO.java',
-      'service/_pojoREST.java',
+      'bc/_BC.java',
+      'dao/_DAO.java',
+      'service/_REST.java',
     ];
 
     files.map((file) => {
@@ -39,9 +39,9 @@ module.exports = class BackendUtil {
     const fromPath = 'backend/src/main/java/app/';
     const template = entity;
     const files = [
-      'business/_pojoBC.java',
-      'persistence/_pojoDAO.java',
-      'service/_pojoREST.java',
+      'bc/_BC.java',
+      'dao/_DAO.java',
+      'service/_REST.java',
     ];
 
     files.map((file) => {
