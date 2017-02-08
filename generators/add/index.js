@@ -46,7 +46,7 @@ module.exports = class AddGenerator extends Generator {
 
     let prompts = [];
 
-    if (!this.config.get('name')) {
+    if (!this.config.get('project')) {
       console.log('Nome do projeto não encontrado na configuração...')
       prompts.push({
         type: 'input',
@@ -110,13 +110,13 @@ module.exports = class AddGenerator extends Generator {
       this.answers = answers;
       this.options.template = this.options.template || answers.template;
       this.options.name = this.options.name || answers.name;
-      this.project = this.config.get('name') || answers.project;
+      this.project = this.config.get('project') || answers.project;
       this.package = this.config.get('package') || answers.package;
       this.prefix = this.config.get('prefix') || answers.prefix;
 
       // store config values if needed
-      if (!this.config.get('name')) {
-        this.config.set('name', this.project);
+      if (!this.config.get('project')) {
+        this.config.set('project', this.project);
       }
       if (!this.config.get('package')) {
         this.config.set('package', this.package);

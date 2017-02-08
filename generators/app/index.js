@@ -123,7 +123,7 @@ module.exports = class AppGenerator extends Generator {
             }
 
             // store config values for later use
-            this.config.set('name', this.project);
+            this.config.set('project', this.project);
             this.config.set('package', this.package);
             this.config.set('prefix', this.prefix);
 
