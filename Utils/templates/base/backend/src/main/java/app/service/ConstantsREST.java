@@ -1,6 +1,7 @@
 package <%= package.lower %>.<%= project.lower %>.service;
 
-import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
+import import app.constants.Perfil;
+<%= package.lower %>.<%= project.lower %>.constants.Perfil;
 import io.swagger.annotations.Api;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,7 +22,7 @@ public class ConstantsREST {
     @Path("perfil")
     @CacheControl(value = "max-age=86400")
     public Response getPerfil() {
-        return ok().entity(Perfil.values()).build();
+        return ok().entity(Perfil.getMap()).build();
     }
 
 }
