@@ -11,24 +11,10 @@ export class UserService {
   }
 
   list(currentPage: number, itemsPerPage: number) {
-    console.log('TODO: implementar paginação:', currentPage, itemsPerPage);
     let start = (currentPage*itemsPerPage) - (itemsPerPage);
     let end = (currentPage*itemsPerPage) - 1;
     return this.http.get('~main/user?range='+start+'-'+end)
-      .map(res => res)
-      .catch((error) => {
-
-        return Observable.throw(<User[]>[{
-          id: 1,
-          firstName: 'user 1 catch',
-          perfil: 'USER'
-        }, {
-          id: 2,
-          firstName: 'user 2 catch',
-          perfil: 'ADMINISTRATOR'
-        }
-        ]);
-      });
+      .map(res => res);
   }
 
   get(id: number) {
@@ -46,5 +32,10 @@ export class UserService {
 
   delete(user: User) {
     return this.http.delete('~main/user/' + user.id);
+  }
+
+  getPerfil() {
+    return this.http.get('~main/constants/perfil')
+      .map(res => res.json());
   }
 }

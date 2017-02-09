@@ -2,8 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ng2-bootstrap/ng2-bootstrap';
 
 import { NotificationService } from '../shared';
-import { UserService } from './shared/user.service';
-import { User } from './shared/user.model';
+import { UserService } from './user.service';
+import { User } from './user.model';
 
 @Component({
   selector: '<%= prefix.kebab %>-user',
@@ -21,12 +21,19 @@ export class UserComponent implements OnInit {
   public totalItems: number = 0;
   public currentPage: number = 1;
 
+  public selectedRole;
+  public roles = [
+    {value: 'USUARIO', description: 'Usuário'},
+    {value: 'GERENTE', description: 'Gerente'},
+    {value: 'ADMINISTRADOR', description: 'Administrador'}
+  ];
+
   constructor(private service: UserService, private notificationService: NotificationService) {
   }
 
   ngOnInit() {
     this.list();
-    console.log('[UserComponent] initialized.');
+    //this.loadPerfil();
   }
 
   showModalDetails(user: User) {
@@ -39,13 +46,29 @@ export class UserComponent implements OnInit {
     this.list();
   }
 
+  loadPerfil() {
+    this.service.getPerfil().subscribe(
+      (result) => {
+        this.roles = result;
+        if (this.roles.length > 0) {
+          this.selectedRole = this.roles[0];
+        }
+      },
+      (error) => {
+        console.log('error');
+        console.log(error);
+        this.notificationService.error('Não foi possível carregar a lista de perfis!');
+      }
+    );
+  }
+
   list() {
     this.service.list(this.currentPage, this.itemsPerPage).subscribe(
       (result) => {
         this.totalItems = 20;
         this.users = result.json();
         let contentRange = result.headers.get('Content-Range');
-        this.totalItems = contentRange.substr(contentRange.indexOf('/')+1, contentRange.length);
+        this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
       },
       (error) => {
         this.notificationService.error('Não foi possível carregar a lista de usuarios!');
@@ -77,5 +100,9 @@ export class UserComponent implements OnInit {
         this.notificationService.error('Não foi possível remover o usuário!');
       }
     );
+  }
+
+  changeRole(event) {
+    this.selectedRole = event.target.value;
   }
 }

@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { NotificationService } from '../../shared';
-import { LoginService } from '../../login/shared/login.service';
-import { UserService } from '../shared/user.service';
-import { User } from '../shared/user.model';
+import { NotificationService } from '../shared';
+import { LoginService } from '../login/shared/login.service';
+import { UserService } from './user.service';
+import { User } from './user.model';
 
 @Component({
   selector: '<%= prefix.kebab %>-user-edit',
@@ -28,7 +28,6 @@ export class UserEditComponent {
     this.user.perfil = 'ADMINISTRADOR';
     this.user.email = 'admin@demoiselle.org';
     this.user.pass = '12345678';
-    console.log(this.user);
   }
 
   loadUsuario() {
