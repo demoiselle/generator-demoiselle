@@ -35,15 +35,18 @@ module.exports = class BackendUtil {
 
     createFromEntity(entity, config) {
         config = config || {};
-        config.dest = config.dest || 'backend/src/main/java/' + config.package.replace(/\./g, '/') + '/' + config.project + '/';
+        config.dest = config.dest || 'backend/src/main/java/' + config.package.replace(/\./g, '/').toLowerCase() + '/' + config.project.toLowerCase() + '/';
         const fromPath = 'backend/src/main/java/app/';
-        const template = entity;
+        const template = Object.assign(entity, {
+            project: config.project,
+            package: config.package
+        });
         const files = [
             'bc/_pojoBC.java',
             'dao/_pojoDAO.java',
             'service/_pojoREST.java',
         ];
-
+        
         files.map((file) => {
             let from = path.join(fromPath, file);
             let to = path.join(config.dest, _.replace(file, /_pojo/g, template.name.capital));

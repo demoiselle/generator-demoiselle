@@ -116,8 +116,10 @@ module.exports = class AppGenerator extends Generator {
             this.project = this.options.project || answers.project;
             this.package = this.options.package || answers.package;
             this.prefix = this.options.prefix || answers.prefix;
-            this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
-            this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+            if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+                this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
+                this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+            }
             if (!this.options['skip-install']) {
                 this.options['skip-install'] = !answers['do-install'];
             }
