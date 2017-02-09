@@ -1,7 +1,6 @@
 package <%= package.lower %>.<%= project.lower %>.service;
 
-import import app.constants.Perfil;
-<%= package.lower %>.<%= project.lower %>.constants.Perfil;
+import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
 import io.swagger.annotations.Api;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
