@@ -25,7 +25,7 @@ public enum Perfil {
     }
 
     public static Map getMap() {
-        Map<app.constants.Perfil, String> map = new HashMap<>();
+        Map<Perfil, String> map = new HashMap<>();
         for (app.constants.Perfil userType : app.constants.Perfil.values()) {
             map.put(userType, userType.toString());
         }
