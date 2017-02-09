@@ -19,7 +19,7 @@ module.exports = class Util {
       kebab: _.kebabCase(name),
       snake: _.snakeCase(name),
       camel: _.camelCase(name),
-      capital: _.upperFirst(_.toLower(name)),
+      capital: _.upperFirst(_.camelCase(name)),
       lower: _.toLower(name)
     };
   }
