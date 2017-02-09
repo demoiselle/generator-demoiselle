@@ -1,4 +1,5 @@
-# generator-demoiselle [![NPM version][npm-image]] [npm-url]
+# generator-demoiselle [![NPM version][npm-image]] [npm-url] [![Join the chat at https://gitter.im/demoiselle](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/demoiselle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/demoiselle/framework.svg?branch=master)](https://travis-ci.org/demoiselle/framework)
+
 > Gerador para Demoiselle 3.0
 
 Utilitário para geração de arquivos utilizando os padrôes:
