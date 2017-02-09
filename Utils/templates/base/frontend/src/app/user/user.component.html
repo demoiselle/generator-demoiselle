@@ -15,15 +15,13 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Nome</th>
+            <th>Primeiro nome</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let user of users">
-            <td>{{user.id}}</td>
-            <td>{{user.name}}</td>
+            <td>{{user.firstName}}</td>
             <td>
               <button class="btn btn-primary btn-xs" (click)="showModalDetails(user)">
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
@@ -54,65 +52,65 @@
               </button>
               <h4 class="modal-title">Detalhes do usuário</h4>
             </div>
-            <div class="modal-body">
-              <section class="panel panel-default" *ngIf="user">
-                <form>
-                  <fieldset [disabled]="true">
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label" for="formId">Id:</label>
-                      <div class="col-sm-10">
-                        <input id="formId" type="text" size="100" class="form-control" [(ngModel)]="user.id" name="id" disabled="true" />
-                      </div>
-                    </div>
+            <div class="modal-body" *ngIf="user">
+<form class="form-horizontal" role="form" #userForm="ngForm" (ngSubmit)="save(user)">
 
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label" for="formName">Nome:</label>
-                      <div class="col-sm-10">
-                        <input id="formName" type="text" class="form-control" size="100" [(ngModel)]="user.name" name="name" />
-                      </div>
-                    </div>
+  <div class="form-group">
+    <label for="userId" class="control-label col-sm-2">ID</label>
+    <div class="col-xs-6">
+      <input type="text" id="userId" class="form-control"
+        name="userId" [(ngModel)]="user.id"
+        disabled="true">
+    </div>
+  </div>
 
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label" for="formPerfil">Perfil:</label>
-                      <div class="col-sm-10">
-                        <input id="formPerfil" name="description" class="form-control" maxlength="100" [(ngModel)]="user.role" />
-                      </div>
-                    </div>
+  <div class="form-group">
+    <label for="firstName" class="control-label col-sm-2">Pirmeiro Nome</label>
+    <div class="col-xs-6">
+      <input type="text" id="firstName" class="form-control"
+        name="firstName" [(ngModel)]="user.firstName"
+        required>
+      </div>
+  </div>
 
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label" for="formEmail">E-mail:</label>
-                      <div class="col-sm-10">
-                        <input id="formEmail" type="text" class="form-control" size="100" [(ngModel)]="user.email" name="email" />
-                      </div>
-                    </div>
+  <div class="form-group">
+    <label for="userPerfil" class="control-label col-sm-2">Perfil</label>
+    <div class="col-xs-6">
+      <input type="text" id="userPerfil" class="form-control"
+        name="userPerfil" [(ngModel)]="user.perfil"
+        required>
+    </div>
+  </div>
 
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label" for="formCpf">Cpf:</label>
-                      <div class="col-sm-10">
-                        <input id="formCpf" type="text" class="form-control" size="100" [(ngModel)]="user.cpf" name="cpf" />
-                      </div>
-                    </div>
+  <div class="form-group">
+    <label for="userEmail" class="control-label col-sm-2">email</label>
+    <div class="col-xs-6">
+      <input type="text" id="userEmail" class="form-control"
+        name="userEmail" [(ngModel)]="user.email"
+        required>
+    </div>
+  </div>
 
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label" for="formTelefone">Telefone:</label>
-                      <div class="col-sm-10">
-                        <input id="formTelefone" type="text" class="form-control" size="100" [(ngModel)]="user.fone" name="fone" />
-                      </div>
-                    </div>
+  <div class="form-group">
+    <label for="userPass" class="control-label col-sm-2">Password</label>
+    <div class="col-xs-6">
+      <input type="password" id="userPass" class="form-control"
+        name="userPass" [(ngModel)]="user.pass"
+        required>
+    </div>
+  </div>
 
-                    <div class="form-group row">
-                      <label class="col-sm-2 col-form-label" for="formSenha">Senha:</label>
-                      <div class="col-sm-10">
-                        <input id="formSenha" type="password" class="form-control" size="100" [(ngModel)]="user.password" name="password" />
-                      </div>
-                    </div>
-                  </fieldset>
-                  <button type="button" class="btn btn-sm btn-danger" (click)="staticModal.hide()">
-                    <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-                    <span>Cancelar</span>
-                  </button>
-                </form>
-              </section>
+  <div class="col-sm-offset-2">
+    <button type="button" class="btn btn-sm btn-success" (click)="edit(user)">
+      <span>Alterar</span>
+    </button>
+    <button type="button" class="btn btn-sm btn-danger" (click)="staticModal.hide()">
+      <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+      <span>Cancelar</span>
+    </button>
+  </div>
+
+</form>
             </div>
           </div>
         </div>

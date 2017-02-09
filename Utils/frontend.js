@@ -6,6 +6,8 @@ module.exports = class FrontendUtil {
 
   constructor(vm) {
     this.util = new Util(vm);
+    this.vm = vm;
+    this.fs = vm.fs;
   }
 
   createCrud(entity, config) {
@@ -52,6 +54,10 @@ module.exports = class FrontendUtil {
 
       this.util.copyTpl(from, to, template);
     });
+
+    // Adicionar imports no app.module.ts
+    this._addModuleImports(template);
+    
   }
 
   createComponent(component, config) {
@@ -106,5 +112,26 @@ module.exports = class FrontendUtil {
 
       this.util.copyTpl(from, to, template);
     });
+  }
+
+  /**
+   * Importa um sub módulo no módulo principal app.module.ts
+   */
+  _addModuleImports(template) {
+
+    var templatePath = this.vm.destinationPath('frontend/src/app/app.module.ts');
+    this.fs.copy(templatePath, templatePath, {
+      process: function (content) {
+
+        // Utilizando RegExp enquanto não tem um bom parser para typescript
+        var regEx = new RegExp('imports\\:\\s*\\t*\\r*\\n*\\[');
+        var newContent = content.toString().replace(regEx, 'imports: [\n\t\t' + template.name.capital + 'Module,\n');
+        newContent = 'import { ' + template.name.capital + 'Module } from \'./' + template.name.lower + '\';\n' + newContent;
+        return newContent;
+
+      }
+    });
+    this.fs.commit(function () { });
+
   }
 };
