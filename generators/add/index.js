@@ -106,67 +106,6 @@ module.exports = class AddGenerator extends Generator {
             });
         }
 
-        return this.prompt(prompts).then(function (answers) {
-            this.answers = answers;
-            this.options.template = this.options.template || answers.template;
-            this.options.name = this.options.name || answers.name;
-            this.project = this.config.get('project') || answers.project;
-            this.package = this.config.get('package') || answers.package;
-            this.prefix = this.config.get('prefix') || answers.prefix;
-
-            // store config values if needed
-            if (!this.config.get('project')) {
-                this.config.set('project', this.project);
-            }
-            if (!this.config.get('package')) {
-                this.config.set('package', this.package);
-            }
-            if (!this.config.get('prefix')) {
-                this.config.set('prefix', this.prefix);
-            }
-
-
-        }.bind(this));
-    }
-
-    /**
-     * Where you write the generator specific files (routes, controllers, etc)
-     */
-    writing() {
-        let fn = {
-            crud: this._writeCrud,
-            component: this._writeComponent,
-            page: this._writePage,
-        };
-
-        let template = this.options.template;
-        if (template in fn) {
-            fn[template].bind(this)();
-        } else {
-            this.log('Template não implementado:' + this.options.template);
-        }
-    }
-
-    /**
-     * Where conflicts are handled (used internally)
-     */
-    conflicts() {
-        // this.log('[conflicts] ignored.');
-    }
-
-    /**
-     * Where installation are run (npm, bower)
-     */
-    install() {
-        // this.log('[install] ignored.');
-    }
-
-    /**
-     * Called last, cleanup, say good bye, etc
-     */
-    end() {
-        // this.log('[end] ignored.');
-
         if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
             prompts.push({
                 type: 'checkbox',
@@ -265,42 +204,6 @@ module.exports = class AddGenerator extends Generator {
                     description: 'Description of entity',
                 }]
         };
-
-        let configFrontend = {
-            project: this.project,
-            prefix: this.prefix
-        };
-        let configBackend = {
-            project: this.project,
-            package: this.package
-        };
-
-        // Generate Entity CRUD
-        if (!this.options['skip-frontend']) {
-            this.frontendUtil.createCrud(entity, configFrontend);
-
-        }
-
-        // ---------------
-        // PRIVATE methods
-        // ---------------
-
-        _writeCrud()
-        {
-        let entity = {
-            name: Util.createNames(this.options.name),
-            properties: [{
-                    name: 'id',
-                    type: 'integer',
-                    format: 'int32',
-                    description: 'Unique identifier',
-                }, {
-                    name: 'description',
-                    type: 'string',
-                    description: 'Description of entity',
-                }]
-        };
-
 
         let configFrontend = {
             package: Util.createNames(this.package),
