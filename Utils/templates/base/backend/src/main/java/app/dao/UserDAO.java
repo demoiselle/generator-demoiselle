@@ -40,7 +40,7 @@ public class UserDAO extends AbstractDAO<User, String> {
     @Inject
     private DemoiselleSecurityMessages bundle;
 
-    @PersistenceContext(unitName = "AppPU")
+    @PersistenceContext(unitName = "<%= project.lower %>PU")
     protected EntityManager em;
 
     @Override
@@ -85,7 +85,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         return "Email Validado";
     }
 
-    public String login(Credentials credentials) {
+    public Token login(Credentials credentials) {
 
         User usu = verifyEmail(credentials.getUsername(), credentials.getPassword());
         if (usu == null) {
@@ -99,13 +99,13 @@ public class UserDAO extends AbstractDAO<User, String> {
         loggedUser.addParam("Email", usu.getEmail());
         securityContext.setUser(loggedUser);
 
-        return token.getKey();
+        return token;
     }
 
-    public String retoken() {
+    public Token retoken() {
         loggedUser = securityContext.getUser();
         securityContext.setUser(loggedUser);
-        return token.getKey();
+        return token;
     }
 
     private String md5(String senha) {

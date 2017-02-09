@@ -1,15 +1,8 @@
-package app.bc;
+package <%= package.lower %>.<%= project.lower %>.bc;
 
-import app.entity.Todo;
-import java.util.logging.Logger;
+import <%= package.lower %>.<%= project.lower %>.entity.<%= name.capital %>;
 import org.demoiselle.jee.crud.AbstractBusiness;
 
-/**
- *
- * @author gladson
- */
-public class TodoBC extends AbstractBusiness<Todo, String> {
-
-    private static final Logger LOG = Logger.getLogger(TodoBC.class.getName());
+public class <%= name.capital %>BC extends AbstractBusiness< <%= name.capital %>, String> {
 
 }

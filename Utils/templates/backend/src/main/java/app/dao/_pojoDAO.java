@@ -1,21 +1,13 @@
-package app.dao;
+package <%= package.lower %>.<%= project.lower %>.dao;
 
-import app.entity.Todo;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
+import <%= package.lower %>.<%= project.lower %>.entity.<%= name.capital %>;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.demoiselle.jee.crud.AbstractDAO;
 
-/**
- *
- * @author gladson
- */
-public class TodoDAO extends AbstractDAO<Todo, String> {
+public class <%= name.capital %>DAO extends AbstractDAO< <%= name.capital %>, String> {
 
-    private static final Logger LOG = getLogger(TodoDAO.class.getName());
-
-    @PersistenceContext(unitName = "TodoPU")
+    @PersistenceContext(unitName = "<%= project.lower %>PU")
     protected EntityManager em;
 
     @Override

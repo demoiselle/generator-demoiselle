@@ -15,215 +15,215 @@ const BackendUtil = require('../../Utils/backend');
  */
 module.exports = class AddGenerator extends Generator {
 
-  constructor(args, opts) {
-    super(args, opts);
+    constructor(args, opts) {
+        super(args, opts);
 
-    this.frontendUtil = new FrontendUtil(this);
-    this.backendUtil = new BackendUtil(this);
-    Util.changeRootPath(this);
+        this.frontendUtil = new FrontendUtil(this);
+        this.backendUtil = new BackendUtil(this);
+        Util.changeRootPath(this);
 
-    // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
-    this.argument('template', { required: false });
-    this.argument('name', { required: false });
+        // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
+        this.argument('template', {required: false});
+        this.argument('name', {required: false});
 
-    // Options - parecido com "argument", mas vão como "flags" (--option)
-    this.option('skip-frontend');
-    this.option('skip-backend');
-  }
-
-  /**
-   * Your initialization methods (checking current project state, getting configs, etc)
-   */
-  initializing() {
-    // this.log('[initializing] done.');
-  }
-
-  /**
-   * Where you prompt users for options (where you'd call this.prompt())
-   * Examples: name of app? which frameworks? which template engine?
-   */
-  prompting() {
-
-    let prompts = [];
-
-    if (!this.config.get('project')) {
-      console.log('Nome do projeto não encontrado na configuração...')
-      prompts.push({
-        type: 'input',
-        name: 'project',
-        message: 'Informe o nome do seu projeto:',
-        default: 'app'
-      });
-    }
-    if (!this.config.get('package')) {
-      console.log('Package do backend não encontrado na configuração...')
-      prompts.push({
-        type: 'input',
-        name: 'package',
-        message: 'Informe o package do backend:',
-        default: 'org.demoiselle'
-      });
-    }
-    if (!this.config.get('prefix')) {
-      console.log('Prefixo dos componentes não encontrado na configuração...')
-      prompts.push({
-        type: 'input',
-        name: 'prefix',
-        message: 'Informe um prefixo para seus componentes:',
-        default: 'my'
-      });
+        // Options - parecido com "argument", mas vão como "flags" (--option)
+        this.option('skip-frontend');
+        this.option('skip-backend');
     }
 
-
-    if (!this.options.template) {
-      prompts.push({
-        type: 'list',
-        name: 'template',
-        message: 'O que você deseja adicionar ao projeto?',
-        default: 'crud',
-        choices: [{
-          name: 'Funcionalidade (CRUD)',
-          value: 'crud'
-        }/*, {
-          name: 'Componente apenas (frontend)',
-          value: 'component'
-        }, {
-          name: 'Página apenas (frontend)',
-          value: 'page'
-        }, {
-          name: 'Serviço',
-          value: 'service'
-        }*/]
-      });
+    /**
+     * Your initialization methods (checking current project state, getting configs, etc)
+     */
+    initializing() {
+        // this.log('[initializing] done.');
     }
 
-    if (!this.options.name) {
-      prompts.push({
-        type: 'input',
-        name: 'name',
-        message: 'Dê um nome para a funcionalidade/entidade:',
-        default: 'MyExample'
-      });
+    /**
+     * Where you prompt users for options (where you'd call this.prompt())
+     * Examples: name of app? which frameworks? which template engine?
+     */
+    prompting() {
+
+        let prompts = [];
+
+        if (!this.config.get('project')) {
+            console.log('Nome do projeto não encontrado na configuração...')
+            prompts.push({
+                type: 'input',
+                name: 'project',
+                message: 'Informe o nome do seu projeto:',
+                default: 'app'
+            });
+        }
+        if (!this.config.get('package')) {
+            console.log('Package do backend não encontrado na configuração...')
+            prompts.push({
+                type: 'input',
+                name: 'package',
+                message: 'Informe o package do backend:',
+                default: 'org.demoiselle'
+            });
+        }
+        if (!this.config.get('prefix')) {
+            console.log('Prefixo dos componentes não encontrado na configuração...')
+            prompts.push({
+                type: 'input',
+                name: 'prefix',
+                message: 'Informe um prefixo para seus componentes:',
+                default: 'my'
+            });
+        }
+
+
+        if (!this.options.template) {
+            prompts.push({
+                type: 'list',
+                name: 'template',
+                message: 'O que você deseja adicionar ao projeto?',
+                default: 'crud',
+                choices: [{
+                        name: 'Funcionalidade (CRUD)',
+                        value: 'crud'
+                    }/*, {
+                     name: 'Componente apenas (frontend)',
+                     value: 'component'
+                     }, {
+                     name: 'Página apenas (frontend)',
+                     value: 'page'
+                     }, {
+                     name: 'Serviço',
+                     value: 'service'
+                     }*/]
+            });
+        }
+
+        if (!this.options.name) {
+            prompts.push({
+                type: 'input',
+                name: 'name',
+                message: 'Dê um nome para a funcionalidade/entidade:',
+                default: 'MyExample'
+            });
+        }
+
+        return this.prompt(prompts).then(function (answers) {
+            this.answers = answers;
+            this.options.template = this.options.template || answers.template;
+            this.options.name = this.options.name || answers.name;
+            this.project = this.config.get('project') || answers.project;
+            this.package = this.config.get('package') || answers.package;
+            this.prefix = this.config.get('prefix') || answers.prefix;
+
+            // store config values if needed
+            if (!this.config.get('project')) {
+                this.config.set('project', this.project);
+            }
+            if (!this.config.get('package')) {
+                this.config.set('package', this.package);
+            }
+            if (!this.config.get('prefix')) {
+                this.config.set('prefix', this.prefix);
+            }
+
+
+        }.bind(this));
     }
 
-    return this.prompt(prompts).then(function (answers) {
-      this.answers = answers;
-      this.options.template = this.options.template || answers.template;
-      this.options.name = this.options.name || answers.name;
-      this.project = this.config.get('project') || answers.project;
-      this.package = this.config.get('package') || answers.package;
-      this.prefix = this.config.get('prefix') || answers.prefix;
+    /**
+     * Where you write the generator specific files (routes, controllers, etc)
+     */
+    writing() {
+        let fn = {
+            crud: this._writeCrud,
+            component: this._writeComponent,
+            page: this._writePage,
+        };
 
-      // store config values if needed
-      if (!this.config.get('project')) {
-        this.config.set('project', this.project);
-      }
-      if (!this.config.get('package')) {
-        this.config.set('package', this.package);
-      }
-      if (!this.config.get('prefix')) {
-        this.config.set('prefix', this.prefix);
-      }
-
-
-    }.bind(this));
-  }
-
-  /**
-   * Where you write the generator specific files (routes, controllers, etc)
-   */
-  writing() {
-    let fn = {
-      crud: this._writeCrud,
-      component: this._writeComponent,
-      page: this._writePage,
-    };
-
-    let template = this.options.template;
-    if (template in fn) {
-      fn[template].bind(this)();
-    } else {
-      this.log('Template não implementado:' + this.options.template);
+        let template = this.options.template;
+        if (template in fn) {
+            fn[template].bind(this)();
+        } else {
+            this.log('Template não implementado:' + this.options.template);
+        }
     }
-  }
 
-  /**
-   * Where conflicts are handled (used internally)
-   */
-  conflicts() {
-    // this.log('[conflicts] ignored.');
-  }
-
-  /**
-   * Where installation are run (npm, bower)
-   */
-  install() {
-    // this.log('[install] ignored.');
-  }
-
-  /**
-   * Called last, cleanup, say good bye, etc
-   */
-  end() {
-    // this.log('[end] ignored.');
-  }
-
-  // ---------------
-  // PRIVATE methods
-  // ---------------
-
-  _writeCrud() {
-    let entity = {
-      name: Util.createNames(this.options.name),
-      properties: [{
-        name: 'id',
-        type: 'integer',
-        format: 'int32',
-        description: 'Unique identifier',
-      }, {
-        name: 'description',
-        type: 'string',
-        description: 'Description of entity',
-      }]
-    };
-
-
-    let configFrontend = {
-      project: this.project,
-      prefix: this.prefix
-    };
-    let configBackend = {
-      project: this.project,
-      package: this.package
-    };
-
-    // Generate Entity CRUD
-    if (!this.options['skip-frontend']) {
-      this.frontendUtil.createCrud(entity, configFrontend);
+    /**
+     * Where conflicts are handled (used internally)
+     */
+    conflicts() {
+        // this.log('[conflicts] ignored.');
     }
-    if (!this.options['skip-backend']) {
-      this.backendUtil.createCrud(entity, configBackend);
+
+    /**
+     * Where installation are run (npm, bower)
+     */
+    install() {
+        // this.log('[install] ignored.');
     }
-  }
 
-  _writeComponent() {
-    let component = {
-      name: Util.createNames(this.options.name)
-    };
-
-    if (!this.options['skip-frontend']) {
-      this.frontendUtil.createComponent(component);
+    /**
+     * Called last, cleanup, say good bye, etc
+     */
+    end() {
+        // this.log('[end] ignored.');
     }
-  }
 
-  _writePage() {
-    let page = {
-      name: Util.createNames(this.options.name)
-    };
+    // ---------------
+    // PRIVATE methods
+    // ---------------
 
-    if (!this.options['skip-frontend']) {
-      this.frontendUtil.createPage(page);
+    _writeCrud() {
+        let entity = {
+            name: Util.createNames(this.options.name),
+            properties: [{
+                    name: 'id',
+                    type: 'integer',
+                    format: 'int32',
+                    description: 'Unique identifier',
+                }, {
+                    name: 'description',
+                    type: 'string',
+                    description: 'Description of entity',
+                }]
+        };
+
+
+        let configFrontend = {
+            package: Util.createNames(this.package),
+            project: Util.createNames(this.project)
+        };
+        let configBackend = {
+            package: Util.createNames(this.package),
+            project: Util.createNames(this.project)
+        };
+
+        // Generate Entity CRUD
+        if (!this.options['skip-frontend']) {
+            this.frontendUtil.createCrud(entity, configFrontend);
+        }
+        if (!this.options['skip-backend']) {
+            this.backendUtil.createCrud(entity, configBackend);
+        }
     }
-  }
+
+    _writeComponent() {
+        let component = {
+            name: Util.createNames(this.options.name)
+        };
+
+        if (!this.options['skip-frontend']) {
+            this.frontendUtil.createComponent(component);
+        }
+    }
+
+    _writePage() {
+        let page = {
+            name: Util.createNames(this.options.name)
+        };
+
+        if (!this.options['skip-frontend']) {
+            this.frontendUtil.createPage(page);
+        }
+    }
 };
 

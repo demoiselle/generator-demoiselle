@@ -1,39 +1,22 @@
-package app.entity;
+package <%= package.lower %>.<%= project.lower %>.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Objects;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import static javax.persistence.FetchType.EAGER;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import static javax.persistence.TemporalType.DATE;
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.hibernate.annotations.GenericGenerator;
 
-/**
- *
- * @author gladson
- */
 @Entity
 @XmlRootElement
-@Table(name = "todo")
-public class Todo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    private static final Logger LOG = getLogger(Todo.class.getName());
+@Table(name = "<%= name.lower %>")
+public class <%= name.capital %> implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -47,20 +30,21 @@ public class Todo implements Serializable {
     @Column(nullable = false, length = 128)
     private String description;
 
-    private String status;
+    public String getId() {
+        return id;
+    }
 
-    @Future
-    @Temporal(DATE)
-    private Date dateEnd;
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    private int changed;
+    public String getDescription() {
+        return description;
+    }
 
-    @Basic(optional = false)
-    @NotNull
-    @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = EAGER)
-    @JsonBackReference
-    private User user;
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     @Override
     public int hashCode() {
@@ -80,56 +64,12 @@ public class Todo implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Todo other = (Todo) obj;
+        final <%= name.capital %> other = (<%= name.capital %>) obj;
         return Objects.equals(this.id, other.id);
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "<%= name.capital %>{" + "id=" + id + ", description=" + description + '}';
     }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getDateEnd() {
-        return dateEnd;
-    }
-
-    public void setDateEnd(Date dateEnd) {
-        this.dateEnd = dateEnd;
-    }
-
-    public int getChanged() {
-        return changed;
-    }
-
-    public void setChanged(int changed) {
-        this.changed = changed;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
 }
