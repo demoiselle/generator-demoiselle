@@ -10,8 +10,8 @@ import { User } from '../shared/user.model';
   selector: '<%= prefix.kebab %>-user-edit',
   templateUrl: './user-edit.component.html'
 })
-export class UserEditComponent implements OnInit, OnDestroy {
-  user: User;
+export class UserEditComponent {
+  user: User = new User();
   id: number;
   userLoaded: boolean = false;
 
@@ -22,26 +22,13 @@ export class UserEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: UserService,
     private loginService: LoginService,
-    private notificationService: NotificationService) {
-  }
-
-  ngOnInit() {
-    this.routeSubscribe = this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.id = +params['id']; // (+) converts string 'id' to a number
-        this.loadUsuario();
-      } else {
-        this.user = new User();
-        this.userLoaded = true;
-      }
-    });
-
-    this.loginService.setRedirect('login');
-  }
-
-  ngOnDestroy() {
-    this.routeSubscribe.unsubscribe();
-    this.loginService.setRedirect('');
+    private notificationService: NotificationService)
+  {
+    this.user.firstName = 'Admin';
+    this.user.perfil = 'ADMINISTRADOR';
+    this.user.email = 'admin@demoiselle.org';
+    this.user.pass = '12345678';
+    console.log(this.user);
   }
 
   loadUsuario() {
@@ -57,31 +44,20 @@ export class UserEditComponent implements OnInit, OnDestroy {
       );
   }
 
-  save() {
-    if (!this.id) {
-      this.service.create(this.user).subscribe(
-        () => {
-          this.notificationService.success('Usuário criado com sucesso!');
-          this.back();
-        },
-        error => {
-          this.notificationService.error('Não foi possível salvar o usuário!');
-        }
-      );
-    } else {
-      this.service.update(this.user).subscribe(
-        usuario => {
-          this.notificationService.success('Usuário atualizado com sucesso!');
-          this.back();
-        },
-        error => {
-          this.notificationService.error('Não foi possível salvar o usuário!');
-        }
-      );
-    }
+  save(user:User) {
+    this.service.create(user).subscribe(
+      (result) => {
+        this.notificationService.success('Usuário criado com sucesso!');
+        this.goBack();
+      },
+      (error) => {
+        this.notificationService.error('Não foi possível salvar o usuário!');
+      }
+    );
+  }
+  
+  goBack() {
+    this.router.navigate(['user']);
   }
 
-  back() {
-    this.loginService.proceedToRedirect('');
-  }
 }

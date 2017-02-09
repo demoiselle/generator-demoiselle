@@ -12,19 +12,20 @@ export class UserService {
 
   list(currentPage: number, itemsPerPage: number) {
     console.log('TODO: implementar paginação:', currentPage, itemsPerPage);
-
-    return this.http.get('~main/user')
-      .map(res => res.json())
+    let start = (currentPage*itemsPerPage) - (itemsPerPage);
+    let end = (currentPage*itemsPerPage) - 1;
+    return this.http.get('~main/user?range='+start+'-'+end)
+      .map(res => res)
       .catch((error) => {
 
         return Observable.throw(<User[]>[{
           id: 1,
-          name: 'user 1 catch',
-          role: 'USER'
+          firstName: 'user 1 catch',
+          perfil: 'USER'
         }, {
           id: 2,
-          name: 'user 2 catch',
-          role: 'ADMINISTRATOR'
+          firstName: 'user 2 catch',
+          perfil: 'ADMINISTRATOR'
         }
         ]);
       });

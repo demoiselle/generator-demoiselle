@@ -8,21 +8,17 @@ import { UserEditComponent } from './user-edit/user-edit.component';
 @NgModule({
     imports: [
         RouterModule.forChild([
-            // {
-            //     path: 'user',
-            //     data: ['Usuário'],
-            //     // canActivate: [AuthGuard],
-            //     component: UserComponent
-            // },
-
-            // edição de usuário
+            {
+                path: 'user',
+                data: ['Usuário'],
+                // canActivate: [AuthGuard],
+                component: UserComponent
+            },
             {
                 path: 'user/edit/:id',
                 // canActivate: [AuthGuard],
                 component: UserEditComponent
             },
-
-            // novo usuário
             {
                 path: 'user/edit',
                 canActivate: [AuthGuard],

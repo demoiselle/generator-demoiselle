@@ -41,11 +41,13 @@ export class UserComponent implements OnInit {
 
   list() {
     this.service.list(this.currentPage, this.itemsPerPage).subscribe(
-      result => {
-        this.totalItems = 20; // backend must send  the total items for proper pagination config
-        this.users = result;
+      (result) => {
+        this.totalItems = 20;
+        this.users = result.json();
+        let contentRange = result.headers.get('Content-Range');
+        this.totalItems = contentRange.substr(contentRange.indexOf('/')+1, contentRange.length);
       },
-      error => {
+      (error) => {
         this.notificationService.error('Não foi possível carregar a lista de usuarios!');
         this.totalItems = 20;
         this.users = error;
@@ -53,14 +55,25 @@ export class UserComponent implements OnInit {
     );
   }
 
+  edit(user:User) {
+    this.service.update(user).subscribe(
+      (result) => {
+        this.notificationService.success('Usuário atualizado com sucesso!');
+      },
+      (error) => {
+        this.notificationService.error('Não foi possível salvar o usuário!');
+      }
+    );
+  }
+
   delete(usuario: User) {
     this.service.delete(usuario).subscribe(
-      () => {
+      (result) => {
         this.user = null;
         this.staticModal.hide();
         this.list();
       },
-      error => {
+      (error) => {
         this.notificationService.error('Não foi possível remover o usuário!');
       }
     );
