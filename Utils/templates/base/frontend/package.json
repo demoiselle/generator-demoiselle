@@ -35,7 +35,7 @@
     "@angular/platform-browser-dynamic": "2.3.0",
     "@angular/router": "3.3.0",
     "@demoiselle/http": "^0.0.18",
-    "@demoiselle/security": "^0.0.19",
+    "@demoiselle/security": "^0.0.20",
     "angular-confirmation-popover": "^2.0.3",
     "angular2-infinite-scroll": "^0.2.7",
     "angular2-jwt": "^0.1.24",

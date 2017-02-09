@@ -16,7 +16,6 @@ import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
 import { LoginModule } from './login/login.module';
 import { HomeModule } from './home/home.module';
 import { UserModule } from './user';
-import { TodoModule } from './todo';
 
 let toastrOptions: ToastOptions = new ToastOptions({
   animate: 'flyRight',
@@ -39,8 +38,7 @@ let toastrOptions: ToastOptions = new ToastOptions({
     // #feature modules
     LoginModule,
     HomeModule,
-    UserModule,
-    TodoModule
+    UserModule
   ],
   declarations: [
     AppComponent,

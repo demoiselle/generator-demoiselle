@@ -22,12 +22,13 @@ module.exports = class FrontendUtil {
 
     const files = [
       // ENTITY
+      'index.ts',
       '_entity.module.ts',
       '_entity-routing.module.ts',
-      '_entity.ts',
-      '_entity.spec.ts',
-      '_entity.html',
-      '_entity.scss',
+      '_entity.component.ts',
+      '_entity.component.spec.ts',
+      '_entity.component.html',
+      '_entity.component.scss',
       // shared
       'shared/_entity.model.ts',
       'shared/_entity.service.ts',

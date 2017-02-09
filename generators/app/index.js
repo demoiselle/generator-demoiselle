@@ -138,13 +138,13 @@ module.exports = class AppGenerator extends Generator {
     writing() {
         // Generate Project
         if (!this.options['skip-frontend']) {
-            this._generateTodoProjectFrontend();
+            this._generateProjectFrontend();
         } else {
             this.log('[writing] frontend ignored.');
         }
 
         if (!this.options['skip-backend']) {
-            this._generateTodoProjectBackend();
+            this._generateProjectBackend();
         } else {
             this.log('[writing] backend ignored.');
         }
@@ -175,7 +175,7 @@ module.exports = class AppGenerator extends Generator {
     // PRIVATE methods
     // ---------------
 
-    _generateTodoProjectFrontend() {
+    _generateProjectFrontend() {
         let template = {
             project: Util.createNames(this.project),
             prefix: Util.createNames(this.prefix)
@@ -186,7 +186,7 @@ module.exports = class AppGenerator extends Generator {
         this.fs.copyTpl(from, to, template);
     }
 
-    _generateTodoProjectBackend() {
+    _generateProjectBackend() {
         let template = {
             package: Util.createNames(this.package),
             project: Util.createNames(this.project)
