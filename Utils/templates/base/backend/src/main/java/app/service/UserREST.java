@@ -7,9 +7,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractREST;
+import org.demoiselle.jee.security.annotation.Authenticated;
 
 @Api("User")
 @Path("user")
+@Authenticated
 public class UserREST extends AbstractREST<User, String> {
     
     @GET
