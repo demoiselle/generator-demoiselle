@@ -17,7 +17,7 @@ export class <%= name.capital %>Component implements OnInit {
 
   @ViewChild('staticModal') public staticModal: ModalDirective;
 
-  public itemsPerPage: number = 1;
+  public itemsPerPage: number = 10;
   public totalItems: number = 0;
   public currentPage: number = 1;
 
@@ -41,14 +41,14 @@ export class <%= name.capital %>Component implements OnInit {
   list() {
     this.service.list(this.currentPage, this.itemsPerPage).subscribe(
       (result) => {
-        this.totalItems = 20;
         this.<%= name.kebab %>s = result.json();
         let contentRange = result.headers.get('Content-Range');
-        this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
+        if (contentRange) {
+          this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
+        }
       },
       (error) => {
         this.notificationService.error('Não foi possível carregar a lista de itens!');
-        this.totalItems = 20;
         this.<%= name.kebab %>s = error;
       }
     );

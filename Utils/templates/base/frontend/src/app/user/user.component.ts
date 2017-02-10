@@ -33,7 +33,7 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     this.list();
-    //this.loadPerfil();
+    this.loadPerfil();
   }
 
   showModalDetails(user: User) {
@@ -65,14 +65,14 @@ export class UserComponent implements OnInit {
   list() {
     this.service.list(this.currentPage, this.itemsPerPage).subscribe(
       (result) => {
-        this.totalItems = 20;
         this.users = result.json();
         let contentRange = result.headers.get('Content-Range');
-        this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
+        if (contentRange) {
+          this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
+        }
       },
       (error) => {
         this.notificationService.error('Não foi possível carregar a lista de usuarios!');
-        this.totalItems = 20;
         this.users = error;
       }
     );
