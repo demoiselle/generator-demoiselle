@@ -206,7 +206,7 @@ module.exports = class AddGenerator extends Generator {
         };
 
         let configFrontend = {
-            package: Util.createNames(this.package),
+            prefix: Util.createNames(this.prefix),
             project: Util.createNames(this.project)
         };
         let configBackend = {

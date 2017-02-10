@@ -35,13 +35,12 @@ module.exports = class BackendUtil {
             this.util.copyTpl(from, to, template);
         });
 
-        // Adicionar imports no app.module.ts
         this._addEntityToPersistenceXml(template);
     }
 
     createFromEntity(entity, config) {
         config = config || {};
-        config.dest = config.dest || 'backend/src/main/java/' + config.package.replace(/\./g, '/').toLowerCase() + '/' + config.project.toLowerCase() + '/';
+        config.dest = config.dest || 'backend/src/main/java/' + config.package.lower.replace(/\./g, '/') + '/' + config.project.lower + '/';
         const fromPath = 'backend/src/main/java/app/';
         const template = Object.assign(entity, {
             project: config.project,
@@ -60,7 +59,6 @@ module.exports = class BackendUtil {
             this.util.copyTpl(from, to, template);
         });
 
-        // Adicionar imports no app.module.ts
         this._addEntityToPersistenceXml(template);
     }
 

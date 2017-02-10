@@ -106,6 +106,34 @@ module.exports = class SwaggerGenerator extends Generator {
       this.log('Nenhuma entidade encontrada.');
     }
 
+    if (!this.config.get('project')) {
+            console.log('Nome do projeto não encontrado na configuração...')
+            prompts.push({
+                type: 'input',
+                name: 'project',
+                message: 'Informe o nome do seu projeto:',
+                default: 'app'
+            });
+        }
+        if (!this.config.get('package')) {
+            console.log('Package do backend não encontrado na configuração...')
+            prompts.push({
+                type: 'input',
+                name: 'package',
+                message: 'Informe o package do backend:',
+                default: 'org.demoiselle'
+            });
+        }
+        if (!this.config.get('prefix')) {
+            console.log('Prefixo dos componentes não encontrado na configuração...')
+            prompts.push({
+                type: 'input',
+                name: 'prefix',
+                message: 'Informe um prefixo para seus componentes:',
+                default: 'my'
+            });
+        }
+
     if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
       prompts.push({
         type: 'checkbox',
@@ -129,6 +157,11 @@ module.exports = class SwaggerGenerator extends Generator {
       });
       this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
       this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+
+      this.project = this.config.get('project') || answers.project;
+      this.package = this.config.get('package') || answers.package;
+      this.prefix = this.config.get('prefix') || answers.prefix;
+
     }.bind(this));
   }
 
@@ -235,11 +268,17 @@ module.exports = class SwaggerGenerator extends Generator {
     this._entities.forEach((entity) => {
 
       if (!this.options['skip-frontend']) {
-        this.frontendUtil.createCrud(entity);
+        this.frontendUtil.createCrud(entity, {
+          project: Util.createNames(this.project),
+          prefix: Util.createNames(this.prefix)
+        });
       }
 
       if (!this.options['skip-backend']) {
-        this.backendUtil.createFromEntity(entity);
+        this.backendUtil.createCrud(entity, {
+            package: Util.createNames(this.package),
+            project: Util.createNames(this.project)
+        });
       }
     });
   }

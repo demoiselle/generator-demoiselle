@@ -179,7 +179,7 @@ module.exports = class FromEntityGenerator extends Generator {
             if (!this.options['skip-frontend']) {
                 this.frontendUtil.createCrud(entity, {
                     project: Util.createNames(this.project),
-                    prefix: this.prefix
+                    prefix: Util.createNames(this.prefix)
                 });
             }
 
