@@ -101,7 +101,12 @@
             <scope>provided</scope>
         </dependency>
         
-
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-jaxrs</artifactId>
+            <!--<version>1.5.10</version>--> 
+            <!--descomentar a versão em desenv e comentar para producação-->
+        </dependency>
         
     </dependencies>
 
