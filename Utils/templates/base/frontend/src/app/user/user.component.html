@@ -27,7 +27,7 @@
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                   <span>Detalhes</span>
               </button>
-              <a class="btn btn-primary btn-xs" [routerLink]="['/user','edit', user.id]">
+              <a class="btn btn-primary btn-xs" [routerLink]="['/user','edit', user]">
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 <span>Editar</span>
               </a>
@@ -73,16 +73,16 @@
                 <div class="col-xs-6">
                   <input type="text" id="firstName" class="form-control"
                     name="firstName" [(ngModel)]="user.firstName"
-                    required>
+                    disabled="true">
                   </div>
               </div>
 
               <div class="form-group">
                 <label for="userPerfil" class="control-label col-sm-2">Perfil</label>
-                <div class="col-xs-6">
-                  <select id="userPerfil" class="form-control" (change)="changeRole($event)">
-                    <option *ngFor="let role of roles">{{role.description}}</option>
-                  </select>
+                <div class="col-xs-4">
+                  <input type="text" id="userPerfil" class="form-control"
+                    name="userPerfil" [(ngModel)]="user.perfil"
+                    disabled="true">
                 </div>
               </div>
 
@@ -91,7 +91,7 @@
                 <div class="col-xs-6">
                   <input type="text" id="userEmail" class="form-control"
                     name="userEmail" [(ngModel)]="user.email"
-                    required>
+                    disabled="true">
                 </div>
               </div>
 
@@ -100,17 +100,19 @@
                 <div class="col-xs-6">
                   <input type="password" id="userPass" class="form-control"
                     name="userPass" [(ngModel)]="user.pass"
-                    required>
+                    disabled="true">
                 </div>
               </div>
 
               <div class="col-sm-offset-2">
+                <!--
                 <button type="button" class="btn btn-sm btn-success" (click)="edit(user)">
                   <span>Alterar</span>
                 </button>
-                <button type="button" class="btn btn-sm btn-danger" (click)="staticModal.hide()">
+                -->
+                <button type="button" class="btn btn-sm btn-default" (click)="staticModal.hide()">
                   <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-                  <span>Cancelar</span>
+                  <span>OK</span>
                 </button>
               </div>
 

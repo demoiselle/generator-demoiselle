@@ -4,7 +4,7 @@
     <label for="userId" class="control-label col-sm-2">ID</label>
     <div class="col-xs-4">
       <input type="text" id="userId" class="form-control"
-        name="userId"
+        name="userId" [(ngModel)]="user.id"
         disabled="true">
     </div>
   </div>
@@ -27,6 +27,17 @@
     </div>
   </div>
 
+  <!--
+  <div class="form-group">
+    <label for="userPerfil" class="control-label col-sm-2">Perfil</label>
+    <div class="col-xs-4">
+      <select id="userPerfil" class="form-control" (change)="changeRole($event)">
+        <option *ngFor="let role of roles" [ngValue]="selectedRole">{{role.description}}</option>
+      </select>
+    </div>
+  </div>
+  -->
+
   <div class="form-group">
     <label for="userEmail" class="control-label col-sm-2">email</label>
     <div class="col-xs-4">
@@ -39,7 +50,7 @@
   <div class="form-group">
     <label for="userPass" class="control-label col-sm-2">Password</label>
     <div class="col-xs-4">
-      <input type="text" id="userPass" class="form-control"
+      <input type="password" id="userPass" class="form-control"
         name="userPass" [(ngModel)]="user.pass"
         required>
     </div>
