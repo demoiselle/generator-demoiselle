@@ -26,13 +26,13 @@ public class AuthREST {
 
     @POST
     public Response login(Credentials credentials) {
-        return ok().entity(dao.login(credentials)).build();
+        return ok().entity(dao.login(credentials).toString()).build();
     }
 
     @GET
     @Authenticated
     public Response retoken() {
-        return ok().entity(dao.retoken()).build();
+        return ok().entity(dao.retoken().toString()).build();
     }
 
 }
