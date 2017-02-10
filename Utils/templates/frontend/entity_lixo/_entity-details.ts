@@ -21,3 +21,4 @@ export class <%= name.capital %>DetailsComponent implements OnInit {
     console.log('<%= name.capital %>DetailsComponent initialized.');
   }
 }
+

@@ -42,3 +42,4 @@ describe('<%= name.capital %>Component', () => {
         // expect(spy.calls.mostRecent().args[1].queryParams.paramName).toEqual('value');
     }));
 });
+

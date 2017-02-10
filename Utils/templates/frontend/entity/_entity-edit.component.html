@@ -1,0 +1,32 @@
+<form class="form-horizontal" role="form" #<%= name.kebab %>Form="ngForm" (ngSubmit)="save(<%= name.kebab %>)">
+
+  <div class="form-group">
+    <label for="<%= name.kebab %>Id" class="control-label col-sm-2">ID</label>
+    <div class="col-xs-4">
+      <input type="text" id="<%= name.kebab %>Id" class="form-control"
+        name="<%= name.kebab %>Id"
+        disabled="true">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="description" class="control-label col-sm-2">Descrição</label>
+    <div class="col-xs-4">
+      <input type="text" id="description" class="form-control"
+        name="description" [(ngModel)]="<%= name.kebab %>.description"
+        required>
+      </div>
+  </div>
+
+  <div class="col-sm-offset-2">
+    <button type="submit" class="btn btn-sm btn-success">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      <span>Salvar</span>
+    </button>
+    <button type="button" class="btn btn-sm btn-danger" (click)="goBack()">
+      <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+      <span>Cancelar</span>
+    </button>
+  </div>
+
+</form>

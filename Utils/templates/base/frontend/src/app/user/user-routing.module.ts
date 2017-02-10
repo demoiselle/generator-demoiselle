@@ -21,7 +21,7 @@ import { UserEditComponent } from './user-edit.component';
             },
             {
                 path: 'user/edit',
-                canActivate: [AuthGuard],
+                // canActivate: [AuthGuard],
                 component: UserEditComponent
             }
         ])

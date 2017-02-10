@@ -36,3 +36,4 @@ export class <%= name.capital %>FormComponent implements OnInit {
     // <%= name.capital %>Service.update(this.model);
   }
 }
+

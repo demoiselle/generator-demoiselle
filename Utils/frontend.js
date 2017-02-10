@@ -26,28 +26,27 @@ module.exports = class FrontendUtil {
       '_entity.module.ts',
       '_entity-routing.module.ts',
       '_entity.component.ts',
-      '_entity.component.spec.ts',
+      // '_entity.component.spec.ts',
       '_entity.component.html',
       '_entity.component.scss',
       // shared
-      'shared/_entity.model.ts',
-      'shared/_entity.service.ts',
-      'shared/_entity.service.spec.ts',
-      // details
-      'details/_entity-details.ts',
-      'details/_entity-details.spec.ts',
-      'details/_entity-details.html',
-      'details/_entity-details.scss',
+      '_entity.model.ts',
+      '_entity.service.ts',
+      // '_entity.service.spec.ts',
+      // edit
+      '_entity-edit.component.ts',
+      // '_entity-edit.component.spec.ts',
+      '_entity-edit.component.html',
       // form
-      'form/_entity-form.ts',
-      'form/_entity-form.spec.ts',
-      'form/_entity-form.html',
-      'form/_entity-form.scss',
+      // 'form/_entity-form.ts',
+      // 'form/_entity-form.spec.ts',
+      // 'form/_entity-form.html',
+      // 'form/_entity-form.scss',
       // list
-      'list/_entity-list.ts',
-      'list/_entity-list.spec.ts',
-      'list/_entity-list.html',
-      'list/_entity-list.scss'
+      // 'list/_entity-list.ts',
+      // 'list/_entity-list.spec.ts',
+      // 'list/_entity-list.html',
+      // 'list/_entity-list.scss'
     ];
     files.map((file) => {
       let from = path.join(fromPath, file);

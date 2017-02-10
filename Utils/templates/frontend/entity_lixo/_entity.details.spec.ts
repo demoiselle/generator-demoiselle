@@ -7,24 +7,24 @@ import { TestBed, async } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { <%= name.capital %>FormComponent } from './<%= name.kebab %>-form.component';
+import { <%= name.capital %>DetailsComponent } from './<%= name.kebab %>-details.component';
 
-describe('<%= name.capital %>FormComponent', () => {
+describe('<%= name.capital %>DetailsComponent', () => {
     let fixture, comp, el;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             declarations: [
-                <%= name.capital %>FormComponent
+                <%= name.capital %>DetailsComponent
             ],
             providers: [],
-            schemas: [NO_ERRORS_SCHEMA]
+            schemas: [ NO_ERRORS_SCHEMA ]
         });
     });
 
     beforeEach(async(() => {
         TestBed.compileComponents().then(() => {
-            fixture = TestBed.createComponent(<%= name.capital %>FormComponent);
+            fixture = TestBed.createComponent(<%= name.capital %>DetailsComponent);
             comp = fixture.componentInstance;
 
             // el = fixture.debugElement.query(By.css('h1'));
@@ -43,3 +43,4 @@ describe('<%= name.capital %>FormComponent', () => {
         // });
     });
 });
+

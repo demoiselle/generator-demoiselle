@@ -21,7 +21,7 @@ import { <%= name.capital %>EditComponent } from './<%= name.kebab %>-edit.compo
             },
             {
                 path: '<%= name.kebab %>/edit',
-                // canActivate: [AuthGuard],
+                canActivate: [AuthGuard],
                 component: <%= name.capital %>EditComponent
             }
         ])
