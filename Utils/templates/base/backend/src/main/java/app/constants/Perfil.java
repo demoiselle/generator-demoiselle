@@ -1,7 +1,7 @@
 package <%= package.lower %>.<%= project.lower %>.constants;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum Perfil {
     
@@ -25,7 +25,7 @@ public enum Perfil {
     }
 
     public static Map getMap() {
-        Map<Perfil, String> map = new HashMap<>();
+        Map<Perfil, String> map = new ConcurrentHashMap<>();
         for (Perfil userType : Perfil.values()) {
             map.put(userType, userType.toString());
         }
