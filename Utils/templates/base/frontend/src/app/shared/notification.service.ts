@@ -6,15 +6,31 @@ import { Subscription } from 'rxjs/Subscription';
 @Injectable()
 export class NotificationService {
   validationSubscription: Subscription;
+  generalErrorsSubscription: Subscription;
   constructor(private toastr: ToastsManager, private http: Http) {
     this.validationSubscription = this.http.validation$.subscribe(
       error => this.showValidationErrors(error)
+    );
+    this.generalErrorsSubscription = this.http.generalErrors$.subscribe(
+      error => this.showGeneralErrors(error)
     );
   }
 
   showValidationErrors(errors: any) {
     for (let error of errors) {
         this.error('Erro de validação! Campo: ' + error.error_field + ' , Descrição: ' + error.error_description);
+    }
+  }
+  showGeneralErrors(errors: any) {
+
+    for (let error of errors) {
+      let description = '';
+      if (typeof error.error_description === "string") {
+        description = error.error_description;
+      } else if (typeof error.error_description === "object" && error.error_description.error_code) {
+        description = 'Código de erro: ' + error.error_description.error_code;
+      }
+      this.error('Erro: ' + error.error + ' ' + description);
     }
   }
 
