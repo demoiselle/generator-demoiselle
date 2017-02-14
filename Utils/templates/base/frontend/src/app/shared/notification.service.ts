@@ -2,16 +2,17 @@ import { Injectable } from '@angular/core';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { Http } from '@angular/http';
 import { Subscription } from 'rxjs/Subscription';
+import { ExceptionService } from '@demoiselle/http';
 
 @Injectable()
 export class NotificationService {
   validationSubscription: Subscription;
   generalErrorsSubscription: Subscription;
-  constructor(private toastr: ToastsManager, private http: Http) {
-    this.validationSubscription = this.http.validation$.subscribe(
+  constructor(private toastr: ToastsManager, private http: Http, private exceptionService: ExceptionService) {
+    this.validationSubscription = this.exceptionService.validation$.subscribe(
       error => this.showValidationErrors(error)
     );
-    this.generalErrorsSubscription = this.http.generalErrors$.subscribe(
+    this.generalErrorsSubscription = this.exceptionService.generalErrors$.subscribe(
       error => this.showGeneralErrors(error)
     );
   }
