@@ -1,2 +1,2 @@
-export * from './<%= name.kebab %>.component';
-export * from './<%= name.kebab %>.module';
+export * from './<%= name.lower %>.component';
+export * from './<%= name.lower %>.module';

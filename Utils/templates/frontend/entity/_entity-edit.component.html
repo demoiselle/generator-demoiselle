@@ -1,10 +1,10 @@
-<form class="form-horizontal" role="form" #<%= name.kebab %>Form="ngForm" (ngSubmit)="save(<%= name.kebab %>)">
+<form class="form-horizontal" role="form" #<%= name.lower %>Form="ngForm" (ngSubmit)="save(<%= name.lower %>)">
 
   <div class="form-group">
-    <label for="<%= name.kebab %>Id" class="control-label col-sm-2">ID</label>
+    <label for="<%= name.lower %>Id" class="control-label col-sm-2">ID</label>
     <div class="col-xs-4">
-      <input type="text" id="<%= name.kebab %>Id" class="form-control"
-        name="<%= name.kebab %>Id"
+      <input type="text" id="<%= name.lower %>Id" class="form-control"
+        name="<%= name.lower %>Id" [(ngModel)]="<%= name.lower %>.id"
         disabled="true">
     </div>
   </div>
@@ -13,7 +13,7 @@
     <label for="description" class="control-label col-sm-2">Descrição</label>
     <div class="col-xs-4">
       <input type="text" id="description" class="form-control"
-        name="description" [(ngModel)]="<%= name.kebab %>.description"
+        name="description" [(ngModel)]="<%= name.lower %>.description"
         required>
       </div>
   </div>

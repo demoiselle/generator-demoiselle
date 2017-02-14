@@ -2,18 +2,18 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ng2-bootstrap/ng2-bootstrap';
 
 import { NotificationService } from '../shared';
-import { <%= name.capital %>Service } from './<%= name.kebab %>.service';
-import { <%= name.capital %> } from './<%= name.kebab %>.model';
+import { <%= name.capital %>Service } from './<%= name.lower %>.service';
+import { <%= name.capital %> } from './<%= name.lower %>.model';
 
 @Component({
-  selector: '<%= prefix.kebab %>-<%= name.kebab %>',
-  templateUrl: './<%= name.kebab %>.component.html',
-  styleUrls: ['./<%= name.kebab %>.component.scss']
+  selector: '<%= prefix.lower %>-<%= name.lower %>',
+  templateUrl: './<%= name.lower %>.component.html',
+  styleUrls: ['./<%= name.lower %>.component.scss']
 
 })
 export class <%= name.capital %>Component implements OnInit {
-  <%= name.kebab %>: <%= name.capital %>;
-  <%= name.kebab %>s: <%= name.capital %>[];
+  <%= name.lower %>: <%= name.capital %>;
+  <%= name.lower %>s: <%= name.capital %>[];
 
   @ViewChild('staticModal') public staticModal: ModalDirective;
 
@@ -28,8 +28,8 @@ export class <%= name.capital %>Component implements OnInit {
     this.list();
   }
 
-  showModalDetails(<%= name.kebab %>: <%= name.capital %>) {
-    this.<%= name.kebab %> = <%= name.kebab %>;
+  showModalDetails(<%= name.lower %>: <%= name.capital %>) {
+    this.<%= name.lower %> = <%= name.lower %>;
     this.staticModal.show();
   }
 
@@ -41,7 +41,7 @@ export class <%= name.capital %>Component implements OnInit {
   list() {
     this.service.list(this.currentPage, this.itemsPerPage).subscribe(
       (result) => {
-        this.<%= name.kebab %>s = result.json();
+        this.<%= name.lower %>s = result.json();
         let contentRange = result.headers.get('Content-Range');
         if (contentRange) {
           this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
@@ -49,13 +49,13 @@ export class <%= name.capital %>Component implements OnInit {
       },
       (error) => {
         this.notificationService.error('Não foi possível carregar a lista de itens!');
-        this.<%= name.kebab %>s = error;
+        this.<%= name.lower %>s = error;
       }
     );
   }
 
-  edit(<%= name.kebab %>:<%= name.capital %>) {
-    this.service.update(<%= name.kebab %>).subscribe(
+  edit(<%= name.lower %>:<%= name.capital %>) {
+    this.service.update(<%= name.lower %>).subscribe(
       (result) => {
         this.notificationService.success('Item atualizado com sucesso!');
       },
@@ -65,10 +65,10 @@ export class <%= name.capital %>Component implements OnInit {
     );
   }
 
-  delete(<%= name.kebab %>: <%= name.capital %>) {
-    this.service.delete(<%= name.kebab %>).subscribe(
+  delete(<%= name.lower %>: <%= name.capital %>) {
+    this.service.delete(<%= name.lower %>).subscribe(
       (result) => {
-        this.<%= name.kebab %> = null;
+        this.<%= name.lower %> = null;
         this.staticModal.hide();
         this.list();
       },
