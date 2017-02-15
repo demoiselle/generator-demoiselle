@@ -41,7 +41,13 @@ export class <%= name.capital %>Component implements OnInit {
   list() {
     this.service.list(this.currentPage, this.itemsPerPage).subscribe(
       (result) => {
-        this.<%= name.lower %>s = result.json();
+        try {
+          this.<%= name.lower %>s = result.json();
+        } catch (e) {
+          console.log('Can not convert result to JSON.');
+          console.log(e);
+          this.<%= name.lower %>s = [];
+        }
         let contentRange = result.headers.get('Content-Range');
         if (contentRange) {
           this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));

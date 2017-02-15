@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { AuthServiceProvider } from '@demoiselle/security';
 import { HttpServiceProvider, ExceptionService } from '@demoiselle/http';
 
-import { LoginService } from '../login/shared/login.service';
+import { LoginService } from '../login/login.service';
 
 @NgModule({
   imports: [CommonModule],
@@ -31,7 +31,7 @@ export class CoreModule {
           tokenKey: 'id_token'
         }),
         AuthServiceProvider({
-          authEndpointUrl: '~main/', // may be in the form 'http://localhost:9090/app/api/v1/'
+          authEndpointUrl: 'http://localhost:8080/api/', // may be in the form 'http://localhost:9090/app/api/v1/'
           loginResourcePath: 'auth',
           tokenKey: 'id_token',
           loginRoute: '/login'

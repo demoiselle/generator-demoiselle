@@ -7,7 +7,7 @@ import { Ng2BootstrapModule, DropdownModule, PopoverModule } from 'ng2-bootstrap
 import { SecurityModule } from '@demoiselle/security';
 
 import { NotificationService } from './notification.service';
-import { LoginService } from '../login/shared/login.service';
+import { LoginService } from '../login/login.service';
 import { UserDropdownComponent } from './top-nav/user-dropdown.component';
 import { SidebarMenuComponent } from './sidebar-menu/sidebar-menu.component';
 import { TopNavComponent } from './top-nav/top-nav.component';

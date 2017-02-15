@@ -13,24 +13,24 @@ export class <%= name.capital %>Service {
   list(currentPage: number, itemsPerPage: number) {
     let start = (currentPage*itemsPerPage) - (itemsPerPage);
     let end = (currentPage*itemsPerPage) - 1;
-    return this.http.get('~main/<%= name.lower %>?range='+start+'-'+end)
+    return this.http.get('~main/<%= name.lower %>s?range='+start+'-'+end)
       .map(res => res);
   }
 
   get(id: number) {
-    return this.http.get('~main/<%= name.lower %>/' + id)
+    return this.http.get('~main/<%= name.lower %>s/' + id)
       .map(res => <<%= name.capital %>>res.json());
   }
 
   create(<%= name.lower %>: <%= name.capital %>) {
-    return this.http.post('~main/<%= name.lower %>', <%= name.lower %>);
+    return this.http.post('~main/<%= name.lower %>s', <%= name.lower %>);
   }
 
   update(<%= name.lower %>: <%= name.capital %>) {
-    return this.http.put('~main/<%= name.lower %>/' + <%= name.lower %>.id, <%= name.lower %>);
+    return this.http.put('~main/<%= name.lower %>s/', <%= name.lower %>);
   }
 
   delete(<%= name.lower %>: <%= name.capital %>) {
-    return this.http.delete('~main/<%= name.lower %>/' + <%= name.lower %>.id);
+    return this.http.delete('~main/<%= name.lower %>s/' + <%= name.lower %>.id);
   }
 }

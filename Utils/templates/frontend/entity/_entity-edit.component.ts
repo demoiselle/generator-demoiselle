@@ -1,8 +1,8 @@
-import { Component, OnInit, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { NotificationService } from '../shared';
-import { LoginService } from '../login/shared/login.service';
+import { LoginService } from '../login/login.service';
 import { <%= name.capital %>Service } from './<%= name.lower %>.service';
 import { <%= name.capital %> } from './<%= name.lower %>.model';
 
@@ -28,7 +28,8 @@ export class <%= name.capital %>EditComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       if (Object.keys(params).length > 0) {
-        this.<%= name.lower %> = <<%= name.capital %>> params;
+        this.<%= name.lower %>.id = (<<%= name.capital %>> params).id;
+        this.<%= name.lower %>.description = (<<%= name.capital %>> params).description;
       }
     });
   }
@@ -47,15 +48,28 @@ export class <%= name.capital %>EditComponent implements OnInit {
   }
 
   save(<%= name.lower %>:<%= name.capital %>) {
-    this.service.create(<%= name.lower %>).subscribe(
-      (result) => {
-        this.notificationService.success('Item criado com sucesso!');
-        this.goBack();
-      },
-      (error) => {
-        this.notificationService.error('Não foi possível salvar!');
-      }
-    );
+    if (!<%= name.lower %>.id) {
+      delete <%= name.lower %>.id;
+      this.service.create(<%= name.lower %>).subscribe(
+        (result) => {
+          this.notificationService.success('Item criado com sucesso!');
+          this.goBack();
+        },
+        (error) => {
+          this.notificationService.error('Não foi possível salvar!');
+        }
+      );
+    } else {
+      this.service.update(<%= name.lower %>).subscribe(
+        (result) => {
+          this.notificationService.success('Item alterado com sucesso!');
+          this.goBack();
+        },
+        (error) => {
+          this.notificationService.error('Não foi possível alterar!');
+        }
+      );
+    }
   }
   
   goBack() {
