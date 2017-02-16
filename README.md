@@ -46,7 +46,7 @@ yo demoiselle:fromEntity
 
 ## Tutorial
 
-- Maiores informações em [Tutorial.md](Tutorial.md)
+- Detalhes e maiores informações em [Tutorial.md](https://github.com/demoiselle/framework-documentation/blob/master/generator-demoiselle.md)
 
 ## Roadmap
 
