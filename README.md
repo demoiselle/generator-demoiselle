@@ -46,7 +46,7 @@ yo demoiselle:fromEntity
 
 ## Tutorial
 
-- [ ] **TODO** - Vídeo: criar vídeo para versão nova do generator
+- Maiores informações em [Tutorial.md](Tutorial.md)
 
 ## Roadmap
 
