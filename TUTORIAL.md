@@ -78,7 +78,6 @@ java -jar -Xmx128m target/SEU_PACOTE-swarm.jar
 Se tudo ocorreu adequadamente ao acessar o endereço http://localhost:8080/ pelo seu navegador será exibida a página
 com informações sobre a configuração e funcionalidades do sistema
 
-
 ###Frontend
 
 ```bash
@@ -91,7 +90,6 @@ npm start
 
 Após os comandos será inciado um servidor http na porta 7070 e pode ser acessada utilizando o endereço http://localhost:7070/
 no navegador.
-
 
 ### Utilizando o Eclipse
 
@@ -135,15 +133,14 @@ yo demoiselle:add
 Ao criar uma nova classe para mapeamento de objeto de banco de dados é o gerador de código provê uma instrução que facilita
 a construção dos elementos utilizados pela aplicação como a exposição de serviços e interfaces. Caso
 exista uma nova classe no pacote entity do seu projeto execute o comando:
-
  
 ```bash
 yo demoiselle:fromEntity
 ```
+
 Serão listadas todas as classes responsáveis pelas funcionalidades de mapeamento objeto-relacional. 
 Informe se você deseja criar os arquivos para frontend, backend ou ambos e confirme com a tecla enter. 
 Selecione as classes para as quais deseja gerara os arquivos necessários para uma aplicação 
-
 
 ### Criando funcionalidades a partir de classes de um serviço existente
 
@@ -155,7 +152,6 @@ pela WSDL em um servidor SOAP.
 
 Para gerar os arquivos baseados em um documento JSON com as descrições dos serviços oferecidos basta colocar o arquivo
 na pasta raiz ou subdiretório da aplicação e executar o comando:
-
 
 ```bash
 #Serão apresentados todos os arquivos nas pastas da aplicação, selecione os que deseja implementar
@@ -186,4 +182,3 @@ LGPL3 © [SERPRO](http://demoiselle.io/)
 
 [npm-image]: https://badge.fury.io/js/generator-demoiselle.svg
 [npm-url]: https://npmjs.org/package/generator-demoiselle
-
