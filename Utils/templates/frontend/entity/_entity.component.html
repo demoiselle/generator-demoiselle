@@ -1,4 +1,4 @@
-<article class="page <%= name.kebab %>s">
+<article class="page <%= name.lower %>s">
 
   <div class="content-header">
     <h2><%= name.capital %>s</h2>
@@ -7,9 +7,9 @@
 
   <div id="content" class="content-box">
     <div id="example" class="section">
-      <button [routerLink]="['/<%= name.kebab %>','edit']" class="btn btn-sm btn-success">
+      <button [routerLink]="['/<%= name.lower %>','edit']" class="btn btn-sm btn-success">
         <i class="fa fa-plus" aria-hidden="true"></i>
-        <span>Novo(a) <%= name.kebab %></span>
+        <span>Novo(a) <%= name.lower %></span>
       </button>
 
       <table class="table table-hover">
@@ -20,18 +20,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let <%= name.kebab %> of <%= name.kebab %>s">
-            <td>{{<%= name.kebab %>.description}}</td>
+          <tr *ngFor="let <%= name.lower %> of <%= name.lower %>s">
+            <td>{{<%= name.lower %>.description}}</td>
             <td>
-              <button class="btn btn-primary btn-xs" (click)="showModalDetails(<%= name.kebab %>)">
+              <button class="btn btn-primary btn-xs" (click)="showModalDetails(<%= name.lower %>)">
                   <i class="fa fa-info-circle" aria-hidden="true"></i>
                   <span>Detalhes</span>
               </button>
-              <a class="btn btn-primary btn-xs" [routerLink]="['/<%= name.kebab %>','edit', <%= name.kebab %>.id]">
+              <a class="btn btn-primary btn-xs" [routerLink]="['/<%= name.lower %>','edit', <%= name.lower %>]">
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                 <span>Editar</span>
               </a>
-              <button mwlConfirmationPopover title="Confirmação" message="Deseja realmente remover o item <b>{{<%= name.kebab %>.name}}</b>?" class="btn btn-danger btn-xs" placement="left" (confirm)="delete(<%= name.kebab %>)">
+              <button mwlConfirmationPopover title="Confirmação" message="Deseja realmente remover o item <b>{{<%= name.lower %>.name}}</b>?" class="btn btn-danger btn-xs" placement="left" (confirm)="delete(<%= name.lower %>)">
                 <i class="fa fa-trash" aria-hidden="true"></i>
                 <span>Remover</span>
               </button>
@@ -56,14 +56,14 @@
               </button>
               <h4 class="modal-title">Detalhes do item</h4>
             </div>
-            <div class="modal-body" *ngIf="<%= name.kebab %>">
-            <form class="form-horizontal" role="form" #<%= name.kebab %>Form="ngForm" (ngSubmit)="save(<%= name.kebab %>)">
+            <div class="modal-body" *ngIf="<%= name.lower %>">
+            <form class="form-horizontal" role="form" #<%= name.lower %>Form="ngForm" (ngSubmit)="save(<%= name.lower %>)">
 
               <div class="form-group">
-                <label for="<%= name.kebab %>Id" class="control-label col-sm-2">ID</label>
+                <label for="<%= name.lower %>Id" class="control-label col-sm-2">ID</label>
                 <div class="col-xs-6">
-                  <input type="text" id="<%= name.kebab %>Id" class="form-control"
-                    name="<%= name.kebab %>Id" [(ngModel)]="<%= name.kebab %>.id"
+                  <input type="text" id="<%= name.lower %>Id" class="form-control"
+                    name="<%= name.lower %>Id" [(ngModel)]="<%= name.lower %>.id"
                     disabled="true">
                 </div>
               </div>
@@ -72,18 +72,15 @@
                 <label for="description" class="control-label col-sm-2">Pirmeiro Nome</label>
                 <div class="col-xs-6">
                   <input type="text" id="description" class="form-control"
-                    name="description" [(ngModel)]="<%= name.kebab %>.description"
-                    required>
+                    name="description" [(ngModel)]="<%= name.lower %>.description"
+                    disabled="true">
                   </div>
               </div>
 
               <div class="col-sm-offset-2">
-                <button type="button" class="btn btn-sm btn-success" (click)="edit(user)">
-                  <span>Alterar</span>
-                </button>
-                <button type="button" class="btn btn-sm btn-danger" (click)="staticModal.hide()">
+                <button type="button" class="btn btn-sm btn-default" (click)="staticModal.hide()">
                   <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
-                  <span>Cancelar</span>
+                  <span>Voltar</span>
                 </button>
               </div>
             </form>

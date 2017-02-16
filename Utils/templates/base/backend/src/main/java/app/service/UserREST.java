@@ -9,8 +9,8 @@ import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractREST;
 import org.demoiselle.jee.security.annotation.Authenticated;
 
-@Api("User")
-@Path("user")
+@Api("v1/Users")
+@Path("v1/users")
 @Authenticated
 public class UserREST extends AbstractREST<User, String> {
     

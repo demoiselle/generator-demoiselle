@@ -13,25 +13,25 @@ export class UserService {
   list(currentPage: number, itemsPerPage: number) {
     let start = (currentPage*itemsPerPage) - (itemsPerPage);
     let end = (currentPage*itemsPerPage) - 1;
-    return this.http.get('~main/user?range='+start+'-'+end)
+    return this.http.get('~main/users?range='+start+'-'+end)
       .map(res => res);
   }
 
   get(id: number) {
-    return this.http.get('~main/user/' + id)
+    return this.http.get('~main/users/' + id)
       .map(res => <User>res.json());
   }
 
   create(user: User) {
-    return this.http.post('~main/user', user);
+    return this.http.post('~main/users', user);
   }
 
   update(user: User) {
-    return this.http.put('~main/user/' + user.id, user);
+    return this.http.put('~main/users/', user);
   }
 
   delete(user: User) {
-    return this.http.delete('~main/user/' + user.id);
+    return this.http.delete('~main/users/' + user.id);
   }
 
   getPerfil() {

@@ -10,8 +10,8 @@ import org.demoiselle.jee.crud.AbstractREST;
 import org.demoiselle.jee.crud.Search;
 import org.demoiselle.jee.security.annotation.Authenticated;
 
-@Api("<%= name.capital %>")
-@Path("<%= name.lower %>")
+@Api("v1/<%= name.capital %>s")
+@Path("v1/<%= name.lower %>s")
 @Authenticated
 public class <%= name.capital %>REST extends AbstractREST< <%= name.capital %>, String> {
 

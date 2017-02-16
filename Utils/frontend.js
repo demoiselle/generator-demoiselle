@@ -50,7 +50,7 @@ module.exports = class FrontendUtil {
     ];
     files.map((file) => {
       let from = path.join(fromPath, file);
-      let to = path.join(config.dest, template.name.kebab, _.replace(file, /_entity/g, template.name.kebab));
+      let to = path.join(config.dest, template.name.lower, _.replace(file, /_entity/g, template.name.lower));
 
       this.util.copyTpl(from, to, template);
     });

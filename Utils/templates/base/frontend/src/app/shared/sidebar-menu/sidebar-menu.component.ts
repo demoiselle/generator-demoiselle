@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from '@demoiselle/security';
-import { LoginService } from '../../login/shared/login.service';
+import { LoginService } from '../../login/login.service';
 
 // webpack html imports
 let template = require('./sidebar-menu.template.html');
@@ -31,6 +31,5 @@ export class SidebarMenuComponent {
   }
 
   onRouteSelected(route) {
-    this.loginService.setRedirect(route);
   }
 }

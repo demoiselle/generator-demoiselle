@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
-import { <%= name.capital %>RoutingModule } from './<%= name.kebab %>-routing.module';
+import { <%= name.capital %>RoutingModule } from './<%= name.lower %>-routing.module';
 import { SharedModule } from '../shared';
 
-import { <%= name.capital %>Service } from './<%= name.kebab %>.service';
-import { <%= name.capital %>Component } from './<%= name.kebab %>.component';
-import { <%= name.capital %>EditComponent } from './<%= name.kebab %>-edit.component';
+import { <%= name.capital %>Service } from './<%= name.lower %>.service';
+import { <%= name.capital %>Component } from './<%= name.lower %>.component';
+import { <%= name.capital %>EditComponent } from './<%= name.lower %>-edit.component';
 
 @NgModule({
     imports: [
