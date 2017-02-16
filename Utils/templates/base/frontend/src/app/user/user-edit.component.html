@@ -21,8 +21,8 @@
   <div class="form-group">
     <label for="userPerfil" class="control-label col-sm-2">Perfil</label>
     <div class="col-xs-4">
-      <select id="userPerfil" class="form-control" (change)="changeRole($event)">
-        <option *ngFor="let role of roles" [(ngValue)]="selectedRole">{{role.description}}</option>
+      <select name="userPerfil" [ngModel]="selectedRole.description" id="userPerfil" class="form-control" (change)="changeRole($event)">
+        <option *ngFor="let role of roles">{{role.description}}</option>
       </select>
     </div>
   </div>
