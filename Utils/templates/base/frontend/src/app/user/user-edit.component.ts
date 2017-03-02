@@ -12,7 +12,7 @@ import { User } from './user.model';
 })
 export class UserEditComponent implements OnInit {
   user: User;
-  id: number;
+  confirmPass: string;
   params: any;
   userLoaded: boolean = false;
 
@@ -39,6 +39,7 @@ export class UserEditComponent implements OnInit {
     this.user.perfil = 'Administrador';
     this.user.email = 'admin@demoiselle.org';
     this.user.pass = '12345678';
+    this.confirmPass = '12345678';
     this.selectedRole = this.roles[0];
   }
 
