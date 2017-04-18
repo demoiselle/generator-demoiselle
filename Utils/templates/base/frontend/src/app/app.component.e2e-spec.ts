@@ -1,4 +1,5 @@
-describe('<%= project.kebab %>App E2E test', () => {
+/*
+describe('angular-4App E2E test', () => {
   beforeEach(() => {
     browser.get('/');
   });
@@ -23,3 +24,4 @@ describe('<%= project.kebab %>App E2E test', () => {
     expect(element(by.css('<%= project.kebab %>-app div#main')).isPresent()).toBe(true);
   });
 });
+*/

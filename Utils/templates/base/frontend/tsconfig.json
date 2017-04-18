@@ -5,7 +5,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "noEmitHelpers": true
+    "noEmitHelpers": true,
+    //"noUnusedLocals": true,
+    //"noUnusedParameters": true,
+    "lib": ["es2015", "dom"]
   },
   "compileOnSave": false,
   "buildOnSave": false,

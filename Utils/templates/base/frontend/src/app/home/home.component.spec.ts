@@ -1,3 +1,4 @@
+/*
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { HttpModule } from '@angular/http';
@@ -27,3 +28,4 @@ describe('[Unit Test] - Home Component', () => {
 
 @Component({ selector: 'my-test', template: '' })
 class TestComponent { }
+*/

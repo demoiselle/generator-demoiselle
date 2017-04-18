@@ -8,22 +8,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { CoreModule } from './core/core.module';
 import { SecurityModule } from '@demoiselle/security';
 import { SharedModule } from './shared';
-import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
+import { ToastyModule } from 'ng2-toasty';
+import { ToastCommunicationService } from './shared/toast-communication.service';
 import { removeNgStyles, createNewHosts } from '@angularclass/hmr';
-// import { ComponentsHelper } from 'ng2-bootstrap/ng2-bootstrap';
 
 // feature modules
 import { LoginModule } from './login/login.module';
 import { HomeModule } from './home/home.module';
 import { UserModule } from './user';
-
-let toastrOptions: ToastOptions = new ToastOptions({
-  animate: 'flyRight',
-  positionClass: 'toast-bottom-right',
-  showCloseButton: true,
-  dismiss: 'auto',
-  toastLife: 10000
-});
 
 @NgModule({
   imports: [
@@ -34,17 +26,21 @@ let toastrOptions: ToastOptions = new ToastOptions({
     CoreModule.forRoot(),
     SharedModule,
     SecurityModule,
-    ToastModule.forRoot(toastrOptions),
+    ToastyModule.forRoot(),
     // #feature modules
     LoginModule,
     HomeModule,
     UserModule
   ],
   declarations: [
-    AppComponent,
+    AppComponent
   ],
-  providers: [], // { provide: ComponentsHelper, useClass: ComponentsHelper }],
-  bootstrap: [AppComponent]
+  providers: [
+    ToastCommunicationService
+  ],
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule {
   constructor(public appRef: ApplicationRef) { }

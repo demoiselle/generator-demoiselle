@@ -1,3 +1,4 @@
+/*
 describe('[E2E Test] - HomeComponent ', () => {
   beforeEach(() => {
     browser.get('/');
@@ -8,3 +9,4 @@ describe('[E2E Test] - HomeComponent ', () => {
     expect(home.isPresent()).toEqual(true);
   });
 });
+*/

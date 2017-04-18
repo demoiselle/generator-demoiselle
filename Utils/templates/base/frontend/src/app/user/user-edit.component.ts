@@ -52,6 +52,7 @@ export class UserEditComponent implements OnInit {
         this.user.pass = (<User> params).pass;
         this.user.perfil = (<User> params).perfil;
         this.loadPerfil(this.user.perfil);
+        this.confirmPass = this.user.pass;
       } else {
         this.loadPerfil(null);
       }
