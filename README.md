@@ -2,6 +2,10 @@
 
 > Gerador para Demoiselle 3.0
 
+Versões do Gerador
+- 1.1.X para Angular 4.0.1
+- 1.0.X para Angular 2.3.0
+
 Utilitário para a criação da estrutura básica de um projeto, arquivos e estrutura de pastas, utilizando os padrôes:
 - Demoiselle 3.0
 - Angular
