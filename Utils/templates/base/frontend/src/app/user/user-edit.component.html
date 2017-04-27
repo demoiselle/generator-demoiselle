@@ -33,7 +33,7 @@
       <input type="email" id="userEmail" class="form-control"
         name="userEmail" [(ngModel)]="user.email"
         ngModel #userEmail="ngModel"
-        validateEmail
+        <%= prefix.kebab %>ValidateEmail
         required>
     </div>
     <div [hidden]="userEmail.valid || (userEmail.pristine && !f.submitted)" class="text-danger">
@@ -47,13 +47,13 @@
       <input type="password" id="userPass" class="form-control"
         name="userPass" [(ngModel)]="user.pass"
         #userPass="ngModel"
-        validateEqual="userPassConfirm"
+        <%= prefix.kebab %>ValidateEqual="userPassConfirm"
         required>
     </div>
     <div [hidden]="!(userPass.hasError('required') && userPass.touched)" class="text-danger">
       Campo obrigatório!
     </div>
-    <div *ngIf="(userPass.hasError('validateEqual') && userPass.touched)" class="text-danger">
+    <div *ngIf="(userPass.hasError('<%= prefix.kebab %>ValidateEqual') && userPass.touched)" class="text-danger">
       As passwords são diferentes!
     </div>
   </div>
@@ -64,13 +64,13 @@
       <input type="password" id="userPassConfirm" class="form-control"
         name="userPassConfirm" [(ngModel)]="confirmPass"
         #userPassConfirm="ngModel"
-        validateEqual="userPass"
+        <%= prefix.kebab %>ValidateEqual="userPass"
         required>
     </div>
     <div [hidden]="!(userPassConfirm.hasError('required') && userPassConfirm.touched)" class="text-danger">
       Campo obrigatório!
     </div>
-    <div *ngIf="(userPassConfirm.hasError('validateEqual') && userPassConfirm.touched)" class="text-danger">
+    <div *ngIf="(userPassConfirm.hasError('<%= prefix.kebab %>ValidateEqual') && userPassConfirm.touched)" class="text-danger">
       As passwords são diferentes!
     </div>
   </div>

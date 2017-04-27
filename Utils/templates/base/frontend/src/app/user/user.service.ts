@@ -11,9 +11,9 @@ export class UserService {
   }
 
   list(currentPage: number, itemsPerPage: number) {
-    let start = (currentPage*itemsPerPage) - (itemsPerPage);
-    let end = (currentPage*itemsPerPage) - 1;
-    return this.http.get('~main/users?range='+start+'-'+end)
+    let start = (currentPage * itemsPerPage) - (itemsPerPage);
+    let end = (currentPage * itemsPerPage) - 1;
+    return this.http.get('~main/users?range=' + start + '-' + end)
       .map(res => res);
   }
 

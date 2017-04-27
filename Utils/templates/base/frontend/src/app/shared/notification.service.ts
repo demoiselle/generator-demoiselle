@@ -66,16 +66,16 @@ export class NotificationService {
   }];
 
   position: string = this.positions[2].code;
-  
+
   options = {
     title: 'Notificação',
     msg: 'mensagem aqui',
     showClose: true,
     timeout: 5000,
-    theme: this.themes[1].code,
+    theme: this.themes[2].code,
     type: this.types[0].code
   };
-  
+
   constructor(private toastyService: ToastyService,
               /*private toastOptions: ToastOptions, private toastData: ToastData,*/
               private toastCommunicationService: ToastCommunicationService,
@@ -107,10 +107,6 @@ export class NotificationService {
         let observable = Observable.interval(interval).take(seconds);
         // Start listen seconds bit
         subscription = observable.subscribe((count: number) => {
-          // Update title
-          //toast.title = this.getTitle(seconds - count - 1 || 0);
-          // Update message
-          //toast.msg = this.getMessage(seconds - count - 1 || 0);
         });
       },
       onRemove: function(toast) {
@@ -129,7 +125,7 @@ export class NotificationService {
   getMessage(num: number): string {
       return 'Seconds left: ' + num;
   }
-  
+
   showValidationErrors(errors: any) {
     for (let error of errors) {
         this.error('Erro de validação! Campo: ' + error.error_field + ' , Descrição: ' + error.error_description);
@@ -140,9 +136,9 @@ export class NotificationService {
 
     for (let error of errors) {
       let description = '';
-      if (typeof error.error_description === "string") {
+      if (typeof error.error_description === 'string') {
         description = error.error_description;
-      } else if (typeof error.error_description === "object" && error.error_description.error_code) {
+      } else if (typeof error.error_description === 'object' && error.error_description.error_code) {
         description = 'Código de erro: ' + error.error_description.error_code;
       }
       this.error('Erro: ' + error.error + ' ' + description);

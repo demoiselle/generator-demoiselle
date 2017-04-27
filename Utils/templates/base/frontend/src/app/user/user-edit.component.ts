@@ -14,7 +14,7 @@ export class UserEditComponent implements OnInit {
   user: User;
   confirmPass: string;
   params: any;
-  userLoaded: boolean = false;
+  userLoaded = false;
 
   @Output()
   public selectedRole;
@@ -31,8 +31,7 @@ export class UserEditComponent implements OnInit {
     private router: Router,
     private service: UserService,
     private loginService: LoginService,
-    private notificationService: NotificationService)
-  {
+    private notificationService: NotificationService) {
     this.user = new User();
     this.user.id = null;
     this.user.firstName = 'Admin';
@@ -80,7 +79,7 @@ export class UserEditComponent implements OnInit {
     );
   }
 
-  save(user:User) {
+  save(user: User) {
     user.perfil = this.selectedRole.value;
     if (!user.id) {
       delete user.id;
@@ -93,8 +92,7 @@ export class UserEditComponent implements OnInit {
           this.notificationService.error('Não foi possível salvar o usuário!');
         }
       );
-    }
-    else {
+    } else {
       this.service.update(user).subscribe(
         (result) => {
           this.notificationService.success('Usuário alterado com sucesso!');
@@ -106,7 +104,7 @@ export class UserEditComponent implements OnInit {
       );
     }
   }
-  
+
   goBack() {
     this.router.navigate(['user']);
   }
@@ -118,7 +116,7 @@ export class UserEditComponent implements OnInit {
 
   updateSelectedRole(perfil) {
     this.roles.forEach(element => {
-      if (element.value == perfil || element.description == perfil) {
+      if (element.value === perfil || element.description === perfil) {
         this.selectedRole = element;
       }
     });

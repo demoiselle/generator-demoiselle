@@ -1,4 +1,3 @@
-/*
 import { TestBed, inject } from '@angular/core/testing';
 import { provideRoutes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,8 +16,7 @@ describe('<%= prefix.capital %>App Unit Test', () => {
     });
   });
 
-  it('should write your unit test here', () => {
-    expect(true).toBe(false);
+  it('nada a testar em app.component', () => {
+    expect(true).toBe(true);
   });
 });
-*/

@@ -12,9 +12,9 @@ import '../style/global.scss';
   template: require('./app.component.html')
 })
 export class AppComponent implements AfterContentInit {
-  
+
   private toastyComponentPosition: string;
-  
+
   public constructor(
     private router: Router,
     private authService: AuthService,

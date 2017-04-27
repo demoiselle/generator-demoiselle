@@ -20,7 +20,7 @@ export class LoginComponent {
     protected notificationService: NotificationService,
     protected loginService: LoginService) { }
 
-  onSubmit($event, form){
+  onSubmit($event, form) {
     this.login();
   }
 

@@ -17,9 +17,9 @@ export class UserComponent implements OnInit {
 
   @ViewChild('staticModal') public staticModal: ModalDirective;
 
-  public itemsPerPage: number = 10;
-  public totalItems: number = 0;
-  public currentPage: number = 1;
+  public itemsPerPage = 10;
+  public totalItems = 0;
+  public currentPage = 1;
 
   public selectedRole;
   public roles = [
@@ -68,7 +68,7 @@ export class UserComponent implements OnInit {
         this.users = result.json();
         let contentRange = result.headers.get('Content-Range');
         if (contentRange) {
-          this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
+          this.totalItems = Number(contentRange.substr(contentRange.indexOf('/') + 1, contentRange.length));
         }
       },
       (error) => {
@@ -78,7 +78,7 @@ export class UserComponent implements OnInit {
     );
   }
 
-  edit(user:User) {
+  edit(user: User) {
     this.service.update(user).subscribe(
       (result) => {
         this.notificationService.success('Usuário atualizado com sucesso!');
