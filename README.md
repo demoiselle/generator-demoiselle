@@ -33,7 +33,9 @@ Nas distribuições Linux baseadas em Debian a instalação pode ser feita com o
 ```bash
 sudo apt-get install nodejs
 
-npm install -g yo generator-demoiselle
+sudo apt-get install npm
+
+sudo npm install -g yo generator-demoiselle
 ```
 
 ## Execução
