@@ -31,13 +31,15 @@ de instalação do NodeJs.
 Nas distribuições Linux baseadas em Debian a instalação pode ser feita com o comando
 
 ```bash
-sudo apt-get install nodejs
 
-sudo apt-get install npm
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash
 
-sudo ln -s /usr/bin/nodejs /usr/bin/node
+# Você deve fechar o terminal e abrir novamente
 
-sudo npm install -g yo generator-demoiselle
+nvm install stable
+
+npm install -g yo generator-demoiselle
+
 ```
 
 ## Execução
