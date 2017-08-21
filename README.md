@@ -15,7 +15,7 @@ Utilitário para a criação da estrutura básica de um projeto, arquivos e estr
 ## Requisitos
 
 Para executar apenas o generator, você precisará da ferramenta de execução de scripts Javascrip Node JS,
-do gerenciado de pacotes e dependêncas npm e a ferramenta de apoio para a construção de projetos yo:
+do gerenciador de pacotes e dependêncas npm e a ferramenta de apoio para a construção de projetos yo:
 `node, npm e yo`.
 
 A execução de projetos em Demoiselle 3.0, depende das seguintes ferramentas de software:
