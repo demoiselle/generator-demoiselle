@@ -63,7 +63,7 @@ seguintes passos
 
 - Dê um nome para o seu projeto: (Informar o nome do projeto por ex: Noticias)
 - Informe o package do backend: (Utilizar o padrão java para estrutura de arquivos)
-- Dê um prefixo para os seus componentes: (Informar o prefixo que ??????)
+- Dê um prefixo para os seus componentes: (Informar o prefixo que será usado pelos componentes Angular da sua app)
 - Você quer gerar arquivos para: (Utilize as teclas de setas para alternar entre as opções, espaço para selecionar, e enter para confirmar)
 - Deseja instalar as dependências (isso pode demorar alguns minutos)? (Tem que confirmar para fazer a instalação ou rodar npm install posteriormente)
 
@@ -88,12 +88,12 @@ java -jar -Xmx128m target/SEU_PACOTE-swarm.jar
 Se tudo ocorreu adequadamente ao acessar o endereço http://localhost:8080/ pelo seu navegador será exibida a página
 com informações sobre a configuração e funcionalidades do sistema
 
-###Frontend
+### Frontend
 
 ```bash
 cd frontend
 # Instalar os módulos dependentes
-npm instal
+npm install
 # Inicia a aplicação (frontend)
 npm start
 ```
