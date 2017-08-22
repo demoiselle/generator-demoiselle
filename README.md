@@ -6,7 +6,7 @@ Versões do Gerador
 - 1.1.X para Angular 4.0.1
 - 1.0.X para Angular 2.3.0
 
-Utilitário para a criação da estrutura básica de um projeto, arquivos e estrutura de pastas, utilizando os padrôes:
+Utilitário para a criação da estrutura básica de um projeto, arquivos e estrutura de pastas, utilizando os padrões:
 - Demoiselle 3.0
 - Angular
 - Swagger Spec - [OpenApis](https://openapis.org/specification)
@@ -14,7 +14,7 @@ Utilitário para a criação da estrutura básica de um projeto, arquivos e estr
 
 ## Requisitos
 
-Para executar apenas o generator, você precisará da ferramenta de execução de scripts Javascrip Node JS,
+Para executar apenas o generator, você precisará da ferramenta de execução de scripts Javascript Node JS,
 do gerenciador de pacotes e dependêncas npm e a ferramenta de apoio para a construção de projetos yo:
 `node, npm e yo`.
 
