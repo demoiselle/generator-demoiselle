@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { NotificationService } from '../shared';
-import { LoginService } from '../login/login.service';
 import { <%= name.capital %>Service } from './<%= name.lower %>.service';
 import { <%= name.capital %> } from './<%= name.lower %>.model';
 
@@ -11,9 +10,8 @@ import { <%= name.capital %> } from './<%= name.lower %>.model';
   templateUrl: './<%= name.lower %>-edit.component.html'
 })
 export class <%= name.capital %>EditComponent implements OnInit {
-  <%= name.lower %>: <%= name.capital %> = new <%= name.capital %>();
-  id: number;
-  <%= name.lower %>Loaded: boolean = false;
+  <%= name.lower %>: <%= name.capital %>;
+  private funcao = 'Criar';
 
   private routeSubscribe: any;
 
@@ -21,31 +19,19 @@ export class <%= name.capital %>EditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private service: <%= name.capital %>Service,
-    private loginService: LoginService,
     private notificationService: NotificationService)
   { }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      if (Object.keys(params).length > 0) {
-        this.<%= name.lower %>.id = (<<%= name.capital %>> params).id;
-        this.<%= name.lower %>.description = (<<%= name.capital %>> params).description;
-      }
-    });
+    if (this.route.snapshot.data['<%= name.lower %>']) {
+      this.<%= name.lower %> = this.route.snapshot.data['<%= name.lower %>'];
+      this.funcao = 'Editar';
+    } else {
+      this.funcao = 'Criar';
+      this.<%= name.lower %> = new <%= name.capital %>();
+    }
   }
 
-  load<%= name.capital %>() {
-    this.service.get(this.id)
-      .subscribe(
-      (<%= name.capital %>: <%= name.capital %>) => {
-        this.<%= name.lower %> = <%= name.capital %>;
-        this.<%= name.lower %>Loaded = true;
-      },
-      error => {
-        this.notificationService.error('Erro ao carregar item!');
-      }
-      );
-  }
 
   save(<%= name.lower %>:<%= name.capital %>) {
     if (!<%= name.lower %>.id) {
@@ -71,7 +57,7 @@ export class <%= name.capital %>EditComponent implements OnInit {
       );
     }
   }
-  
+
   goBack() {
     this.router.navigate(['<%= name.lower %>']);
   }

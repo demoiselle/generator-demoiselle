@@ -26,27 +26,16 @@ module.exports = class FrontendUtil {
       '_entity.module.ts',
       '_entity-routing.module.ts',
       '_entity.component.ts',
-      // '_entity.component.spec.ts',
       '_entity.component.html',
       '_entity.component.scss',
-      // shared
       '_entity.model.ts',
       '_entity.service.ts',
-      // '_entity.service.spec.ts',
-      // edit
+      '_entity.resolver.ts',
       '_entity-edit.component.ts',
-      // '_entity-edit.component.spec.ts',
       '_entity-edit.component.html',
-      // form
-      // 'form/_entity-form.ts',
-      // 'form/_entity-form.spec.ts',
-      // 'form/_entity-form.html',
-      // 'form/_entity-form.scss',
-      // list
-      // 'list/_entity-list.ts',
-      // 'list/_entity-list.spec.ts',
-      // 'list/_entity-list.html',
-      // 'list/_entity-list.scss'
+      '_entity-view.component.ts',
+      '_entity-view.component.html',
+      
     ];
     files.map((file) => {
       let from = path.join(fromPath, file);
@@ -56,7 +45,10 @@ module.exports = class FrontendUtil {
     });
 
     // Adicionar imports no app.module.ts
-    this._addModuleImports(template);
+    //this._addModuleImports(template);
+
+    // Adicionar children route
+    this._addChildrenRoute(template);
     
   }
 
@@ -127,6 +119,38 @@ module.exports = class FrontendUtil {
         var regEx = new RegExp('imports\\:\\s*\\t*\\r*\\n*\\[');
         var newContent = content.toString().replace(regEx, 'imports: [\n\t\t' + template.name.capital + 'Module,\n');
         newContent = 'import { ' + template.name.capital + 'Module } from \'./' + template.name.lower + '\';\n' + newContent;
+        return newContent;
+
+      }
+    });
+    this.fs.commit(function () { });
+
+  }
+
+  /**
+   * Adiciona o carregamento do sub módulo como children em app-routing.module
+   * @param {*} template 
+   */
+  _addChildrenRoute(template) {
+    var templatePath = this.vm.destinationPath('frontend/src/app/app-routing.module.ts');
+    this.fs.copy(templatePath, templatePath, {
+      process: function (content) {
+
+        var newChildRoute = `
+        {
+          path: '` + template.name.lower + `',
+          loadChildren: './` + template.name.lower + '/' + template.name.lower + '.module#' + template.name.capital + `Module',
+          data: {
+            title: '` + template.name.capital + `',
+            showInSidebar: true,
+            icon: 'icon-diamond'
+          }
+        },
+        `;
+
+        // Utilizando RegExp enquanto não tem um bom parser para typescript
+        var regEx = new RegExp('children\\:\\s*\\t*\\r*\\n*\\[');
+        var newContent = content.toString().replace(regEx, 'children: [\n\t\t' + newChildRoute);
         return newContent;
 
       }

@@ -3,6 +3,8 @@ const Util = require('../../Utils/util');
 const chalk = require('chalk');
 const yosay = require('yosay');
 
+var execSync = require('child_process').execSync;
+
 /**
  * yo demoiselle <project-name>
  *
@@ -83,7 +85,7 @@ module.exports = class AppGenerator extends Generator {
                 type: 'input',
                 name: 'prefix',
                 message: 'Dê um prefixo para os seus componentes:',
-                default: 'my'
+                default: 'app'
             });
         }
 
@@ -181,12 +183,50 @@ module.exports = class AppGenerator extends Generator {
             prefix: Util.createNames(this.prefix)
         };
 
-        let from = this.templatePath('base/frontend/');
-        let to = this.destinationPath('frontend/');
+        this.log('Creating angular/cli frontend! please wait...');
+        this.log(execSync('ng new frontend --skip-install --skip-git').toString());
+        
+        this._addDependenciesToPackageJson();
+        this._addCustomStylesToAngularCli();
+
+        // replacing src folders and styles.css
+
+        this.fs.delete(this.destinationPath('frontend/src/app'));
+        this.fs.delete(this.destinationPath('frontend/src/assets'));
+        this.fs.delete(this.destinationPath('frontend/src/styles.css'));
+        this.fs.delete(this.destinationPath('frontend/src/index.html'));
+        this.fs.commit(function () { });
+
+        let from = this.templatePath('base/frontend/src/app/');
+        let to = this.destinationPath('frontend/src/app/');
         this.fs.copyTpl(from, to, template);
+
+        from = this.templatePath('base/frontend/src/assets/');
+        to = this.destinationPath('frontend/src/assets/');
+        this.fs.copy(from, to);
+
+        from = this.templatePath('base/frontend/src/img/');
+        to = this.destinationPath('frontend/src/img/');
+        this.fs.copy(from, to);
+
+        from = this.templatePath('base/frontend/src/scss/');
+        to = this.destinationPath('frontend/src/scss/');
+        this.fs.copyTpl(from, to, template);
+
+        from = this.templatePath('base/frontend/src/styles.css');
+        to = this.destinationPath('frontend/src/styles.css');
+        this.fs.copyTpl(from, to, template);
+
+        from = this.templatePath('base/frontend/src/index.html');
+        to = this.destinationPath('frontend/src/index.html');
+        this.fs.copyTpl(from, to, template);
+
+        
     }
 
     _generateProjectBackend() {
+        this.log('Creating backend ...');
+
         let template = {
             package: Util.createNames(this.package),
             project: Util.createNames(this.project)
@@ -207,6 +247,75 @@ module.exports = class AppGenerator extends Generator {
         from = this.templatePath('base/backend/pom.xml');
         to = this.destinationPath('backend/pom.xml');
         this.fs.copyTpl(from, to, template);
+
+        this.log('Backend successfully created.');
+    }
+
+    _addDependenciesToPackageJson() {
+
+        this.log('Adding aditional dependencies to package.json...');
+        
+        // let dependencies = [
+        //     "@demoiselle/http",
+        //     "@demoiselle/security",
+        //     "angular-confirmation-popover",
+        //     "angular2-infinite-scroll",
+        //     "angular2-jwt",
+        //     "bootstrap",
+        //     "font-awesome",
+        //     "ng2-bootstrap@1.1.17",
+        //     "ng2-toasty",
+        //     "primeng"
+        // ];
+
+        // let _this = this;
+        // dependencies.forEach(function(dep){
+        //     _this.log('Adding ' + dep);
+        //     //_this.log(execSync('npm install --save ' + dep, {cwd: 'frontend'}).toString());
+        // });
+         
+         let dependenciesString = `
+    "@demoiselle/http": "^0.0.22",
+    "@demoiselle/security": "^0.0.23",
+    "angular2-infinite-scroll": "^0.3.4",
+    "angular2-jwt": "^0.2.0",
+    "font-awesome": "^4.7.0",
+    "bootstrap": "^4.0.0-beta",
+    "ng2-toastr": "^4.1.2",
+    "ngx-bootstrap": "^1.9.3",
+    "simple-line-icons": "^2.4.1",
+    "@angular/service-worker": "^1.0.0-beta.16",`;
+        
+        let templatePath = this.destinationPath('frontend/package.json');
+        this.fs.copy(templatePath, templatePath, {
+            process: function (content) {
+
+                // Utilizando RegExp enquanto não tem um bom parser para typescript
+                var regEx = new RegExp('\\"dependencies\\"\\:\\s*\\t*\\r*\\n*\\{');
+                var newContent = content.toString().replace(regEx, '"dependencies": {' + dependenciesString);
+                return newContent;
+
+            }
+        });
+        this.fs.commit(function () { });
+    }
+
+    _addCustomStylesToAngularCli() {
+        let dependenciesString = `
+    "scss/style.scss",`;
+        
+        let templatePath = this.destinationPath('frontend/.angular-cli.json');
+        this.fs.copy(templatePath, templatePath, {
+            process: function (content) {
+
+                // Utilizando RegExp enquanto não tem um bom parser para typescript
+                var regEx = new RegExp('\\"styles\\"\\:\\s*\\t*\\r*\\n*\\[');
+                var newContent = content.toString().replace(regEx, '"styles": [' + dependenciesString);
+                return newContent;
+
+            }
+        });
+        this.fs.commit(function () { });
     }
 };
 

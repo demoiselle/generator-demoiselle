@@ -1,29 +1,18 @@
-import { AfterContentInit, Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '@demoiselle/security';
-import { ToastCommunicationService } from './shared/toast-communication.service';
+import { Component, ViewContainerRef } from '@angular/core';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 
-// global style
-import '../style/global.scss';
 
 @Component({
-  selector: '<%= prefix.kebab %>-app', // <<%= prefix.kebab %>-app></<%= prefix.kebab %>-app>
-  styleUrls: ['./app.component.scss'],
-  template: require('./app.component.html')
+  // tslint:disable-next-line
+  selector: 'body',
+  template: '<router-outlet></router-outlet>'
 })
-export class AppComponent implements AfterContentInit {
-
-  private toastyComponentPosition: string;
-
-  public constructor(
-    private router: Router,
-    private authService: AuthService,
-    private toastCommunicationService: ToastCommunicationService) {
-      this.toastCommunicationService.position$.subscribe(pos => this.toastyComponentPosition = pos);
+export class AppComponent {
+  title = 'app';
+  
+  constructor(public toastr: ToastsManager, vcr: ViewContainerRef) {
+    this.toastr.setRootViewContainerRef(vcr);
   }
 
-  public ngAfterContentInit(): any {
-    // uncomment if the application need to retoken
-    // this.authService.initializeReTokenPolling();
-  }
+
 }

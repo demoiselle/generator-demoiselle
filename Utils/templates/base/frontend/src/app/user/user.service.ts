@@ -10,10 +10,25 @@ export class UserService {
   constructor(private http: Http) {
   }
 
-  list(currentPage: number, itemsPerPage: number) {
-    let start = (currentPage * itemsPerPage) - (itemsPerPage);
-    let end = (currentPage * itemsPerPage) - 1;
-    return this.http.get('~main/users?range=' + start + '-' + end)
+  list(currentPage: number, itemsPerPage: number, filter: string, field: string = null, desc: boolean = false) {
+    let start = (currentPage*itemsPerPage) - (itemsPerPage);
+    let end = (currentPage*itemsPerPage) - 1;
+    let orderQuery = '';
+    if (field) {
+      orderQuery = '&sort='+field+(desc?'&desc':'');
+    }
+    return this.http.get('~main/users?range='+start+'-'+end+filter+orderQuery)
+      .map(res => res);
+  }
+
+  findByLike(currentPage: number, itemsPerPage: number, filter: string, field: string = null, desc: boolean = false) {
+    let start = (currentPage*itemsPerPage) - (itemsPerPage);
+    let end = (currentPage*itemsPerPage) - 1;
+    let orderQuery = '';
+    if (field) {
+      orderQuery = '&sort='+field+(desc?'&desc':'');
+    }
+    return this.http.get('~main/users/like?range='+start+'-'+end+filter+orderQuery)
       .map(res => res);
   }
 

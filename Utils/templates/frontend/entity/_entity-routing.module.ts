@@ -1,30 +1,43 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from '@demoiselle/security';
 import { <%= name.capital %>Component } from './<%= name.lower %>.component';
 import { <%= name.capital %>EditComponent } from './<%= name.lower %>-edit.component';
+import { <%= name.capital %>ViewComponent } from './<%= name.lower %>-view.component';
+import { <%= name.capital %>Resolver } from './<%= name.lower %>.resolver';
+
+const routes: Routes = [
+    {
+        path: '',
+        canActivate: [AuthGuard],
+        component: <%= name.capital %>Component
+    },
+    {
+        path: 'edit/:id',
+        canActivate: [AuthGuard],
+        component: <%= name.capital %>EditComponent,
+        resolve: {
+            <%= name.lower %>: <%= name.capital %>Resolver
+        }
+    },
+    {
+        path: 'edit',
+        component: <%= name.capital %>EditComponent
+    },
+    {
+        path: 'view/:id',
+        canActivate: [AuthGuard],
+        component: <%= name.capital %>ViewComponent,
+        resolve: {
+            <%= name.lower %>: <%= name.capital %>Resolver
+        }
+    }
+];
 
 @NgModule({
     imports: [
-        RouterModule.forChild([
-            {
-                path: '<%= name.lower %>',
-                data: ['<%= name.capital %>'],
-                // canActivate: [AuthGuard],
-                component: <%= name.capital %>Component
-            },
-            {
-                path: '<%= name.lower %>/edit/:id',
-                // canActivate: [AuthGuard],
-                component: <%= name.capital %>EditComponent
-            },
-            {
-                path: '<%= name.lower %>/edit',
-                // canActivate: [AuthGuard],
-                component: <%= name.capital %>EditComponent
-            }
-        ])
+        RouterModule.forChild(routes)
     ],
     exports: [RouterModule]
 })

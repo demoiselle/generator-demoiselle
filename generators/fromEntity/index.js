@@ -67,7 +67,7 @@ module.exports = class FromEntityGenerator extends Generator {
                 type: 'input',
                 name: 'prefix',
                 message: 'Informe um prefixo para seus componentes:',
-                default: 'my'
+                default: 'app'
             });
         }
 

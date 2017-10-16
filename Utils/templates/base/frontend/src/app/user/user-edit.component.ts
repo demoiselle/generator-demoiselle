@@ -7,18 +7,15 @@ import { UserService } from './user.service';
 import { User } from './user.model';
 
 @Component({
-  selector: '<%= prefix.kebab %>-user-edit',
+  selector: 'app-user-edit',
   templateUrl: './user-edit.component.html'
 })
 export class UserEditComponent implements OnInit {
   user: User;
-  confirmPass: string;
-  params: any;
-  userLoaded = false;
 
-  @Output()
-  public selectedRole;
-  public roles = [
+  funcao = 'Criar';
+
+  public perfis = [
     {value: 'GERENTE', description: 'Gerente'},
     {value: 'USUARIO', description: 'Usuário'},
     {value: 'ADMINISTRADOR', description: 'Administrador'}
@@ -32,45 +29,28 @@ export class UserEditComponent implements OnInit {
     private service: UserService,
     private loginService: LoginService,
     private notificationService: NotificationService) {
-    this.user = new User();
-    this.user.id = null;
-    this.user.firstName = 'Admin';
-    this.user.perfil = 'Administrador';
-    this.user.email = 'admin@demoiselle.org';
-    this.user.pass = '12345678';
-    this.confirmPass = '12345678';
-    this.selectedRole = this.roles[0];
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      if (Object.keys(params).length > 0) {
-        this.user.id = (<User> params).id;
-        this.user.firstName = (<User> params).firstName;
-        this.user.email = (<User> params).email;
-        this.user.pass = (<User> params).pass;
-        this.user.perfil = (<User> params).perfil;
-        this.loadPerfil(this.user.perfil);
-        this.confirmPass = this.user.pass;
-      } else {
-        this.loadPerfil(null);
-      }
-    });
+    if (this.route.snapshot.data['user']) {
+      this.user = this.route.snapshot.data['user'];
+      this.funcao = 'Editar';
+    } else {
+      this.funcao = 'Criar';
+      this.user = new User();
+    }
+    this.loadPerfil(null);
   }
 
   loadPerfil(perfil) {
     this.service.getPerfil().subscribe(
       (result) => {
-        this.roles = [];
+        this.perfis = [];
         Object.keys(result).forEach(element => {
-          this.roles.push({value: element, description: result[element]});
+          this.perfis.push({value: element, description: result[element]});
         });
-        if (this.roles.length > 0) {
-          if (perfil) {
-            this.updateSelectedRole(this.user.perfil);
-          } else {
-            this.selectedRole = this.roles[0];
-          }
+        if (this.funcao == 'Criar') {
+          this.user.perfil = this.perfis[0].value;
         }
       },
       (error) => {
@@ -80,7 +60,6 @@ export class UserEditComponent implements OnInit {
   }
 
   save(user: User) {
-    user.perfil = this.selectedRole.value;
     if (!user.id) {
       delete user.id;
       this.service.create(user).subscribe(
@@ -109,16 +88,8 @@ export class UserEditComponent implements OnInit {
     this.router.navigate(['user']);
   }
 
-  changeRole(event) {
+  changePerfil(event) {
     this.user.perfil = event.target.value;
-    this.updateSelectedRole(this.user.perfil);
   }
 
-  updateSelectedRole(perfil) {
-    this.roles.forEach(element => {
-      if (element.value === perfil || element.description === perfil) {
-        this.selectedRole = element;
-      }
-    });
-  }
 }
