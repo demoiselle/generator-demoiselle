@@ -11,6 +11,7 @@ import { <%= name.capital %> } from './<%= name.lower %>.model';
 })
 export class <%= name.capital %>EditComponent implements OnInit {
   <%= name.lower %>: <%= name.capital %>;
+  
   private funcao = 'Criar';
 
   private routeSubscribe: any;
@@ -55,6 +56,21 @@ export class <%= name.capital %>EditComponent implements OnInit {
           this.notificationService.error('Não foi possível alterar!');
         }
       );
+    }
+  }
+  
+  dalete(<%= name.lower %>:<%= name.capital %>) {
+    if (<%= name.lower %>.id) {
+      this.service.delete(<%= name.lower %>).subscribe(
+        (result) => {
+          this.notificationService.success('Item removido com sucesso!');
+          this.goBack();
+        },
+        (error) => {
+          this.notificationService.error('Não foi possível deletar o Item!');
+        }
+      );
+
     }
   }
 

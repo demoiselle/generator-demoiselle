@@ -6,7 +6,6 @@ import { SharedModule } from '../shared';
 import { <%= name.capital %>Service } from './<%= name.lower %>.service';
 import { <%= name.capital %>Component } from './<%= name.lower %>.component';
 import { <%= name.capital %>EditComponent } from './<%= name.lower %>-edit.component';
-import { <%= name.capital %>ViewComponent } from './<%= name.lower %>-view.component';
 import { <%= name.capital %>Resolver } from './<%= name.lower %>.resolver';
 
 @NgModule({
@@ -16,8 +15,7 @@ import { <%= name.capital %>Resolver } from './<%= name.lower %>.resolver';
     ],
     declarations: [
         <%= name.capital %>Component,
-        <%= name.capital %>EditComponent,
-        <%= name.capital %>ViewComponent
+        <%= name.capital %>EditComponent
     ],
     providers: [
         <%= name.capital %>Service,

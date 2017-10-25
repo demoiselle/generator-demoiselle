@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '@demoiselle/security';
 import { <%= name.capital %>Component } from './<%= name.lower %>.component';
 import { <%= name.capital %>EditComponent } from './<%= name.lower %>-edit.component';
-import { <%= name.capital %>ViewComponent } from './<%= name.lower %>-view.component';
 import { <%= name.capital %>Resolver } from './<%= name.lower %>.resolver';
 
 const routes: Routes = [
@@ -24,14 +23,6 @@ const routes: Routes = [
     {
         path: 'edit',
         component: <%= name.capital %>EditComponent
-    },
-    {
-        path: 'view/:id',
-        canActivate: [AuthGuard],
-        component: <%= name.capital %>ViewComponent,
-        resolve: {
-            <%= name.lower %>: <%= name.capital %>Resolver
-        }
     }
 ];
 
