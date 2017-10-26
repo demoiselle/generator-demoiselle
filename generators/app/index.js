@@ -185,7 +185,7 @@ module.exports = class AppGenerator extends Generator {
 
         this.log('Creating angular/cli frontend! please wait...');
         this.log(execSync('ng new frontend --skip-install --skip-git').toString());
-        
+
         this._addDependenciesToPackageJson();
         this._addCustomStylesToAngularCli();
 
@@ -221,7 +221,7 @@ module.exports = class AppGenerator extends Generator {
         to = this.destinationPath('frontend/src/index.html');
         this.fs.copyTpl(from, to, template);
 
-        
+
     }
 
     _generateProjectBackend() {
@@ -254,7 +254,7 @@ module.exports = class AppGenerator extends Generator {
     _addDependenciesToPackageJson() {
 
         this.log('Adding aditional dependencies to package.json...');
-        
+
         // let dependencies = [
         //     "@demoiselle/http",
         //     "@demoiselle/security",
@@ -273,10 +273,10 @@ module.exports = class AppGenerator extends Generator {
         //     _this.log('Adding ' + dep);
         //     //_this.log(execSync('npm install --save ' + dep, {cwd: 'frontend'}).toString());
         // });
-         
-         let dependenciesString = `
-    "@demoiselle/http": "^0.0.22",
-    "@demoiselle/security": "^0.0.23",
+
+        let dependenciesString = `
+    "@demoiselle/http": "^1.0.0",
+    "@demoiselle/security": "^1.0.0",
     "angular2-infinite-scroll": "^0.3.4",
     "angular2-jwt": "^0.2.0",
     "font-awesome": "^4.7.0",
@@ -285,7 +285,7 @@ module.exports = class AppGenerator extends Generator {
     "ngx-bootstrap": "^1.9.3",
     "simple-line-icons": "^2.4.1",
     "@angular/service-worker": "^1.0.0-beta.16",`;
-        
+
         let templatePath = this.destinationPath('frontend/package.json');
         this.fs.copy(templatePath, templatePath, {
             process: function (content) {
@@ -303,7 +303,7 @@ module.exports = class AppGenerator extends Generator {
     _addCustomStylesToAngularCli() {
         let dependenciesString = `
     "scss/style.scss",`;
-        
+
         let templatePath = this.destinationPath('frontend/.angular-cli.json');
         this.fs.copy(templatePath, templatePath, {
             process: function (content) {
