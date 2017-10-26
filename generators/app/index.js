@@ -274,7 +274,7 @@ module.exports = class AppGenerator extends Generator {
         //     //_this.log(execSync('npm install --save ' + dep, {cwd: 'frontend'}).toString());
         // });
 
-        let dependenciesString = `
+    let dependenciesString = `
     "@demoiselle/http": "^1.0.0",
     "@demoiselle/security": "^1.0.0",
     "angular2-infinite-scroll": "^0.3.4",

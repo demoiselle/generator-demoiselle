@@ -3,7 +3,8 @@
 > Gerador para Demoiselle 3.0
 
 Versões do Gerador
-- 1.1.X para Angular 4.0.1
+- 2.x.x para Angular 4 utilizando Angular CLI (em breve)
+- 1.1.X para Angular 4
 - 1.0.X para Angular 2.3.0
 
 Utilitário para a criação da estrutura básica de um projeto, arquivos e estrutura de pastas, utilizando os padrões:
@@ -38,7 +39,7 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | b
 
 nvm install stable
 
-npm install -g yo generator-demoiselle
+npm install -g yo generator-demoiselle @angular/cli
 
 ```
 
