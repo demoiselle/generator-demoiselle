@@ -130,27 +130,34 @@ module.exports = class FrontendUtil {
      * @param {*} template 
      */
     _addChildrenRoute(template) {
+
         var templatePath = this.vm.destinationPath('frontend/src/app/app-routing.module.ts');
         this.fs.copy(templatePath, templatePath, {
             process: function (content) {
 
-                var newChildRoute = `
-        {
-          path: '` + template.name.lower + `',
-          loadChildren: './` + template.name.lower + '/' + template.name.lower + '.module#' + template.name.capital + `Module',
-          data: {
-            title: '` + template.name.capital + `',
-            showInSidebar: true,
-            icon: 'icon-diamond'
-          }
-        },
-        `;
+                if (!(new RegExp(template.name.lower, 'i')).test(content.toString())) {
+                    var newChildRoute = `
+                        {
+                          path: '` + template.name.lower + `',
+                          loadChildren: './` + template.name.lower + '/' + template.name.lower + '.module#' + template.name.capital + `Module',
+                          data: {
+                            title: '` + template.name.capital + `',
+                            showInSidebar: true,
+                            icon: 'icon-diamond'
+                          }
+                        },
+                        `;
 
-                // Utilizando RegExp enquanto não tem um bom parser para typescript
-                var regEx = new RegExp('children\\:\\s*\\t*\\r*\\n*\\[');
-                var newContent = content.toString().replace(regEx, 'children: [\n\t\t' + newChildRoute);
-                return newContent;
+                    console.log(template.name.capital);
+                    console.log(content.toString().indexOf(template.name.lower));
 
+                    // Utilizando RegExp enquanto não tem um bom parser para typescript
+                    var regEx = new RegExp('children\\:\\s*\\t*\\r*\\n*\\[');
+                    var newContent = content.toString().replace(regEx, 'children: [\n\t\t' + newChildRoute);
+                    return newContent;
+                } else {
+                    return content;
+                }
             }
         });
         this.fs.commit(function () { });
