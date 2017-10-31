@@ -147,7 +147,7 @@ module.exports = class FrontendUtil {
                           }
                         },
                         `;
-                    console.log(content.toString().indexOf(template.name.lower) + ' - Criado');
+
 
                     // Utilizando RegExp enquanto não tem um bom parser para typescript
                     var regEx = new RegExp('children\\:\\s*\\t*\\r*\\n*\\[');

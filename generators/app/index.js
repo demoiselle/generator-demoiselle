@@ -205,10 +205,6 @@ module.exports = class AppGenerator extends Generator {
         to = this.destinationPath('frontend/src/assets/');
         this.fs.copy(from, to);
 
-        from = this.templatePath('base/frontend/src/img/');
-        to = this.destinationPath('frontend/src/img/');
-        this.fs.copy(from, to);
-
         from = this.templatePath('base/frontend/src/scss/');
         to = this.destinationPath('frontend/src/scss/');
         this.fs.copyTpl(from, to, template);
@@ -220,7 +216,6 @@ module.exports = class AppGenerator extends Generator {
         from = this.templatePath('base/frontend/src/index.html');
         to = this.destinationPath('frontend/src/index.html');
         this.fs.copyTpl(from, to, template);
-
 
     }
 
@@ -274,7 +269,7 @@ module.exports = class AppGenerator extends Generator {
         //     //_this.log(execSync('npm install --save ' + dep, {cwd: 'frontend'}).toString());
         // });
 
-    let dependenciesString = `
+        let dependenciesString = `
     "@demoiselle/http": "^1.0.0",
     "@demoiselle/security": "^1.0.1",
     "angular2-infinite-scroll": "^0.3.4",

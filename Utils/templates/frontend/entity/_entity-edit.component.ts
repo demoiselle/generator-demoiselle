@@ -12,7 +12,7 @@ import { <%= name.capital %> } from './<%= name.lower %>.model';
 export class <%= name.capital %>EditComponent implements OnInit {
   <%= name.lower %>: <%= name.capital %>;
   
-  private funcao = 'Criar';
+  funcao = 'Criar';
 
   private routeSubscribe: any;
 
