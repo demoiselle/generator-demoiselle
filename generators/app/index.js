@@ -237,7 +237,7 @@ module.exports = class AppGenerator extends Generator {
 
         from = this.templatePath('base/backend/src/main/webapp/');
         to = this.destinationPath('backend/src/main/webapp/');
-        this.fs.copyTpl(from, to, template);
+        this.fs.copy(from, to);
 
         from = this.templatePath('base/backend/pom.xml');
         to = this.destinationPath('backend/pom.xml');
