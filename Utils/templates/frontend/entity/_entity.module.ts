@@ -7,11 +7,13 @@ import { <%= name.capital %>Service } from './<%= name.lower %>.service';
 import { <%= name.capital %>Component } from './<%= name.lower %>.component';
 import { <%= name.capital %>EditComponent } from './<%= name.lower %>-edit.component';
 import { <%= name.capital %>Resolver } from './<%= name.lower %>.resolver';
+import { PaginationModule } from 'ngx-bootstrap';
 
 @NgModule({
     imports: [
         SharedModule,
-        <%= name.capital %>RoutingModule
+        <%= name.capital %>RoutingModule,
+        PaginationModule.forRoot()
     ],
     declarations: [
         <%= name.capital %>Component,
