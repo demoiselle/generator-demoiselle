@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-bordered table-sm">
                             <thead>
                                 <tr>
                                     <th>
@@ -45,9 +45,9 @@
                                 <tr *ngFor="let <%= name.lower %> of <%= name.lower %>s">
                                     <td>{{<%= name.lower %>.id}}</td>
                                     <td>{{<%= name.lower %>.description}}</td>
-                                    <td class="text-right">
+                                    <td>
                                         <button [routerLink]="['/<%= name.lower %>','edit', <%= name.lower %>.id]" type="button" class="btn btn-warning btn-sm">
-                                            <i class="fa fa-plus-circle"></i>&nbsp; Editar
+                                            <i class="fa fa-pencil"></i>&nbsp; Editar
                                         </button>
 
                                         <button class="btn btn-danger btn-sm" type="button" (click)="showModalDelete(<%= name.lower %>)">
