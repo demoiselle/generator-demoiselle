@@ -7,13 +7,12 @@ import {
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpModule } from '@angular/http';
+import { HttpModule, BrowserXhr } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { Http, RequestOptions, ConnectionBackend, RequestOptionsArgs, Response, XHRBackend } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-
 
 import { AuthServiceProvider, AuthService, SecurityModule } from '@demoiselle/security';
 import { HttpServiceProvider, ExceptionService, HttpService } from '@demoiselle/http';
@@ -22,6 +21,7 @@ import { LoginService } from '../login/login.service';
 // Import 3rd party components
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { NgProgressModule, NgProgressBrowserXhr } from 'ngx-progressbar';
 
 // BEGIN Demoiselle Http and Security configs and factories
 const httpConfig = {
@@ -111,6 +111,7 @@ const APP_DIRECTIVES = [
 @NgModule({
   imports: [
     //CommonModule,
+    NgProgressModule,
     BrowserAnimationsModule,
     BrowserModule,
     HttpModule,
@@ -148,7 +149,8 @@ export class CoreModule {
         LoginService,
         ExceptionService,
         { provide: ToastOptions, useClass: CustomOption },
-        { provide: LocationStrategy, useClass: HashLocationStrategy }
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        { provide: BrowserXhr, useClass: NgProgressBrowserXhr }
       ]
     };
   }
