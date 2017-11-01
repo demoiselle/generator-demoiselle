@@ -2,7 +2,9 @@ package <%= package.lower %>.<%= project.lower %>.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 import javax.persistence.Basic;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +18,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@Cacheable
 @DynamicInsert
 @DynamicUpdate
 @XmlRootElement
@@ -26,7 +29,7 @@ public class <%= name.capital %> implements Serializable {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(unique = true)
-    private String id;
+    private UUID id;
 
     @Basic(optional = false)
     @NotNull
@@ -34,11 +37,11 @@ public class <%= name.capital %> implements Serializable {
     @Column(nullable = false, length = 128)
     private String description;
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

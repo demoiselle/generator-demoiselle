@@ -1,6 +1,7 @@
 package <%= package.lower %>.<%= project.lower %>.service;
 
 import <%= package.lower %>.<%= project.lower %>.entity.<%= name.capital %>;
+import java.util.UUID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,7 +20,7 @@ import org.demoiselle.jee.security.annotation.Authenticated;
 })
 @Path("v1/<%= name.lower %>s")
 @Authenticated
-public class <%= name.capital %>REST extends AbstractREST< <%= name.capital %>, String> {
+public class <%= name.capital %>REST extends AbstractREST< <%= name.capital %>, UUID> {
 
     @GET
     @Override
