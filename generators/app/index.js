@@ -273,9 +273,9 @@ module.exports = class AppGenerator extends Generator {
     "@demoiselle/security": "^1.0.1",
     "angular2-jwt": "^0.2.0",
     "font-awesome": "^4.7.0",
-    "bootstrap": "^4.0.0-beta",
+    "bootstrap": "^4.0.0-beta.2",
     "ng2-toastr": "^4.1.2",
-    "ngx-bootstrap": "^1.9.3",
+    "ngx-bootstrap": "^2.0.0-beta.8",
     "ngx-progressbar": "^2.1.1",
     "simple-line-icons": "^2.4.1",
     "@angular/service-worker": "^1.0.0-beta.16",`;

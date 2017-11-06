@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { Ng2BootstrapModule, PopoverModule } from 'ngx-bootstrap';
 import { SecurityModule } from '@demoiselle/security';
 
 import { NotificationService } from './notification.service';
@@ -14,10 +13,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CommonModule,
     FormsModule,
     RouterModule,
-    SecurityModule,
-    Ng2BootstrapModule.forRoot(),
-    PopoverModule.forRoot()
-
+    SecurityModule
   ],
   declarations: [ 
   ],
@@ -28,9 +24,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     CommonModule,
     FormsModule,
     RouterModule,
-    Ng2BootstrapModule,
     SecurityModule
-
   ]
 })
+
 export class SharedModule { }
