@@ -4,6 +4,7 @@ import {
   Optional,
   SkipSelf
 } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,7 +17,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { AuthServiceProvider, AuthService, SecurityModule } from '@demoiselle/security';
 import { HttpServiceProvider, ExceptionService, HttpService } from '@demoiselle/http';
-import { LoginService } from '../login/login.service';
+import { LoginService } from '../safe/login/login.service';
 
 // Import 3rd party components
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';

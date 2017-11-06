@@ -51,7 +51,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'login',
-        loadChildren: './login/login.module#LoginModule',
+        loadChildren: './safe/login/login.module#LoginModule',
       }
     ]
   }
