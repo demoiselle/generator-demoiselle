@@ -6,7 +6,7 @@ import { NotificationService } from '../../shared';
 import { LoginService } from './login.service';
 
 @Component({
-  selector: 'todo-login',
+  selector: 'app-login',
   templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit {

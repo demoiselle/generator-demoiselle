@@ -5,7 +5,7 @@
         <div class="card-group mb-0">
           <div class="card p-4">
             <div class="card-body">
-              <form name="loginForm" (ngSubmit)="login()" novalidate>
+              <form name="loginForm" (ngSubmit)="amnesia()" novalidate>
                 <h1>Lembrar senha</h1>
                 <p class="text-muted">Entre com seu email</p>
                 <div class="input-group mb-3">
@@ -16,10 +16,13 @@
                 </div>
                 <div class="row">
                   <div class="col-6">
-                    <button type="submit" class="btn btn-primary px-4">Login</button>
+                    <button type="submit" class="btn btn-primary px-4">Enviar</button>
                   </div>
-
+                  <div class="col-6 text-right">
+                    <button routerLink="/login" type="button" class="btn btn-link px-0">Voltar</button>
+                  </div>
                 </div>
+
                 <div id="message" class="text-danger"></div>
                 <!--<div>
                   Email:admin@demoiselle.org Senha:123456

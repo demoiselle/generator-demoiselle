@@ -6,13 +6,12 @@ import { NotificationService } from '../../shared';
 import { AmnesiaService } from './amnesia.service';
 
 @Component({
-  selector: 'todo-amnesia',
+  selector: 'app-amnesia',
   templateUrl: './amnesia.component.html'
 })
 export class AmnesiaComponent implements OnInit {
   user: any = {
-    username: 'admin@demoiselle.org',
-    password: '123456'
+    username: ''
   };
 
   constructor(protected authService: AuthService,
@@ -28,16 +27,16 @@ export class AmnesiaComponent implements OnInit {
     this.authService.amnesia(this.user)
       .subscribe(
       res => {
-        this.notificationService.success('Amnesia realizado com sucesso!');
+        this.notificationService.success('Enviamos um email para você!');
       },
       error => {
         if (error.status === 401 || error.status === 406) {
-          let errors = JSON.parse(error._body);
-          for (let err of errors) {
+          const errors = JSON.parse(error._body);
+          for (const err of errors) {
             this.notificationService.error(err.error);
           }
           this.user.password = '';
-        };
+        }
       });
   }
 }

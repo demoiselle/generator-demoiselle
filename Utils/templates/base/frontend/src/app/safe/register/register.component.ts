@@ -6,13 +6,15 @@ import { NotificationService } from '../../shared';
 import { RegisterService } from './register.service';
 
 @Component({
-  selector: 'todo-register',
+  selector: 'app-register',
   templateUrl: './register.component.html'
 })
 export class RegisterComponent implements OnInit {
-  user: any = {
-    username: 'admin@demoiselle.org',
-    password: '123456'
+
+  credentials: any = {
+    username: '',
+    password: '',
+    firstName: ''
   };
 
   constructor(protected authService: AuthService,
@@ -25,19 +27,20 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    this.authService.register(this.user)
+
+    this.authService.register(this.credentials)
       .subscribe(
       res => {
-        this.notificationService.success('Register realizado com sucesso!');
+        this.notificationService.success('Solicitação enviada com sucesso, enviaremos um email para você!');
       },
       error => {
         if (error.status === 401 || error.status === 406) {
-          let errors = JSON.parse(error._body);
-          for (let err of errors) {
+          const errors = JSON.parse(error._body);
+          for (const err of errors) {
             this.notificationService.error(err.error);
           }
-          this.user.password = '';
-        };
+          this.credentials.password = '';
+        }
       });
   }
 }
