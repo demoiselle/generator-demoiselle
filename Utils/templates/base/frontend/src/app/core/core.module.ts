@@ -17,7 +17,7 @@ import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { AuthServiceProvider, AuthService, SecurityModule } from '@demoiselle/security';
 import { HttpServiceProvider, ExceptionService, HttpService } from '@demoiselle/http';
-import { LoginService } from '../safe/login/login.service';
+import { LoginService } from '../auth/login/login.service';
 
 // Import 3rd party components
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';

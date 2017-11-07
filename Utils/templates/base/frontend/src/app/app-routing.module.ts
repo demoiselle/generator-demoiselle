@@ -51,15 +51,15 @@ export const routes: Routes = [
     children: [
       {
         path: 'login',
-        loadChildren: './safe/login/login.module#LoginModule',
+        loadChildren: './auth/login/login.module#LoginModule',
       },
       {
         path: 'amnesia',
-        loadChildren: './safe/amnesia/amnesia.module#AmnesiaModule',
+        loadChildren: './auth/amnesia/amnesia.module#AmnesiaModule',
       },
       {
         path: 'register',
-        loadChildren: './safe/register/register.module#RegisterModule',
+        loadChildren: './auth/register/register.module#RegisterModule',
       }
     ]
   }

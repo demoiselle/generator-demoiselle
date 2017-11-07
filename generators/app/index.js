@@ -269,8 +269,8 @@ module.exports = class AppGenerator extends Generator {
         // });
 
         let dependenciesString = `
-    "@demoiselle/http": "^1.0.0",
-    "@demoiselle/security": "^1.0.1",
+    "@demoiselle/http": "^1.0.1",
+    "@demoiselle/security": "^1.0.3",
     "angular2-jwt": "^0.2.0",
     "font-awesome": "^4.7.0",
     "bootstrap": "^4.0.0-beta.2",
