@@ -29,15 +29,6 @@ export const routes: Routes = [
           showInSidebar: true,
           icon: 'icon-speedometer'
         },
-      },
-      {
-        path: 'user',
-        loadChildren: './user/user.module#UserModule',
-        data: {
-          title: 'Usuários',
-          showInSidebar: true,
-          icon: 'icon-user'
-        },
       }
       
     ]
