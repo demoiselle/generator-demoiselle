@@ -6,6 +6,11 @@
 	Twitter: @paulogladson
 	From: Curitiba, PR, Brasil
 
+        Name: Marcelo Teixeira
+	Contact: mrclteixeira@gmail.com
+	Twitter: @mrclteixeira
+	From: Curitiba, PR, Brasil
+
 /* SITE */
 	Last update: 2017/08/30
 	Language: Portuguese
