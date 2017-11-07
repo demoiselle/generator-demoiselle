@@ -3,7 +3,7 @@
 > Gerador para Demoiselle 3.0
 
 Versões do Gerador
-- 2.x.x para Angular 4 utilizando Angular CLI (em breve)
+- 2.x.x para Angular 5 utilizando Angular CLI (em breve)
 - 1.1.X para Angular 4
 - 1.0.X para Angular 2.3.0
 
