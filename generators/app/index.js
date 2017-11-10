@@ -193,6 +193,7 @@ module.exports = class AppGenerator extends Generator {
 
         this.fs.delete(this.destinationPath('frontend/src/app'));
         this.fs.delete(this.destinationPath('frontend/src/assets'));
+        this.fs.delete(this.destinationPath('frontend/src/environments'));
         this.fs.delete(this.destinationPath('frontend/src/styles.css'));
         this.fs.delete(this.destinationPath('frontend/src/index.html'));
         this.fs.commit(function () { });
@@ -203,6 +204,10 @@ module.exports = class AppGenerator extends Generator {
 
         from = this.templatePath('base/frontend/src/assets/');
         to = this.destinationPath('frontend/src/assets/');
+        this.fs.copy(from, to);
+
+        from = this.templatePath('base/frontend/src/environments/');
+        to = this.destinationPath('frontend/src/environments/');
         this.fs.copy(from, to);
 
         from = this.templatePath('base/frontend/src/scss/');

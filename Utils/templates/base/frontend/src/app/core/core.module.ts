@@ -24,17 +24,19 @@ import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgProgressModule, NgProgressBrowserXhr } from 'ngx-progressbar';
 
+import { environment } from '../../environments/environment';
+
 // BEGIN Demoiselle Http and Security configs and factories
 const httpConfig = {
           endpoints: {
-            main: 'http://localhost:8080/app/api/v1/' 
+            main: environment.apiUrl
           },
           multitenancy: null,
           unAuthorizedRoute: '/login',
           tokenKey: 'id_token'
         };
 const authConfig = {
-          authEndpointUrl: 'http://localhost:8080/app/api/', // may be in the form 'http://localhost:9090/app/api/v1/'
+          authEndpointUrl: environment.authEndpointUrl,
           loginResourcePath: 'auth',
           tokenKey: 'id_token',
           loginRoute: '/login'
@@ -120,7 +122,7 @@ const APP_DIRECTIVES = [
     SecurityModule,
     BsDropdownModule.forRoot(),
     ToastModule.forRoot()
-    
+
   ],
   declarations: [
     ...APP_CONTAINERS,
@@ -161,4 +163,4 @@ export class CoreModule {
       throw new Error('CoreModule is already loaded. Import it in the AppModule only');
     }
   }
-} 
+}
