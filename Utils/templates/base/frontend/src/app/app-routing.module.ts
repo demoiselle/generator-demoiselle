@@ -27,7 +27,8 @@ export const routes: Routes = [
         data: {
           title: 'Dashboard',
           showInSidebar: true,
-          icon: 'icon-speedometer'
+          icon: 'icon-speedometer',
+          roles: ['ADMINISTRATOR']
         },
       }
       
