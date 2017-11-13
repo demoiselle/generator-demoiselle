@@ -1,4 +1,4 @@
-# generator-demoiselle [![NPM version][npm-image]] [npm-url] [![Join the chat at https://gitter.im/demoiselle](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/demoiselle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/demoiselle/generator-demoiselle.svg?branch=master)](https://travis-ci.org/demoiselle/generator-demoiselle)
+# generator-demoiselle [![NPM version][npm-image]](https://npmjs.org/package/generator-demoiselle) [![Join the chat at https://gitter.im/demoiselle](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/demoiselle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/demoiselle/generator-demoiselle.svg?branch=master)](https://travis-ci.org/demoiselle/generator-demoiselle)
 
 > Gerador para Demoiselle 3.0
 
