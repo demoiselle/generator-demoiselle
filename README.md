@@ -165,8 +165,8 @@ Para gerar os arquivos baseados em um documento JSON com as descrições dos ser
 na pasta raiz ou subdiretório da aplicação e executar o comando:
 
 ```bash
-#Serão apresentados todos os arquivos nas pastas da aplicação, selecione os que deseja implementar
-yo demoiselle:fromEntity
+# serão apresentados todos os arquivos nas pastas da aplicação, selecione os que deseja implementar
+yo demoiselle:fromSwagger
 ```
 
 Serão gerados os arquivos necessários para a implementação de uma aplicação, tanto no frontend quanto no backend, a partir 
@@ -182,17 +182,6 @@ Criando uma distribuição da interface para ser instalada em servidor web
 npm run build
 ```
 
-
-## Roadmap
-
-Acompanhe pelos [milestones](https://github.com/demoiselle/generator-demoiselle/milestones) do projeto.
-
-## License
-
-LGPL3 © [SERPRO](http://demoiselle.io/)
-
-[npm-image]: https://badge.fury.io/js/generator-demoiselle.svg
-[npm-url]: https://npmjs.org/package/generator-demoiselle
 
 ## Roadmap
 

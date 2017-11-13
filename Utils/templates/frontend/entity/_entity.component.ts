@@ -26,14 +26,14 @@ export class <%= name.capital %>Component implements OnInit {
   public ascValue = '⇧';
   public descValue = '⇩';
   public formOrder = {
-    id: '',
-    description: ''
+    <% properties.forEach(function (property){ %>
+      <%= property.name %>: '',<% });%>
   };
 
   public filterActive = true;
   public filters = {
-    id: '',
-    description: ''
+    <% properties.forEach(function (property){ %>
+      <%= property.name %>: '',<% });%>
   };
 
   constructor(private service: <%= name.capital %>Service, private notificationService: NotificationService) {
@@ -43,7 +43,7 @@ export class <%= name.capital %>Component implements OnInit {
     this.list();
   }
 
-  
+
 
   list(field: string = null, desc: boolean = false) {
     let filter = this.processFilter();
@@ -104,17 +104,17 @@ export class <%= name.capital %>Component implements OnInit {
    // Filter
   processFilter() {
     let filter = '';
-    if (this.filters.id !== '') {
-      filter += '&id=' + this.filters.id;
+    for (let key in this.filters) {
+      if (this.filters[key] !== '') {
+        filter += `&${key}=${this.filters[key]}`;
+      }
     }
-    if (this.filters.description !== '') {
-      filter += '&description=' + this.filters.description;
-    }
+
     return filter;
   }
 
-  
-  orderBy(field, order) {
+
+  orderBy(field) {
     this.toggleFormOrder(field);
     this.list(field, this.formOrder[field] === this.descValue ? true : false);
   }

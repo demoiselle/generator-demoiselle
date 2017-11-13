@@ -1,8 +1,8 @@
 export class <%= name.capital %> {
-  id: number;
-  description: string;
-  constructor(
-    id?: number,
-    description?: string
+  <% properties.forEach(function (property){ %>
+    <%= property.name %>: String;<% });%>
+
+  constructor(<% properties.forEach(function (property, index, arr){ %>
+    <%= property.name %>?: String<%= (index === arr.length - 1 ) ? '' : ',' %><% });%>
   ) { }
 }

@@ -222,6 +222,14 @@ module.exports = class AppGenerator extends Generator {
         to = this.destinationPath('frontend/src/index.html');
         this.fs.copyTpl(from, to, template);
 
+        from = this.templatePath('base/frontend/src/manifest.json');
+        to = this.destinationPath('frontend/src/manifest.json');
+        this.fs.copyTpl(from, to);
+
+        from = this.templatePath('base/frontend/src/humans.txt');
+        to = this.destinationPath('frontend/src/humans.txt');
+        this.fs.copyTpl(from, to);
+
     }
 
     _generateProjectBackend() {

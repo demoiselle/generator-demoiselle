@@ -7,27 +7,18 @@
           <strong>{{funcao}} <%= name.capital %></strong>
       </div>
       <div class="card-body">
-      
+
       <div class="panel-body" style="min-height: 300px;">
 
       <form class="col-xs-6" role="form" #<%= name.lower %>Form="ngForm" (ngSubmit)="save(<%= name.lower %>)">
-
+        <% properties.forEach(function (property) { %>
         <div class="form-group">
-          <label for="<%= name.lower %>Id" class="control-label">ID</label>
-          <input type="text" id="<%= name.lower %>Id" class="form-control"
-            name="<%= name.lower %>Id" [(ngModel)]="<%= name.lower %>.id"
-            disabled="true">
+          <label for="<%= name.lower %>-<%= property.name %>" class="control-label"><%= property.name %></label>
+          <input type="<%= property.htmlType %>" name="<%= property.name %>" id="<%= name.lower %>-<%= property.name %>" class="form-control" [(ngModel)]="<%= name.lower %>.<%= property.name %>" <%= property.isReadOnly ? 'readonly="true"' : '' %>>
         </div>
+        <% }); %>
 
-        <div class="form-group">
-          <label for="description" class="control-label">Descrição</label>
-          <input type="text" id="description" class="form-control"
-            name="description" [(ngModel)]="<%= name.lower %>.description"
-            required>
-        </div>
-
-        
-        <div class="card-footer">
+        <div class="card-footer clearfix">
           <div class="pull-right">
             <button type="button" class="btn btn-default" (click)="goBack()">
               <i class="fa fa-times" aria-hidden="true"></i>
