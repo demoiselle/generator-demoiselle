@@ -212,8 +212,53 @@ module.exports = class FromEntityGenerator extends Generator {
                 type: match[1],
                 name: match[2]
             };
+
+            property.htmlType = getHtmlTypeOfProperty(property);
+            property.isReadOnly = isPropertyReadOnly(property);
+
             properties.push(property);
         }
+
         return properties;
     }
+}
+
+/**
+ * Tenta mapear o tipo de dado para inputs HTML5:
+ *
+ *
+ * @param {*} property
+ * @return String   Tipo do input HTML. Default: "text".
+ */
+function getHtmlTypeOfProperty(property) {
+
+
+  if (/e?mail/i.test(property.name)) {
+    return 'email';
+  }
+
+  if (/pass/i.test(property.name)) {
+    return 'password';
+  }
+
+  // select options
+  // if (false) {
+  //   return 'select';
+  // }
+
+
+  return 'text';
+}
+
+function isPropertyReadOnly(property) {
+
+  if (/id/i.test(property.name)) {
+    return true;
+  }
+
+  if (/pass/i.test(property.name)) {
+    return true;
+  }
+
+  return false;
 }
