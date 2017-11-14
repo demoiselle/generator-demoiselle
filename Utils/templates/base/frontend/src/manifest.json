@@ -55,6 +55,19 @@
             "url": "https://www.demoiselle.org/"
         }
     ],
+    "storage": {
+        "managed_schema": "schema.json"
+    },
+    "app": {
+        "background": {
+            "scripts": ["background.js"]
+        }
+    },
+    "file_system_provider_capabilities": {
+        "configurable": true,
+        "multiple_mounts": true,
+        "source": "network"
+    },
     "permissions": [
         "gcm",
         "storage",
@@ -68,5 +81,6 @@
                 "directory"
             ]
         }
-    ]
+    ],
+    "content_security_policy": "script-src 'self' www.google-analytics.com  *.google.com *.facebook.net *.facebook.com ssl.google-analytics.com ; font-src 'self' ; media-src 'self' ; object-src 'self' ; worker-src 'self' ; frame-ancestors 'self' ; form-action 'self' ; block-all-mixed-content; manifest-src 'self' ;"
 }

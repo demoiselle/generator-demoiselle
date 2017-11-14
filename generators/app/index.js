@@ -188,6 +188,7 @@ module.exports = class AppGenerator extends Generator {
 
         this._addDependenciesToPackageJson();
         this._addCustomStylesToAngularCli();
+        this._addCustomImportsToAngularCli();
 
         // replacing src folders and styles.css
 
@@ -228,6 +229,10 @@ module.exports = class AppGenerator extends Generator {
 
         from = this.templatePath('base/frontend/src/humans.txt');
         to = this.destinationPath('frontend/src/humans.txt');
+        this.fs.copyTpl(from, to);
+        
+        from = this.templatePath('base/frontend/src/background.js');
+        to = this.destinationPath('frontend/src/background.js');
         this.fs.copyTpl(from, to);
 
     }
@@ -300,6 +305,27 @@ module.exports = class AppGenerator extends Generator {
                 // Utilizando RegExp enquanto não tem um bom parser para typescript
                 var regEx = new RegExp('\\"dependencies\\"\\:\\s*\\t*\\r*\\n*\\{');
                 var newContent = content.toString().replace(regEx, '"dependencies": {' + dependenciesString);
+                return newContent;
+
+            }
+        });
+        this.fs.commit(function () { });
+    }
+
+    _addCustomImportsToAngularCli() {
+        let dependenciesString = `
+        "manifest.json",
+        "humans.txt",
+        "background.js",
+        "schema.json", `;
+
+        let templatePath = this.destinationPath('frontend/.angular-cli.json');
+        this.fs.copy(templatePath, templatePath, {
+            process: function (content) {
+
+                // Utilizando RegExp enquanto não tem um bom parser para typescript
+                var regEx = new RegExp('\\"assets\\"\\:\\s*\\t*\\r*\\n*\\[');
+                var newContent = content.toString().replace(regEx, '"assets": [' + dependenciesString);
                 return newContent;
 
             }

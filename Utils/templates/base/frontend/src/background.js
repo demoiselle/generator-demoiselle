@@ -1,6 +1,6 @@
 // React when a browser action's icon is clicked.
 chrome.browserAction.onClicked.addListener(function (tab) {
-    var viewTabUrl = chrome.extension.getURL('https://www.demoiselle.org/cep/index.html');
+    var viewTabUrl = chrome.extension.getURL('https://www.demoiselle.org/index.html');
     var imageUrl = 'https://www.demoiselle.org/images/logo-large.png';
 
     // Look through all the pages in this extension to find one we can use.
