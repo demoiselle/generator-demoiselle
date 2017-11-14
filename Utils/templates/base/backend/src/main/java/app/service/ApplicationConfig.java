@@ -9,7 +9,7 @@ public class ApplicationConfig extends Application {
 
     public ApplicationConfig() {
         BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setBasePath("/api");
+        beanConfig.setBasePath("/app/api");
         beanConfig.setResourcePackage("<%= package.lower %>.<%= project.lower %>.service");
         beanConfig.setVersion("3.0.0");
         
