@@ -5,16 +5,20 @@ import { NotificationService } from '../shared';
 import { <%= name.capital %>Service } from './<%= name.lower %>.service';
 import { <%= name.capital %> } from './<%= name.lower %>.model';
 
+const ACTIONS = {
+  CRIAR: 'Criar',
+  EDITAR: 'Editar'
+};
+
 @Component({
   selector: '<%= prefix.lower %>-<%= name.lower %>-edit',
   templateUrl: './<%= name.lower %>-edit.component.html'
 })
 export class <%= name.capital %>EditComponent implements OnInit {
   <%= name.lower %>: <%= name.capital %>;
-  
-  funcao = 'Criar';
 
-  private routeSubscribe: any;
+  private action = ACTIONS.CRIAR;
+  private isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,51 +30,68 @@ export class <%= name.capital %>EditComponent implements OnInit {
   ngOnInit() {
     if (this.route.snapshot.data['<%= name.lower %>']) {
       this.<%= name.lower %> = this.route.snapshot.data['<%= name.lower %>'];
-      this.funcao = 'Editar';
+      this.action = ACTIONS.EDITAR;
     } else {
-      this.funcao = 'Criar';
+      this.action = ACTIONS.CRIAR;
       this.<%= name.lower %> = new <%= name.capital %>();
     }
   }
 
+  startLoading() {
+    this.isLoading = true;
+  }
+
+  endLoading() {
+    this.isLoading = false;
+  }
 
   save(<%= name.lower %>:<%= name.capital %>) {
+    this.startLoading();
     if (!<%= name.lower %>.id) {
       delete <%= name.lower %>.id;
       this.service.create(<%= name.lower %>).subscribe(
         (result) => {
+          this.endLoading();
           this.notificationService.success('Item criado com sucesso!');
           this.goBack();
         },
         (error) => {
+          this.endLoading();
           this.notificationService.error('Não foi possível salvar!');
         }
       );
     } else {
       this.service.update(<%= name.lower %>).subscribe(
         (result) => {
+          this.endLoading();
           this.notificationService.success('Item alterado com sucesso!');
           this.goBack();
         },
         (error) => {
+          this.endLoading();
           this.notificationService.error('Não foi possível alterar!');
         }
       );
     }
   }
-  
-  dalete(<%= name.lower %>:<%= name.capital %>) {
-    if (<%= name.lower %>.id) {
-      this.service.delete(<%= name.lower %>).subscribe(
+
+  remove() {
+    this.startLoading();
+    if (this.<%= name.lower %>.id) {
+      this.service.delete(this.<%= name.lower %>).subscribe(
         (result) => {
+          this.endLoading();
           this.notificationService.success('Item removido com sucesso!');
           this.goBack();
         },
         (error) => {
+          this.endLoading();
           this.notificationService.error('Não foi possível deletar o Item!');
         }
       );
-
+    } else {
+      console.warn('Item sem ID!?');
+      this.endLoading();
     }
   }
 
