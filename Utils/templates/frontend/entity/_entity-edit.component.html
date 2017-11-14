@@ -4,36 +4,39 @@
   <div class="container-fluid">
     <div class="card">
       <div class="card-header">
-          <strong>{{funcao}} <%= name.capital %></strong>
+          <strong>{{action}} <%= name.capital %></strong>
       </div>
       <div class="card-body">
 
       <div class="panel-body" style="min-height: 300px;">
 
       <form class="col-xs-6" role="form" #<%= name.lower %>Form="ngForm" (ngSubmit)="save(<%= name.lower %>)">
-        <% properties.forEach(function (property) { %>
-        <div class="form-group">
-          <label for="<%= name.lower %>-<%= property.name %>" class="control-label"><%= property.name %></label>
-          <input type="<%= property.htmlType %>" name="<%= property.name %>" id="<%= name.lower %>-<%= property.name %>" class="form-control" [(ngModel)]="<%= name.lower %>.<%= property.name %>" <%= property.isReadOnly ? 'readonly="true"' : '' %>>
-        </div>
-        <% }); %>
+        <fieldset [disabled]="isLoading">
+          <% properties.forEach(function (property) { %>
+          <div class="form-group">
+            <label for="<%= name.lower %>-<%= property.name %>" class="control-label"><%= property.name %></label>
+            <input type="<%= property.htmlType %>" name="<%= property.name %>" id="<%= name.lower %>-<%= property.name %>" class="form-control" [(ngModel)]="<%= name.lower %>.<%= property.name %>" <%= property.isReadOnly ? 'readonly="true"' : '' %>>
+          </div><% }); %>
+        </fieldset>
 
         <div class="card-footer clearfix">
-          <div class="pull-right">
-            <button type="button" class="btn btn-default" (click)="goBack()">
+          <fieldset [disabled]="isLoading" class="pull-right">
+            <button type="button" class="btn btn-link text-danger mr-1" (click)="remove()" *ngIf="<%= name.lower %>.id">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+              <span>Remover</span>
+            </button>
+            <button type="button" class="btn btn-default mr-1" (click)="goBack()">
               <i class="fa fa-times" aria-hidden="true"></i>
-              Cancelar
+              <span>Cancelar</span>
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="<%= name.lower %>Form.invalid">
               <i class="fa fa-check" aria-hidden="true"></i>
-              Salvar
+              <span>Salvar</span>
             </button>
-          </div>
+          </fieldset>
         </div>
-
       </form>
       </div>
-
       </div>
     </div>
   </div>

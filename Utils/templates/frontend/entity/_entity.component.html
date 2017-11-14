@@ -1,11 +1,8 @@
-
 <!-- Conteúdo da página -->
 <article>
     <div class="container-fluid">
         <div class="panel panel-default">
             <div class="panel-body" style="min-height: 200px;">
-
-
                 <div class="sd form clearfix">
                     <div class="pull-left">
                     </div>
@@ -14,13 +11,15 @@
                 </div>
 
                 <!-- Grid -->
-
                 <div class="card">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> <%= name.capital %>s
                         <div class="pull-right">
                             <button [routerLink]="['/<%= name.lower %>','edit']" type="button" class="btn btn-success btn-sm">
-                                <i class="fa fa-plus-circle"></i>&nbsp; Adicionar
+                                <i class="fa fa-plus-circle"></i> Adicionar
+                            </button>
+                            <button class="btn btn-danger btn-sm" type="button" [disabled]="!selecteds.length" (click)="showModalDelete()">
+                              <i class="fa fa-times"></i> Remover selecionado(s)
                             </button>
                         </div>
                     </div>
@@ -46,20 +45,14 @@
                                   <% if(/id/i.test(property.name)) { %>
                                     <td>
                                       <input type="hidden" name="id" [value]="<%= name.lower %>.<%= property.name %>">
-                                      <input type="checkbox" [checked]="<%= name.lower %>.checked" (change)="<%= name.lower %>.checked = !<%= name.lower %>.checked">
+                                      <input type="checkbox" [checked]="<%= name.lower %>.checked" (change)="toggleSelected(<%= name.lower %>)">
                                     </td>
                                   <% } else { %>
                                     <td>{{<%= name.lower %>.<%= property.name %>}}</td>
                                   <% } %>
                                 <% }); %>
                                     <td>
-                                        <button [routerLink]="['/<%= name.lower %>','edit', <%= name.lower %>.id]" type="button" class="btn btn-warning btn-sm">
-                                            <i class="fa fa-pencil"></i>&nbsp; Editar
-                                        </button>
-
-                                        <button class="btn btn-danger btn-sm" type="button" (click)="showModalDelete(<%= name.lower %>)">
-                                                <i class="fa fa-times"></i> &nbsp; Apagar
-                                        </button>
+                                      <a [routerLink]="['/<%= name.lower %>','edit', <%= name.lower %>.id]">Visualizar</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -78,9 +71,7 @@
                         </pagination>
 
                     </div>
-                </div>
-
-
+                </div> <!-- /Grid -->
             </div>
         </div>
     </div>
@@ -93,33 +84,24 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-body text-center">
-                    <span class="fa-stack fa-2x">
-                        <span class="fa fa-circle fa-stack-2x text-default"></span>
-                        <span class="fa fa-exclamation-triangle fa-stack-1x text-warning"></span>
-                    </span>
-                    <br>
-                    <br>
-                    <p id="modal-label">Deseja realmente excluir este item?</p>
-                    <div class="modal-body" *ngIf="<%= name.lower %>">
-                         <form class="form-horizontal" role="form" #<%= name.lower %>Form="ngForm">
-                          <!-- <div class="form-group">
-                                <label for="description" class="control-label col-sm-3">Descrição</label>
-                                <div class="col-xs-8">
-                                    <input type="text" id="description" class="form-control" name="description"
-                                           [(ngModel)]="<%= name.lower %>.description" disabled="true">
-                                </div>
-                            </div> -->
-
-                            <button type="button" class="btn btn-default icon right" (click)="hideStaticModals()">
-                                <span class="fa fa-times" aria-hidden="true"></span>
-                                Não
-                            </button>
-                            <button type="submit" class="btn btn-danger icon right" (click)="delete(<%= name.lower %>)">
-                                    <span class="fa fa-check" aria-hidden="true"></span>
-                                Sim
-                            </button>
-                        </form>
-                    </div>
+                    <p class="text-center">
+                      <span class="fa-stack fa-2x">
+                          <span class="fa fa-circle fa-stack-2x text-default"></span>
+                          <span class="fa fa-exclamation-triangle fa-stack-1x text-warning"></span>
+                      </span>
+                    </p>
+                    <p *ngIf="selecteds.length === 1">Deseja realmente excluir o item selecionado?</p>
+                    <p *ngIf="selecteds.length > 1">Deseja realmente excluir os {{selecteds.length}} items selecionados?</p>
+                    <form class="form-horizontal" role="form" #<%= name.lower %>Form="ngForm">
+                       <button type="button" class="btn btn-default icon right" (click)="hideStaticModals()">
+                          <span class="fa fa-times" aria-hidden="true"></span>
+                          <span>Não</span>
+                       </button>
+                       <button type="submit" class="btn btn-danger icon right" (click)="deleteSelecteds()">
+                          <span class="fa fa-check" aria-hidden="true"></span>
+                          <span>Sim</span>
+                       </button>
+                   </form>
                 </div>
             </div>
         </div>

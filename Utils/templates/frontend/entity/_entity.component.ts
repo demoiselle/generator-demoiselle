@@ -25,16 +25,16 @@ export class <%= name.capital %>Component implements OnInit {
   // Filter
   public ascValue = '⇧';
   public descValue = '⇩';
-  public formOrder = {
-    <% properties.forEach(function (property){ %>
+  public formOrder = {<% properties.forEach(function (property){ %>
       <%= property.name %>: '',<% });%>
   };
 
   public filterActive = true;
-  public filters = {
-    <% properties.forEach(function (property){ %>
+  public filters = {<% properties.forEach(function (property){ %>
       <%= property.name %>: '',<% });%>
   };
+
+  public selecteds = [];
 
   constructor(private service: <%= name.capital %>Service, private notificationService: NotificationService) {
   }
@@ -42,8 +42,6 @@ export class <%= name.capital %>Component implements OnInit {
   ngOnInit() {
     this.list();
   }
-
-
 
   list(field: string = null, desc: boolean = false) {
     let filter = this.processFilter();
@@ -69,6 +67,7 @@ export class <%= name.capital %>Component implements OnInit {
   }
 
   delete(<%= name.lower %>: <%= name.capital %>) {
+    // TODO: tratar 'loading' da operação
     this.service.delete(<%= name.lower %>).subscribe(
       (result) => {
         this.<%= name.lower %> = null;
@@ -82,9 +81,28 @@ export class <%= name.capital %>Component implements OnInit {
     );
   }
 
-  showModalDelete(<%= name.lower %>: <%= name.capital %>) {
-    this.<%= name.lower %> = <%= name.lower %>;
-    this.staticModalDelete.show();
+  deleteSelecteds() {
+    // TODO: tratar 'loading' da operação
+    this.selecteds.map(selectedItem => {
+      this.delete(selectedItem);
+    });
+  }
+
+  toggleSelected(<%= name.lower %>: <%= name.capital %>) {
+    let index = this.selecteds.indexOf(<%= name.lower %>);
+    if(index === -1) {
+      this.selecteds.push(<%= name.lower %>);
+    } else {
+      this.selecteds.splice(index, 1);
+    }
+  }
+
+  showModalDelete() {
+    if(this.selecteds.length > 0) {
+      this.staticModalDelete.show();
+    } else {
+      console.warn('Nenhum item selecionado.');
+    }
   }
 
   hideStaticModals() {
@@ -101,7 +119,7 @@ export class <%= name.capital %>Component implements OnInit {
     this.itemsPerPage = itemsPerPage;
   }
 
-   // Filter
+  // Filter
   processFilter() {
     let filter = '';
     for (let key in this.filters) {
@@ -112,7 +130,6 @@ export class <%= name.capital %>Component implements OnInit {
 
     return filter;
   }
-
 
   orderBy(field) {
     this.toggleFormOrder(field);
