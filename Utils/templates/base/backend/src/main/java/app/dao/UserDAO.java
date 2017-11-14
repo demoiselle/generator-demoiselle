@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import static java.security.MessageDigest.getInstance;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
 import javax.inject.Inject;
@@ -106,6 +107,26 @@ public class UserDAO extends AbstractDAO<User, String> {
         loggedUser = securityContext.getUser();
         securityContext.setUser(loggedUser);
         return token;
+    }
+    
+        /**
+     *
+     * @param credentials
+     */
+    public void register(Credentials credentials) {
+        // envia email
+        LOG.log(Level.INFO, "Enviando lembran\u00e7a para : {0}", credentials.getUsername());
+        //return login(credentials);
+    }
+    
+    /**
+     *
+     * @param credentials
+     */
+    public void amnesia(Credentials credentials) {
+        // envia email
+        LOG.log(Level.INFO, "Enviando lembran\u00e7a para : {0}", credentials.getUsername());
+        //return login(credentials);
     }
 
     private String md5(String senha) {

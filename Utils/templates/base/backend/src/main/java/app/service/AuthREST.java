@@ -35,4 +35,24 @@ public class AuthREST {
         return ok().entity(dao.retoken().toString()).build();
     }
 
+        /**
+     *
+     * @param credentials
+     */
+    @POST
+    @Path("register")
+    public void register(Credentials credentials) {
+        dao.register(credentials);
+    }
+
+    /**
+     *
+     * @param credentials
+     */
+    @POST
+    @Path("amnesia")
+    public void amnesia(Credentials credentials) {
+        dao.amnesia(credentials);
+    }
+
 }
