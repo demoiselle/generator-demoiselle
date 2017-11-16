@@ -7,7 +7,7 @@
     {
       "name": "Paulo Gladson",
       "email": "paulopinheiro777@gmail.com",
-      "url": "https://github.com/demoiselle"
+      "url": "https://github.com/PauloGladson"
     },
     {
       "name": "Leonardo Merlin",
@@ -20,6 +20,7 @@
     "generators/add",
     "generators/fromSwagger",
     "generators/fromEntity",
+    "generators/push",
     "Utils"
   ],
   "main": "generators/app/index.js",
@@ -29,6 +30,7 @@
     "Java",
     "Angular",
     "Swagger",
+    "WebSocket",
     "yeoman-generator"
   ],
   "dependencies": {
