@@ -4,7 +4,9 @@ package <%= package.lower %>.<%= project.lower %>.service;
 import io.swagger.annotations.Api;
 import <%= package.lower %>.<%= project.lower %>.dao.UserDAO;
 import <%= package.lower %>.<%= project.lower %>.security.Credentials;
+import <%= package.lower %>.<%= project.lower %>.security.Social;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,6 +16,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.ok;
 import org.demoiselle.jee.security.annotation.Authenticated;
+
 
 @Api("Auth")
 @Path("auth")
@@ -25,11 +28,13 @@ public class AuthREST {
     private UserDAO dao;
 
     @POST
+    @Transactional
     public Response login(Credentials credentials) {
         return ok().entity(dao.login(credentials).toString()).build();
     }
 
     @GET
+    @Transactional
     @Authenticated
     public Response retoken() {
         return ok().entity(dao.retoken().toString()).build();
@@ -40,6 +45,7 @@ public class AuthREST {
      * @param credentials
      */
     @POST
+    @Transactional
     @Path("register")
     public void register(Credentials credentials) {
         dao.register(credentials);
@@ -50,9 +56,22 @@ public class AuthREST {
      * @param credentials
      */
     @POST
+    @Transactional
     @Path("amnesia")
     public void amnesia(Credentials credentials) {
         dao.amnesia(credentials);
+    }
+    
+        /**
+     *
+     * @param social
+     * @return
+     */
+    @POST
+    @Transactional
+    @Path("social")
+    public Response social(Social social) {
+        return ok().entity(dao.social(social).toString()).build();
     }
 
 }

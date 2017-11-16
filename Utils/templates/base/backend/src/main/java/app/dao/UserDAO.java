@@ -2,8 +2,13 @@ package <%= package.lower %>.<%= project.lower %>.dao;
 
 import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
 import <%= package.lower %>.<%= project.lower %>.entity.User;
+import  java.io.IOException;
 import <%= package.lower %>.<%= project.lower %>.security.Credentials;
+import <%= package.lower %>.<%= project.lower %>.security.Social;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.MessageDigest;
 import static java.security.MessageDigest.getInstance;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +22,11 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
+import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import org.demoiselle.app.constants.Perfil;
+import org.demoiselle.app.entity.User;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.core.api.security.Token;
@@ -49,7 +58,29 @@ public class UserDAO extends AbstractDAO<User, String> {
         return em;
     }
 
+    /**
+     *
+     * @param email
+     * @param password
+     * @return
+     */
     public User verifyEmail(String email, String password) {
+
+        User usu = verifyEmail(email);
+
+        if (!usu.getPass().equalsIgnoreCase(md5(password))) {
+            throw new DemoiselleSecurityException("Senha incorreta", UNAUTHORIZED.getStatusCode());
+        }
+
+        return usu;
+    }
+
+    /**
+     *
+     * @param email
+     * @return
+     */
+    public User verifyEmail(String email) {
         CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<User> query = builder.createQuery(User.class);
         Root<User> from = query.from(User.class);
@@ -59,17 +90,13 @@ public class UserDAO extends AbstractDAO<User, String> {
         );
 
         if (typedQuery.getResultList().isEmpty()) {
-            throw new DemoiselleSecurityException("Usu√°rio n√£o existe", UNAUTHORIZED.getStatusCode());
+            throw new DemoiselleSecurityException("Usu·rio n„o existe", UNAUTHORIZED.getStatusCode());
         }
 
         User usu = typedQuery.getResultList().get(0);
 
         if (usu == null) {
-            throw new DemoiselleSecurityException("Usu√°rio n√£o existe", UNAUTHORIZED.getStatusCode());
-        }
-
-        if (!usu.getPass().equalsIgnoreCase(md5(password))) {
-            throw new DemoiselleSecurityException("Senha incorreta", UNAUTHORIZED.getStatusCode());
+            throw new DemoiselleSecurityException("Usu·rio n„o existe", UNAUTHORIZED.getStatusCode());
         }
 
         return usu;
@@ -141,5 +168,75 @@ public class UserDAO extends AbstractDAO<User, String> {
         sen = hash.toString(16);
         return sen;
     }
+    
+        /**
+     *
+     * @param social
+     * @return
+     */
+    public Token social(Social social) {
 
+        if (social.getProvider().equalsIgnoreCase("google") && !validateGoogle(social.getIdToken())) {
+            throw new DemoiselleSecurityException("N„o validado pelo Google", Response.Status.PRECONDITION_FAILED.getStatusCode());
+        }
+
+        if (social.getProvider().equalsIgnoreCase("facebook") && !validateFacebook(social.getToken())) {
+            throw new DemoiselleSecurityException("N„o validado pelo Facebook", Response.Status.PRECONDITION_FAILED.getStatusCode());
+        }
+
+        User usu = verifyEmail(social.getEmail());
+
+        if (!social.getImageUrl().equalsIgnoreCase(usu.getFoto())) {
+            usu.setFoto(social.getImageUrl());
+            mergeFull(usu);
+        }
+
+        loggedUser.setName(usu.getFirstName());
+        loggedUser.setIdentity(usu.getId().toString());
+        loggedUser.addRole(usu.getPerfil().toString());
+
+        loggedUser.addParam("Email", usu.getEmail());
+        loggedUser.addParam("Foto", usu.getFoto());
+        securityContext.setUser(loggedUser);
+
+        return token;
+    }
+
+    private boolean validateGoogle(String token) {
+
+        try {
+            String url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + token;
+
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", USER_AGENT);
+
+            return con.getResponseCode() == 200;
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    private boolean validateFacebook(String token) {
+
+        try {
+            String url = "https://graph.facebook.com/app?access_token=" + token;
+
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", USER_AGENT);
+
+            return con.getResponseCode() == 200;
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }
