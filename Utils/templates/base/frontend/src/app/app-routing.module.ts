@@ -31,7 +31,7 @@ export const routes: Routes = [
           roles: ['Administrador']
         },
       }
-      
+
     ]
   },
   {

@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '@demoiselle/security';
 import { NotificationService } from '../../shared';
-import { LoginService } from './login.service';
+import { ServiceWorkerService } from '../../core/sw.service';
+import { CredentialManagementService } from '../credentials.service';
 
 @Component({
   selector: 'app-login',
@@ -14,30 +15,88 @@ export class LoginComponent implements OnInit {
     username: 'admin@demoiselle.org',
     password: '123456'
   };
+  supportAutoLogin = false;
+  showQuickAuth = true;
+
+  protected fingerprint;
 
   constructor(protected authService: AuthService,
     protected router: Router,
     protected notificationService: NotificationService,
-    protected loginService: LoginService) { }
+    protected serviceWorkerService: ServiceWorkerService,
+    protected credentialManagementService: CredentialManagementService
+  ) { }
 
   ngOnInit() {
-    console.log('[LoginComponent] initialized.');
+    console.debug('[LoginComponent] initialized.');
+
+    this.serviceWorkerService.getFingerprint()
+      .then(figerprint => {
+        this.fingerprint = figerprint;
+      });
+
+    this.credentialManagementService.isCredentialsAvailable()
+      .then(result => {
+        if (result === true) {
+          this.supportAutoLogin = true;
+          this.showQuickAuth = true;
+        }
+      })
+      .catch(err => {
+        this.supportAutoLogin = false;
+        this.showQuickAuth = false;
+      });
   }
 
   login() {
-    this.authService.login(this.user)
-      .subscribe(
-      res => {
-        this.notificationService.success('Login realizado com sucesso!');
-      },
-      error => {
-        if (error.status === 401 || error.status === 406) {
-          let errors = JSON.parse(error._body);
-          for (let err of errors) {
-            this.notificationService.error(err.error);
-          }
-          this.user.password = '';
+    const payload = {
+      username: this.user.username,
+      password: this.user.password
+    };
+
+    this.loginWithPayload(payload);
+  }
+
+  autoLogin() {
+    this.credentialManagementService.autoSignin()
+      .then(credentials => {
+        const payload = {
+          username: credentials.id,
+          password: credentials.password
         };
+        this.loginWithPayload(payload);
+      })
+      .catch(err => {
+        console.warn(err);
+        this.showQuickAuth = false;
       });
+  }
+
+  loginWithPayload(payload) {
+
+    if (this.fingerprint) {
+      payload.fingerprint = this.fingerprint;
+    }
+
+    const subs = this.authService.login(payload).subscribe(res => {
+      this.credentialManagementService.store(payload)
+        .then((result) => {
+          console.debug('credentials stored:', result);
+        })
+        .catch((err) => {
+          console.error('error when trying to store credentials.', err);
+        });
+      this.notificationService.success('Login realizado com sucesso!');
+    }, error => {
+      if (error.status === 401 || error.status === 406) {
+        let errors = JSON.parse(error._body);
+        for (let err of errors) {
+          this.notificationService.error(err.error);
+        }
+        this.user.password = '';
+      };
+    }, () => {
+      subs.unsubscribe();
+    });
   }
 }

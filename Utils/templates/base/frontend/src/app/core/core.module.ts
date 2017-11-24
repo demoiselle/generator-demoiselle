@@ -15,9 +15,9 @@ import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
+import { ServiceWorkerService } from './sw.service';
 import { AuthServiceProvider, AuthService, SecurityModule } from '@demoiselle/security';
 import { HttpServiceProvider, ExceptionService, HttpService } from '@demoiselle/http';
-import { LoginService } from '../auth/login/login.service';
 
 // Import 3rd party components
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
@@ -149,7 +149,7 @@ export class CoreModule {
           useFactory: authFactory,
           deps: [Http, Router]
         },
-        LoginService,
+        ServiceWorkerService,
         ExceptionService,
         { provide: ToastOptions, useClass: CustomOption },
         { provide: LocationStrategy, useClass: HashLocationStrategy },
