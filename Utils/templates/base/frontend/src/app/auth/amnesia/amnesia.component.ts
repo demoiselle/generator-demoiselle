@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '@demoiselle/security';
 import { NotificationService } from '../../shared';
-import { AmnesiaService } from './amnesia.service';
 
 @Component({
   selector: 'app-amnesia',
@@ -16,8 +15,7 @@ export class AmnesiaComponent implements OnInit {
 
   constructor(protected authService: AuthService,
     protected router: Router,
-    protected notificationService: NotificationService,
-    protected amnesiaService: AmnesiaService) { }
+    protected notificationService: NotificationService) { }
 
   ngOnInit() {
     console.log('[AmnesiaComponent] initialized.');

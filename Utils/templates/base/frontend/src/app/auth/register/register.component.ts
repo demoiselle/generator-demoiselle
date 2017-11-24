@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '@demoiselle/security';
 import { NotificationService } from '../../shared';
-import { RegisterService } from './register.service';
 
 @Component({
   selector: 'app-register',
@@ -19,8 +18,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(protected authService: AuthService,
     protected router: Router,
-    protected notificationService: NotificationService,
-    protected registerService: RegisterService) { }
+    protected notificationService: NotificationService) { }
 
   ngOnInit() {
     console.log('[RegisterComponent] initialized.');

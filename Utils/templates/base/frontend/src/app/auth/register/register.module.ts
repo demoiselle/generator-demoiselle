@@ -12,8 +12,6 @@ import { RegisterService } from './register.service';
   declarations: [
     RegisterComponent
   ],
-  providers: [
-    RegisterService
-  ]
+  providers: []
 })
 export class RegisterModule { }

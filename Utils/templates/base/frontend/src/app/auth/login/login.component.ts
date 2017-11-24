@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '@demoiselle/security';
 import { NotificationService } from '../../shared';
-import { LoginService } from './login.service';
 
 @Component({
   selector: 'app-login',
@@ -17,8 +16,7 @@ export class LoginComponent implements OnInit {
 
   constructor(protected authService: AuthService,
     protected router: Router,
-    protected notificationService: NotificationService,
-    protected loginService: LoginService) { }
+    protected notificationService: NotificationService) { }
 
   ngOnInit() {
     console.log('[LoginComponent] initialized.');
