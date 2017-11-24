@@ -17,6 +17,9 @@ export class <%= name.capital %>Component implements OnInit {
 
   @ViewChild('staticModalDelete') public staticModalDelete: ModalDirective;
 
+  // states
+  public isLoading = true;
+
   // Pagination
   public itemsPerPage: number = 10;
   public totalItems: number = 0;
@@ -28,7 +31,6 @@ export class <%= name.capital %>Component implements OnInit {
   public formOrder = {<% properties.forEach(function (property){ %>
       <%= property.name %>: '',<% });%>
   };
-
   public filterActive = true;
   public filters = {<% properties.forEach(function (property){ %>
       <%= property.name %>: '',<% });%>
@@ -40,13 +42,18 @@ export class <%= name.capital %>Component implements OnInit {
   }
 
   ngOnInit() {
+    console.debug('[<%= name.capital %>Component] created.');
+    this.isLoading = false;
+
+    // populate table
     this.list();
   }
 
   list(field: string = null, desc: boolean = false) {
-    let filter = this.processFilter();
-    this.service.list(this.currentPage, this.itemsPerPage, filter, field, desc).subscribe(
-      (result) => {
+    this.isLoading = true;
+    const filter = this.processFilter();
+    this.service.list(this.currentPage, this.itemsPerPage, filter, field, desc)
+      .subscribe((result) => {
         try {
           this.<%= name.lower %>s = result.json();
         } catch (e) {
@@ -54,20 +61,24 @@ export class <%= name.capital %>Component implements OnInit {
           console.log(e);
           this.<%= name.lower %>s = [];
         }
-        let contentRange = result.headers.get('Content-Range');
+        const contentRange = result.headers.get('Content-Range');
         if (contentRange) {
           this.totalItems = Number(contentRange.substr(contentRange.indexOf('/')+1, contentRange.length));
         }
       },
       (error) => {
+        console.error(error);
         this.notificationService.error('Não foi possível carregar a lista de itens!');
-        this.<%= name.lower %>s = error;
+      },
+      () => {
+        console.debug('<%= name.capital %>Component.list() - completed.');
+        this.isLoading = false;
       }
     );
   }
 
   delete(<%= name.lower %>: <%= name.capital %>) {
-    // TODO: tratar 'loading' da operação
+    this.isLoading = true;
     this.service.delete(<%= name.lower %>).subscribe(
       (result) => {
         this.<%= name.lower %> = null;
@@ -76,13 +87,17 @@ export class <%= name.capital %>Component implements OnInit {
         this.list();
       },
       (error) => {
+        console.error(error);
         this.notificationService.error('Não foi possível remover!');
+      },
+      () => {
+        console.debug('<%= name.capital %>Component.delete() - completed.');
+        this.isLoading = false;
       }
     );
   }
 
   deleteSelecteds() {
-    // TODO: tratar 'loading' da operação
     this.selecteds.map(selectedItem => {
       this.delete(selectedItem);
     });

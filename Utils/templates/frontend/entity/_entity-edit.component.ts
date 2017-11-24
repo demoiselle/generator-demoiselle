@@ -51,25 +51,27 @@ export class <%= name.capital %>EditComponent implements OnInit {
       delete <%= name.lower %>.id;
       this.service.create(<%= name.lower %>).subscribe(
         (result) => {
-          this.endLoading();
           this.notificationService.success('Item criado com sucesso!');
           this.goBack();
         },
         (error) => {
-          this.endLoading();
           this.notificationService.error('Não foi possível salvar!');
+        },
+        () => {
+          this.endLoading();
         }
       );
     } else {
       this.service.update(<%= name.lower %>).subscribe(
         (result) => {
-          this.endLoading();
           this.notificationService.success('Item alterado com sucesso!');
           this.goBack();
         },
         (error) => {
-          this.endLoading();
           this.notificationService.error('Não foi possível alterar!');
+        },
+        () => {
+          this.endLoading();
         }
       );
     }
@@ -80,13 +82,14 @@ export class <%= name.capital %>EditComponent implements OnInit {
     if (this.<%= name.lower %>.id) {
       this.service.delete(this.<%= name.lower %>).subscribe(
         (result) => {
-          this.endLoading();
           this.notificationService.success('Item removido com sucesso!');
           this.goBack();
         },
         (error) => {
-          this.endLoading();
           this.notificationService.error('Não foi possível deletar o Item!');
+        },
+        () => {
+          this.endLoading();
         }
       );
     } else {
