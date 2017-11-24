@@ -6,13 +6,18 @@
 	Twitter: @paulogladson
 	From: Curitiba, PR, Brasil
 
-        Name: Marcelo Teixeira
+  Name: Marcelo Teixeira
 	Contact: mrclteixeira@gmail.com
-	Twitter: @mrclteixeira
-	From: Curitiba, PR, Brasil
+	Twitter: @mteixeira10
+	From: Céu Azul, PR, Brasil
+
+  Name: Leonardo Merlin
+	Contact: leonardo.merlin@gmail.com
+	Twitter: @leonardomerlin
+	From: Pantanal, MS, Brasil
 
 /* SITE */
-	Last update: 2017/08/30
+	Last update: 2017/11/23
 	Language: Portuguese
 	Doctype: HTML5
-	IDE: Netbeans
+	IDE: vim
