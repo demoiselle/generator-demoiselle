@@ -21,7 +21,7 @@ public class Timer {
     @Transactional
     @Schedule(second = "0", minute = "0", hour = "*/1", persistent = false)
     public void atSchedule1h() {
-        LOG.info("atSchedule1h");
+        //LOG.info("atSchedule1h");
     }
 
     /**
@@ -30,7 +30,7 @@ public class Timer {
     @Transactional
     @Schedule(second = "0", minute = "*/1", hour = "*", persistent = false)
     public void atSchedule1m() {
-        LOG.info("atSchedule1m");
+        //LOG.info("atSchedule1m");
     }
 
     /**
@@ -39,7 +39,7 @@ public class Timer {
     @Transactional
     @Schedule(second = "0", minute = "0", hour = "9", persistent = false)
     public void atScheduleOneInDay() {
-        LOG.info("atScheduleOneInDay");
+       // LOG.info("atScheduleOneInDay");
     }
 
 }

@@ -25,14 +25,17 @@ import javax.persistence.criteria.Root;
 import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
 import javax.ws.rs.core.Response;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
-import org.demoiselle.app.constants.Perfil;
-import org.demoiselle.app.entity.User;
+import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
+import  java.util.List;
+import <%= package.lower %>.<%= project.lower %>.entity.User;
 import org.demoiselle.jee.core.api.security.DemoiselleUser;
 import org.demoiselle.jee.core.api.security.SecurityContext;
 import org.demoiselle.jee.core.api.security.Token;
 import org.demoiselle.jee.crud.AbstractDAO;
 import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
+import <%= package.lower %>.<%= project.lower %>.dao.FingerprintDAO;
+import <%= package.lower %>.<%= project.lower %>.entity.Fingerprint;
 
 public class UserDAO extends AbstractDAO<User, String> {
 
@@ -49,6 +52,9 @@ public class UserDAO extends AbstractDAO<User, String> {
 
     @Inject
     private DemoiselleSecurityMessages bundle;
+    
+    @Inject
+    private FingerprintDAO fingerprintDAO;
 
     @PersistenceContext(unitName = "<%= project.lower %>PU")
     protected EntityManager em;
@@ -120,6 +126,20 @@ public class UserDAO extends AbstractDAO<User, String> {
             throw new DemoiselleSecurityException(bundle.invalidCredentials(), UNAUTHORIZED.getStatusCode());
         }
 
+        if (credentials.getFingerprint() != null && !credentials.getFingerprint().isEmpty()) {
+
+            List<Fingerprint> fps = fingerprintDAO.findByCodigo(credentials.getFingerprint());
+
+            if (fps == null || fps.isEmpty()) {
+
+                Fingerprint fp = new Fingerprint();
+                fp.setCodigo(credentials.getFingerprint());
+                fp.setUsuario(credentials.getUsername());
+                fingerprintDAO.persist(fp);
+
+            }
+
+        }
         loggedUser.setName(usu.getFirstName());
         loggedUser.setIdentity(usu.getId());
         loggedUser.addRole(usu.getPerfil().getValue());

@@ -21,9 +21,6 @@
     "generators/fromSwagger",
     "generators/fromEntity",
     "generators/push",
-    "generators/email",
-    "generators/timer",
-    "generators/fcm",
     "Utils"
   ],
   "main": "generators/app/index.js",
