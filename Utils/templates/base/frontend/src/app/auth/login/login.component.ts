@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit {
       this.notificationService.success('Login realizado com sucesso!');
     }, error => {
       if (error.status === 401 || error.status === 406) {
-        let errors = JSON.parse(error._body);
+        let errors = error.error;
         for (let err of errors) {
           this.notificationService.error(err.error);
         }

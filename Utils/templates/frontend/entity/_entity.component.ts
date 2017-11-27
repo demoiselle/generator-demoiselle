@@ -52,10 +52,10 @@ export class <%= name.capital %>Component implements OnInit {
   list(field: string = null, desc: boolean = false) {
     this.isLoading = true;
     const filter = this.processFilter();
-    this.service.list(this.currentPage, this.itemsPerPage, filter, field, desc)
-      .subscribe((result) => {
+    this.service.findAll(this.currentPage, this.itemsPerPage, filter, field, desc).subscribe(
+      (result) => {
         try {
-          this.<%= name.lower %>s = result.json();
+          this.<%= name.lower %>s = result.body;
         } catch (e) {
           console.log('Can not convert result to JSON.');
           console.log(e);
@@ -79,7 +79,7 @@ export class <%= name.capital %>Component implements OnInit {
 
   delete(<%= name.lower %>: <%= name.capital %>) {
     this.isLoading = true;
-    this.service.delete(<%= name.lower %>).subscribe(
+    this.service.delete(<%= name.lower %>.id).subscribe(
       (result) => {
         this.<%= name.lower %> = null;
         this.staticModalDelete.hide();

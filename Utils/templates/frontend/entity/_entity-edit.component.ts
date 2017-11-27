@@ -80,7 +80,7 @@ export class <%= name.capital %>EditComponent implements OnInit {
   remove() {
     this.startLoading();
     if (this.<%= name.lower %>.id) {
-      this.service.delete(this.<%= name.lower %>).subscribe(
+      this.service.delete(this.<%= name.lower %>.id).subscribe(
         (result) => {
           this.notificationService.success('Item removido com sucesso!');
           this.goBack();

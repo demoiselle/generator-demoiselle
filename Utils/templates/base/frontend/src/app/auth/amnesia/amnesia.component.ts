@@ -29,7 +29,7 @@ export class AmnesiaComponent implements OnInit {
       },
       error => {
         if (error.status === 401 || error.status === 406) {
-          const errors = JSON.parse(error._body);
+          let errors = error.error;
           for (const err of errors) {
             this.notificationService.error(err.error);
           }

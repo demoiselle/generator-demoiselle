@@ -8,6 +8,6 @@ export class <%= name.capital %>Resolver implements Resolve<any> {
   constructor(private service: <%= name.capital %>Service) {}
 
   resolve(route: ActivatedRouteSnapshot) {
-    return this.service.get(route.params['id']);
+    return this.service.find(route.params['id']);
   }
 }

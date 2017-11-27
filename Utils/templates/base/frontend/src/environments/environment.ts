@@ -5,6 +5,5 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/app/api/v1/',
-  authEndpointUrl: 'http://localhost:8080/app/api/' // authentication api don't have "/v1"
+  apiUrl: 'http://localhost:8080/app/api/',
 };

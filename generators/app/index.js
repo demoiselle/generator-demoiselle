@@ -283,8 +283,8 @@ module.exports = class AppGenerator extends Generator {
         obj.scripts['build:dev'] = 'ng build --prod --aot --environment=dev';
 
         log('Add dependencies into package.json ...');
-        obj.dependencies['@demoiselle/http'] = '^1.0.1';
-        obj.dependencies['@demoiselle/security'] = '^1.0.4';
+        obj.dependencies['@demoiselle/http'] = '^2.0.0';
+        obj.dependencies['@demoiselle/security'] = '^2.0.0';
         obj.dependencies['angular2-jwt'] = '^0.2.0';
         obj.dependencies['font-awesome'] = '^4.7.0';
         obj.dependencies['bootstrap'] = '^4.0.0-beta.2';
