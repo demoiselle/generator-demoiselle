@@ -222,8 +222,8 @@ module.exports = class AppGenerator extends Generator {
     to = this.destinationPath('frontend/src/index.html');
     this.fs.copyTpl(from, to, template);
 
-    from = this.templatePath('base/frontend/src/manifest.json');
-    to = this.destinationPath('frontend/src/manifest.json');
+    from = this.templatePath('base/frontend/src/app.webmanifest');
+    to = this.destinationPath('frontend/src/app.webmanifest');
     this.fs.copyTpl(from, to);
 
     from = this.templatePath('base/frontend/src/humans.txt');
@@ -314,7 +314,7 @@ module.exports = class AppGenerator extends Generator {
         const obj = JSON.parse(str);
 
         log('Add apps[0].assets into .angular-cli.json ...');
-        obj.apps[0].assets.push('manifest.json');
+        obj.apps[0].assets.push('app.webmanifest');
         obj.apps[0].assets.push('humans.text');
         obj.apps[0].assets.push('background.js');
         obj.apps[0].assets.push('schema.json');
