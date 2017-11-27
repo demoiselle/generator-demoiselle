@@ -63,7 +63,7 @@ public class Fingerprint implements Serializable {
         return usuario;
     }
 
-    public void setUsuarioId(String usuario) {
+    public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
 

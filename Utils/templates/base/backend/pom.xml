@@ -21,7 +21,7 @@
     </parent>
 
     <build>
-        <finalName><%= project.lower %></finalName>
+        <finalName>app</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
