@@ -32,21 +32,21 @@ public class FingerprintDAO extends AbstractDAO< Fingerprint, Long> {
         return em;
     }
 
-        /**
-     *
-     * @param id
-     * @return
-     */
-    public List<Fingerprint> findByUsuario(String id) {
-        return em.createNamedQuery("Fingerprint.findByUsuario").setParameter("usuario", id).getResultList();
-    }
-
     /**
      *
      * @param id
      * @return
      */
-    public List<Fingerprint> findByCodigo(String id) {
-        return em.createNamedQuery("Fingerprint.findByCodigo").setParameter("codigo", id).getResultList();
+    public List<Fingerprint> findByUsuario(Long id) {
+        return em.createQuery("SELECT f FROM Fingerprint f WHERE f.usuarioId = :id").setParameter("id", id).getResultList();
+    }
+
+    /**
+     *
+     * @param cod
+     * @return
+     */
+    public List<Fingerprint> findByCodigo(String cod) {
+        return em.createQuery("SELECT f FROM Fingerprint f WHERE f.codigo = :codigo").setParameter("codigo", cod).getResultList();
     }
 }
