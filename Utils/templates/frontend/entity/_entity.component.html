@@ -27,16 +27,14 @@
                         <table class="table table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <% properties.forEach(function (property){ %>
-                                      <th>
-                                        <button type="button" class="th-button" (click)="orderBy('<%= property.name %>', formOrder.<%= property.name %>)">
-                                          <span><%= property.name %> {{formOrder.<%= property.name %>}}</span>
-                                        </button>
-                                      </th>
+                                    <% properties.forEach(function (property) {
+                                      %><th><% if (!/id/i.test(property.name)) { %>
+                                          <button type="button" class="th-button" (click)="orderBy('<%= property.name %>', formOrder.<%= property.name %>)">
+                                            <span><%= property.name %> {{formOrder.<%= property.name %>}}</span>
+                                          </button>
+                                      <% } %></th>
                                     <% }); %>
-                                    <th>
-                                        Ações
-                                    </th>
+                                    <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
