@@ -17,8 +17,8 @@ const ACTIONS = {
 export class <%= name.capital %>EditComponent implements OnInit {
   <%= name.lower %>: <%= name.capital %>;
 
-  private action = ACTIONS.CRIAR;
-  private isLoading = false;
+  action = ACTIONS.CRIAR;
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,

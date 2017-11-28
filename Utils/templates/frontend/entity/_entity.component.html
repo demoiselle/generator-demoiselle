@@ -29,7 +29,7 @@
                                 <tr>
                                     <% properties.forEach(function (property) {
                                       %><th><% if (!/id/i.test(property.name)) { %>
-                                          <button type="button" class="th-button" (click)="orderBy('<%= property.name %>', formOrder.<%= property.name %>)">
+                                          <button type="button" class="th-button" (click)="orderBy('<%= property.name %>')">
                                             <span><%= property.name %> {{formOrder.<%= property.name %>}}</span>
                                           </button>
                                       <% } %></th>
