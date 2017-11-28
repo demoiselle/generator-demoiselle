@@ -15,7 +15,7 @@
           <% properties.forEach(function (property) { %>
           <div class="form-group">
             <label for="<%= name.lower %>-<%= property.name %>" class="control-label"><%= property.name %></label>
-            <input type="<%= property.htmlType %>" name="<%= property.name %>" id="<%= name.lower %>-<%= property.name %>" class="form-control" [(ngModel)]="<%= name.lower %>.<%= property.name %>" <%= property.isReadOnly ? 'readonly="true"' : '' %>>
+            <input type="<%= property.htmlType %>" name="<%= property.name %>" id="<%= name.lower %>-<%= property.name %>" class="form-control" [(ngModel)]="<%= name.lower %>.<%= property.name %>" <% if (property.isReadOnly){%>readonly="true"<% } %>>
           </div><% }); %>
         </fieldset>
 

@@ -198,6 +198,7 @@ module.exports = class AddGenerator extends Generator {
                     type: 'integer',
                     format: 'int32',
                     description: 'Unique identifier',
+                    isReadOnly: true
                 }, {
                     name: 'description',
                     type: 'string',
