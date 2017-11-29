@@ -73,15 +73,18 @@ export class LoginComponent implements OnInit {
   }
 
   loginWithPayload(payload) {
-
-    if (this.fingerprint) {
-      payload.fingerprint = this.fingerprint;
-    }
-
     const subs = this.authService.login(payload).subscribe(res => {
       this.credentialManagementService.store(payload)
         .then((result) => {
-          console.debug('credentials stored:', result);
+          console.debug('credentials stored.');
+          if (this.fingerprint) {
+            this.serviceWorkerService.sendFingerprint(this.fingerprint)
+              .subscribe(result => {
+                console.debug({ result });
+              }, error => {
+                console.error({ error });
+              });
+          }
         })
         .catch((err) => {
           console.error('error when trying to store credentials.', err);

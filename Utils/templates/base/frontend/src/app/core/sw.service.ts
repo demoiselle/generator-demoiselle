@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { NgServiceWorker } from '@angular/service-worker';
 import { NgPushRegistration } from '@angular/service-worker/companion/comm';
 import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class ServiceWorkerService {
   private registration: NgPushRegistration;
 
-  constructor(private sw: NgServiceWorker) {
+  constructor(private sw: NgServiceWorker, private http: HttpClient ) {
     if ('serviceWorker' in navigator) {
       Notification.requestPermission(permission => {
         // If the user accepts, let's create a notification
@@ -39,6 +41,12 @@ export class ServiceWorkerService {
       let fingerprint = url.split('/').pop();
       return fingerprint;
     });
+  }
+
+  sendFingerprint(fingerprint): Observable<Object> {
+    const url = environment.apiUrl + 'auth/fingerprint';
+    const data = { fingerprint };
+    return this.http.post(url, data);
   }
 
   subscribeToPush(): Promise<NgPushRegistration> {
