@@ -7,7 +7,6 @@ public class Credentials implements Serializable {
 
     private String username;
     private String password;
-    private String fingerprint;
 
     public String getUsername() {
         return username;
@@ -23,14 +22,6 @@ public class Credentials implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getFingerprint() {
-        return fingerprint;
-    }
-
-    public void setFingerprint(String fingerprint) {
-        this.fingerprint = fingerprint;
     }
     
     @Override

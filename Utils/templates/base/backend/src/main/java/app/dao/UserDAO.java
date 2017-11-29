@@ -125,21 +125,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         if (usu == null) {
             throw new DemoiselleSecurityException(bundle.invalidCredentials(), UNAUTHORIZED.getStatusCode());
         }
-
-        if (credentials.getFingerprint() != null && !credentials.getFingerprint().isEmpty()) {
-
-            List<Fingerprint> fps = fingerprintDAO.findByCodigo(credentials.getFingerprint());
-
-            if (fps == null || fps.isEmpty()) {
-
-                Fingerprint fp = new Fingerprint();
-                fp.setCodigo(credentials.getFingerprint());
-                fp.setUsuario(credentials.getUsername());
-                fingerprintDAO.persist(fp);
-
-            }
-
-        }
+        
         loggedUser.setName(usu.getFirstName());
         loggedUser.setIdentity(usu.getId());
         loggedUser.addRole(usu.getPerfil().getValue());
@@ -258,5 +244,19 @@ public class UserDAO extends AbstractDAO<User, String> {
             Logger.getLogger(UserDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    public void setFingerprint(String fingerprint) {
+        if (fingerprint != null && !fingerprint.isEmpty()) {
+            List<Fingerprint> fps = fingerprintDAO.findByCodigo(fingerprint);
+
+            if (fps == null || fps.isEmpty()) {
+                Fingerprint fp = new Fingerprint();
+                fp.setCodigo(securityContext.getUser().getParams("Email"));
+                fp.setUsuario(fingerprint);
+                fingerprintDAO.persist(fp);
+            }
+
+        }
     }
 }

@@ -74,4 +74,16 @@ public class AuthREST {
         return ok().entity(dao.social(social).toString()).build();
     }
 
+    /**
+     *
+     * @param fingerprint
+     * @return
+     */
+    @POST
+    @Transactional
+    @Path("fingerprint")
+    public Response fingerprint(String fingerprint) {
+        dao.setFingerprint(fingerprint);
+        return ok().entity("").build();
+    }
 }
