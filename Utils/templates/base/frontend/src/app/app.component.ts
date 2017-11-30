@@ -1,6 +1,7 @@
 import { Component, ViewContainerRef } from '@angular/core';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ServiceWorkerService } from './core/sw.service';
+import { WebSocketService } from './core/websocket.service';
 
 @Component({
   // tslint:disable-next-line
@@ -10,11 +11,30 @@ import { ServiceWorkerService } from './core/sw.service';
 export class AppComponent {
   title = 'app';
 
-  constructor(private sw: ServiceWorkerService, private toastr: ToastsManager, private vcr: ViewContainerRef) {
+  constructor(private serviceWorkerService: ServiceWorkerService, private toastr: ToastsManager, private vcr: ViewContainerRef, private wsService: WebSocketService) {
     this.toastr.setRootViewContainerRef(vcr);
 
-    sw.subscribeToPush().then(registration => {
+    serviceWorkerService.subscribeToPush().then(registration => {
       console.debug({ registration });
     });
+
+    // this.wsService
+    //   .connect()
+    //   .then((subject) => {
+    //     console.log('[WS] connected.');
+    //     subject.subscribe(message => {
+    //       console.log('Message received', { message });
+    //       serviceWorkerService.notify(message.data);
+    //     });
+
+    //     // how to send ws message
+    //     this.wsService.send({
+    //       event: 'login',
+    //       data: 'Nome do usuário'
+    //     });
+    //     // setInterval(()=>{
+    //     // }, 1000);
+    //   })
+    //   .catch(err => console.error(err));
   }
 }

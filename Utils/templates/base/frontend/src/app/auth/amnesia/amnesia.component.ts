@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '@demoiselle/security';
-import { NotificationService } from '../../shared';
+import { NotificationService } from '../../core/notification.service';
 
 @Component({
   selector: 'app-amnesia',
