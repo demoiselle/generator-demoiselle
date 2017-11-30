@@ -146,7 +146,7 @@ public class PushEndpoint {
             if (s.isOpen()) {
                 if (recipient != null && s.getUserProperties().containsValue(recipient)) {
                     if (s.getUserProperties().get("name") != null) {
-                        list.add((String) s.getUserProperties().get("name") + ":" + (String) s.getUserProperties().get("email") + ":" + (String) s.getUserProperties().get("role") + ":" + (String) s.getUserProperties().get("geo"));
+                        list.add((String) s.getUserProperties().get("name") + ":" + (String) s.getUserProperties().get("email") + ":" + (String) s.getUserProperties().get("role"));
                     }
                 }
             } else {

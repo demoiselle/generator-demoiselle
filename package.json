@@ -20,7 +20,6 @@
     "generators/add",
     "generators/fromSwagger",
     "generators/fromEntity",
-    "generators/push",
     "Utils"
   ],
   "main": "generators/app/index.js",
