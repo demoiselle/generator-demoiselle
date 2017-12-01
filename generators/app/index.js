@@ -186,7 +186,7 @@ module.exports = class AppGenerator extends Generator {
    */
   end() {
     this.log(yosay(
-      'Fim! Agora é a sua vez... ' + chalk.green('Ligue as turbinas!')
+      'Pronto! Agora é a sua vez... ' + chalk.green('Ligue as turbinas!')
     ));
   }
 
