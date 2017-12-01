@@ -32,11 +32,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     console.debug('[LoginComponent] initialized.');
 
-    this.serviceWorkerService.getFingerprint()
-      .then(figerprint => {
-        this.fingerprint = figerprint;
-      });
-
     this.credentialManagementService.isCredentialsAvailable()
       .then(result => {
         if (result === true) {
@@ -79,14 +74,25 @@ export class LoginComponent implements OnInit {
       .subscribe(result => {
         console.debug('Login realizado com sucesso!', result);
         this.notificationService.success('Login realizado com sucesso!');
-        this._sendFingerprint();
         this._sendLoginWebSocket();
-        return this.credentialManagementService.store(payload);
+        this._getFingerprint().then((result) => {
+          this._sendFingerprint();
+        });
+        this.credentialManagementService.store(payload)
       },
       error => this._showErrors(error),
       () => {
         subs.unsubscribe();
       });
+  }
+
+  private _getFingerprint() {
+    return this.serviceWorkerService.getFingerprint()
+      .then(fingerprint => {
+        console.debug({ fingerprint });
+        this.fingerprint = fingerprint;
+      })
+      .catch(error => console.error('Erro ao recuperar fingerprint:', error));
   }
 
   private _showErrors(error) {
@@ -103,9 +109,11 @@ export class LoginComponent implements OnInit {
   private _sendFingerprint() {
     if (this.fingerprint) {
       this.serviceWorkerService.sendFingerprint(this.fingerprint)
-        .subscribe((result) => {
-          console.debug('Fingerprint enviado:', result);
+        .subscribe(() => {
+          console.debug('Fingerprint enviado.');
         }, (error) => console.error('Erro ao enviar fingerprint:', error));
+    } else {
+      console.error('Fingerprint não existente.');
     }
   }
 

@@ -11,7 +11,9 @@ export class ServiceWorkerService {
   private registration: NgPushRegistration;
   private permission;
 
-  constructor(private sw: NgServiceWorker, private http: HttpClient) {
+  constructor(private sw: NgServiceWorker, private http: HttpClient) { }
+
+  getPermission(){
     if ('serviceWorker' in navigator) {
       Notification.requestPermission(permission => {
         // If the user accepts, let's create a notification
@@ -23,7 +25,7 @@ export class ServiceWorkerService {
         }
         return permission;
       });
-      sw.push.subscribe(pushObj => {
+      this.sw.push.subscribe(pushObj => {
         console.debug('got push message', pushObj);
       });
     } else {
@@ -46,7 +48,7 @@ export class ServiceWorkerService {
 
   sendFingerprint(fingerprint): Observable<Object> {
     const url = environment.apiUrl + 'auth/fingerprint';
-    const data = { fingerprint };
+    const data = fingerprint;
     return this.http.post(url, data);
   }
 
