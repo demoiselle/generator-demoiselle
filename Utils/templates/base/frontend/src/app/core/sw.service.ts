@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
 import { NgServiceWorker } from '@angular/service-worker';
 import { NgPushRegistration } from '@angular/service-worker/companion/comm';
-import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ServiceWorkerService {
   private registration: NgPushRegistration;
+  private permission;
 
-  constructor(private sw: NgServiceWorker, private http: HttpClient ) {
+  constructor(private sw: NgServiceWorker, private http: HttpClient) {
     if ('serviceWorker' in navigator) {
       Notification.requestPermission(permission => {
         // If the user accepts, let's create a notification
-        // this.permission = permission;
-        console.debug({ permission });
+        // console.debug({ permission });
+        this.permission = permission;
 
         if (permission === 'denied') {
           console.warn('Permission for notifications was denied')
@@ -23,7 +25,6 @@ export class ServiceWorkerService {
       });
       sw.push.subscribe(pushObj => {
         console.debug('got push message', pushObj);
-        // this.showNotification(pushObj.notification.title);
       });
     } else {
       console.warn('Browser do not support Service Worker.');
@@ -112,8 +113,19 @@ export class ServiceWorkerService {
       .sw
       .push
       .map(value => JSON.stringify(value))
-      .subscribe(value => {
-        console.debug(value)
+      .subscribe(registration => {
+        console.debug(registration);
       });
+  }
+
+  notify(title, options = {}) {
+    if (!("Notification" in window)) {
+      throw new Error("This browser does not support system notifications");
+    }
+
+    if (this.permission === "granted") {
+      // If it's okay let's create a notification
+      return new Notification(title, options);
+    }
   }
 }

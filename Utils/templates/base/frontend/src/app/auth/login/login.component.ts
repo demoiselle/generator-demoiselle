@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthService } from '@demoiselle/security';
-import { NotificationService } from '../../shared';
+import { NotificationService } from '../../core/notification.service';
 import { ServiceWorkerService } from '../../core/sw.service';
 import { CredentialManagementService } from '../credentials.service';
+import { WebSocketService } from '../../core/websocket.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class LoginComponent implements OnInit {
     protected router: Router,
     protected notificationService: NotificationService,
     protected serviceWorkerService: ServiceWorkerService,
-    protected credentialManagementService: CredentialManagementService
+    protected credentialManagementService: CredentialManagementService,
+    protected webSocketService: WebSocketService
   ) { }
 
   ngOnInit() {
@@ -73,33 +75,49 @@ export class LoginComponent implements OnInit {
   }
 
   loginWithPayload(payload) {
-    const subs = this.authService.login(payload).subscribe(res => {
-      this.credentialManagementService.store(payload)
-        .then((result) => {
-          console.debug('credentials stored.');
-          if (this.fingerprint) {
-            this.serviceWorkerService.sendFingerprint(this.fingerprint)
-              .subscribe(result => {
-                console.debug({ result });
-              }, error => {
-                console.error({ error });
-              });
-          }
-        })
-        .catch((err) => {
-          console.error('error when trying to store credentials.', err);
+    const subs = this.authService.login(payload)
+      .subscribe(result => {
+        console.debug('Login realizado com sucesso!', result);
+        this.notificationService.success('Login realizado com sucesso!');
+        this._sendFingerprint();
+        this._sendLoginWebSocket();
+        return this.credentialManagementService.store(payload);
+      },
+      error => this._showErrors(error),
+      () => {
+        subs.unsubscribe();
+      });
+  }
+
+  private _showErrors(error) {
+    if (error.status === 401 || error.status === 406) {
+      let errors = error.error;
+      for (let err of errors) {
+        this.notificationService.error(err.error);
+      }
+      this.user.password = '';
+    }
+
+  }
+
+  private _sendFingerprint() {
+    if (this.fingerprint) {
+      this.serviceWorkerService.sendFingerprint(this.fingerprint)
+        .subscribe((result) => {
+          console.debug('Fingerprint enviado:', result);
+        }, (error) => console.error('Erro ao enviar fingerprint:', error));
+    }
+  }
+
+  private _sendLoginWebSocket() {
+    this.webSocketService.connect()
+      .then((wsConnection) => {
+        // console.info('[WS] conectado.');
+        wsConnection.send({
+          event: 'login',
+          data: 'b83810af-7ba9-4aea-8bb6-f4992a72c5fb'
         });
-      this.notificationService.success('Login realizado com sucesso!');
-    }, error => {
-      if (error.status === 401 || error.status === 406) {
-        let errors = error.error;
-        for (let err of errors) {
-          this.notificationService.error(err.error);
-        }
-        this.user.password = '';
-      };
-    }, () => {
-      subs.unsubscribe();
-    });
+      })
+      .catch(error => console.error('Erro ao conectar com WebSocket.', error));
   }
 }

@@ -169,8 +169,25 @@ module.exports = class AppGenerator extends Generator {
       this.spawnCommand('npm', ['install'], { cwd: 'frontend' });
       this.spawnCommand('mvn', ['install'], { cwd: 'backend' });
     } else {
-      this.log('[install] ignored.');
+      this.log('[install] Ignorado.');
+
+      if (this.options['skip-backend']) {
+        this.log('[install] TO-DO: execute manualmente "mvn install" na pasta "/backend".')
+      }
+
+      if (this.options['skip-frontend']) {
+        this.log('[install] TO-DO: execute manualmente "npm install" na pasta "/frontend".')
+      }
     }
+  }
+
+  /**
+   * Called last. What can you do? cleanup, say good bye, etc .
+   */
+  end() {
+    this.log(yosay(
+      'Pronto! Agora é a sua vez... ' + chalk.green('Ligue as turbinas!')
+    ));
   }
 
   // ---------------

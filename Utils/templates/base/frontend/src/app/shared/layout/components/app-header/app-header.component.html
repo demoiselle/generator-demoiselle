@@ -2,11 +2,8 @@
   <button class="navbar-toggler d-lg-none" type="button" appMobileSidebarToggler>&#9776;</button>
   <a class="navbar-brand" href="#"></a>
   <button class="navbar-toggler d-md-down-none mr-auto" type="button" appSidebarToggler>&#9776;</button>
-  
 
   <ul class="nav navbar-nav ml-auto">
-    
-    
     <!--<li class="nav-item dropdown d-md-down-none" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
         <i class="icon-bell"></i><span class="badge badge-pill badge-danger">5</span>
@@ -54,7 +51,7 @@
     </li>
     -->
 
-    
+
     <!-- FOR EXAMPLE OF NOTIFICATIONS LOOK THE ABOVE COMMENTED CODE -->
     <li class="nav-item dropdown d-md-down-none" dropdown placement="bottom right">
       <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
@@ -65,12 +62,35 @@
         <a href="#" class="dropdown-item">
           <i class="icon-check text-success"></i> Não há novas notificações
         </a>
-        
-        
       </div>
     </li>
 
-    
+
+    <li class="nav-item dropdown d-md-down-none" dropdown placement="bottom right">
+      <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
+        <i class="icon-people">
+          <span class="badge badge-pill badge-info">{{totalUsers}}</span>
+        </i>
+      </a>
+      <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg" *dropdownMenu aria-labelledby="simple-dropdown">
+        <div class="dropdown-header text-center"><strong>Usuários ({{connectedUsers.length}}/{{totalUsers}})</strong></div>
+        <a class="dropdown-item" href="#" *ngFor="let user of connectedUsers">
+          <div class="message">
+            <div class="py-3 mr-3 float-left">
+              <div class="avatar">
+                <img alt="avatar" class="img-avatar" src="assets/img/avatars/9.jpg">
+                <span class="avatar-status badge-success"></span>
+              </div>
+            </div>
+            <div class="text-truncate font-weight-bold">{{user.name}}</div>
+            <div class="small text-muted text-truncate">{{user.role}}</div>
+            <div class="small text-muted text-truncate">{{user.email}}</div>
+          </div>
+        </a>
+      </div>
+    </li>
+
+
     <li class="nav-item d-md-down-none">
       <a class="nav-link" href="#"><i class="icon-location-pin"></i></a>
     </li>
