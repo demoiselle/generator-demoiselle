@@ -298,6 +298,8 @@ module.exports = class AppGenerator extends Generator {
         log('Add npm-scripts into package.json ...');
         obj.scripts['sw'] = 'node src/service-worker/rollup.js';
         obj.scripts['build:dev'] = 'ng build --prod --aot --environment=dev';
+        obj.scripts['postbuild'] = 'npm run sw';
+        obj.scripts['postbuild:dev'] = 'npm run sw';
 
         log('Add dependencies into package.json ...');
         obj.dependencies['@demoiselle/http'] = '^2.0.0';

@@ -34,8 +34,8 @@ public class Fingerprint implements Serializable {
     @Column(length = 8196)
     private String codigo;
 
-    @Size(max = 128)
-    @Column(length = 128)
+    @Size(max = 8196)
+    @Column(length = 8196)
     private String usuario;
 
     @Id
