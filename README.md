@@ -2,10 +2,10 @@
 
 > Gerador para Demoiselle 3.0
 
-Versões do Gerador
-- 2.x.x para Angular 5 utilizando Angular CLI (em breve)
-- 1.1.X para Angular 4
-- 1.0.X para Angular 2.3.0
+Versões do Gerador (Compatibilidade com Demoiselle Frontend https://github.com/demoiselle/frontend/)
+- 2.x.x para Angular 5 com Angular CLI (Demoiselle Frontend 2.x)
+- 1.1.X para Angular 4 (Demoiselle Frontend 1.x)
+- 1.0.X para Angular 2.3.0 (Demoiselle Frontend 1.x)
 
 Utilitário para a criação da estrutura básica de um projeto, arquivos e estrutura de pastas, utilizando os padrões:
 - Demoiselle 3.0
