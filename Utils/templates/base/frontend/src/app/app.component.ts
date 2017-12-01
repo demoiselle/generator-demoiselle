@@ -11,30 +11,21 @@ import { WebSocketService } from './core/websocket.service';
 export class AppComponent {
   title = 'app';
 
-  constructor(private serviceWorkerService: ServiceWorkerService, private toastr: ToastsManager, private vcr: ViewContainerRef, private wsService: WebSocketService) {
+  constructor(private serviceWorkerService: ServiceWorkerService, private toastr: ToastsManager, private vcr: ViewContainerRef, private webSocketService: WebSocketService) {
     this.toastr.setRootViewContainerRef(vcr);
 
     serviceWorkerService.subscribeToPush().then(registration => {
       console.debug({ registration });
     });
 
-    // this.wsService
-    //   .connect()
-    //   .then((subject) => {
-    //     console.log('[WS] connected.');
-    //     subject.subscribe(message => {
-    //       console.log('Message received', { message });
-    //       serviceWorkerService.notify(message.data);
-    //     });
+    console.debug('[WS] connectando...');
+    this.webSocketService.connect()
+      .then((wsConnection) => {
+        console.info('[WS] conectado.');
+      });
 
-    //     // how to send ws message
-    //     this.wsService.send({
-    //       event: 'login',
-    //       data: 'Nome do usuário'
-    //     });
-    //     // setInterval(()=>{
-    //     // }, 1000);
-    //   })
-    //   .catch(err => console.error(err));
+    // this.webSocketService.events.subscribe(newEvent => {
+    //   console.debug('AppComponent ouvindo eventos do WebSocket:', newEvent);
+    // });
   }
 }

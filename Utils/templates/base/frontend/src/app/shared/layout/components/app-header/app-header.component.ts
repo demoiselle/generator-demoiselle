@@ -31,48 +31,22 @@ export class AppHeader {
     // remove the empty element(the host)
     parentElement.removeChild(nativeElement);
 
-    // try to listen user's channel
-    this.webSocketService.connect()
-      .then((subject) => {
-        this.webSocketService.send({
-          event: "login",
-          data: "b83810af-7ba9-4aea-8bb6-f4992a72c5fb"
-        });
-
-        subject.subscribe(result => {
-          console.log({ result });
-          result = JSON.parse(result.data || '{}');
-          // {"event":"list","data":"[]"}
-          // {"event":"count","data":"1"}
-          const event = result.event;
-          const data = result.data;
-          console.log({ event }, { data });
-          switch (event) {
-            case 'count':
-              this.totalUsers = data;
-              break;
-            case 'list':
-              const users = JSON.parse(data).map(user => {
-                const obj = user.split(':');
-                let index = 0;
-                return {
-                  name: obj[index++],
-                  email: obj[index++],
-                  role: obj[index++],
-                  // geo: obj[index++],
-                };
-              });
-              this.connectedUsers = users;
-              console.log({ users });
-              break;
-            default:
-              console.warn('Not implemented yet. "event" == ', event);
-              break;
-          }
-        });
-        console.log('subject subscribed');
-      })
-      .catch(err => console.error(err));
+    this.webSocketService.events.subscribe((wsEvent) => {
+      const result = JSON.parse(wsEvent.data || '{}');
+      const event = result.event;
+      const data = result.data;
+      switch (event) {
+        case 'count':
+          this.handleCountEvent(data);
+          break;
+        case 'list':
+          this.handleListEvent(data);
+          break;
+        default:
+          console.warn('Not implemented yet. "event" == ', event);
+          break;
+      }
+    });
   }
 
   isLoggedIn() {
@@ -82,5 +56,24 @@ export class AppHeader {
   logout() {
     this.authService.logout();
     this.router.navigateByUrl('/login');
+  }
+
+  private handleCountEvent(data) {
+    this.totalUsers = data;
+  }
+
+  private handleListEvent(data) {
+    const users = JSON.parse(data).map(user => {
+      const obj = user.split(':');
+      let index = 0;
+      return {
+        name: obj[index++],
+        email: obj[index++],
+        role: obj[index++],
+        // geo: obj[index++],
+      };
+    });
+    this.connectedUsers = users;
+    console.debug({ users });
   }
 }

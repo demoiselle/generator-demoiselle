@@ -1,62 +1,70 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { Observer } from "rxjs/Observer";
 import { environment } from '../../environments/environment';
+
+interface WSResult {
+  send: Function;
+}
 
 @Injectable()
 export class WebSocketService {
-  private subject: Subject<any>;
+  private ws: WebSocket;
+  private wsSource = new Subject<any>();
+  private isOpen = false;
+  public events = this.wsSource.asObservable();
+  private wsConnection: WSResult = null;
 
-  // For chat box
-  public connect(): Promise<Subject<any>> {
-    const url = environment.socketUrl;
-    if (this.subject) {
-      return Promise.resolve(this.subject);
-    }
-
+  public connect(socketUrl = environment.socketUrl): Promise<WSResult> {
     return new Promise((resolve, reject) => {
+      // check if the browser support WebSocket
       const support = window && 'WebSocket' in window;
       if (!support) {
-        return reject('Not support for WebSocket.');
+        return reject(new Error('Not support for WebSocket.'));
       }
-      const ws = new WebSocket(url);
-      const observable = Observable.create(
-        (obs: Observer<any>) => {
-          ws.onmessage = obs.next.bind(obs);
-          ws.onerror = obs.error.bind(obs);
-          ws.onclose = () => {
-            console.log('[ws] closed.');
-            obs.complete();
-          };
 
-          return ws.close.bind(ws);
-        });
+      if (this.wsConnection) {
+        return resolve(this.wsConnection);
+      }
 
-      const observer = {
-        next: (data: Object) => {
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(data));
-            console.debug('[ws] data sent:', data);
-          } else {
-            console.warn('WebSocket is not OPEN.');
-          }
-        }
+      // create ws
+      if (!this.ws) {
+        this.ws = new WebSocket(socketUrl);
+        // console.debug('[WS] created.');
+        // this.ws.onopen = this.onOpen.bind(this);
+        this.ws.onclose = this.onClose.bind(this);
+        this.ws.onmessage = this.onMessage.bind(this);
+        this.ws.onerror = this.onError.bind(this);
+      }
+
+      // create result instance
+      this.wsConnection = {
+        send: (data) => {
+          return this.ws.send(JSON.stringify(data));
+        },
       };
 
-      this.subject = Subject.create(observer, observable);
-      ws.onopen = (event) => {
-        console.log('[ws] opened.');
-        resolve(this.subject);
+      this.ws.onopen = () => {
+        // console.debug('[WS] onopened.')
+        resolve(this.wsConnection);
       };
+
     });
   }
 
-  public send(data) {
-    if (!this.subject) {
-      throw new Error('You are not connected.');
-    }
+  private onClose(event) {
+    // console.debug('[WS] onclose:', event);
+    this.isOpen = false;
+    this.wsSource.next(event);
+  }
 
-    this.subject.next(data);
+  private onMessage(event) {
+    // console.debug('[WS] onmessage:', event);
+    this.wsSource.next(event);
+  }
+
+  private onError(event) {
+    // console.debug('[WS] onerror:', event);
+    this.wsSource.next(event);
   }
 }
