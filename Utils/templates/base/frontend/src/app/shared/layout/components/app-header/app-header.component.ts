@@ -1,6 +1,6 @@
 import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '@demoiselle/security';
+import { AuthService, TokenService } from '@demoiselle/security';
 import { WebSocketService } from '../../../../core/websocket.service';
 
 @Component({
@@ -16,6 +16,7 @@ export class AppHeader {
     private el: ElementRef,
     private router: Router,
     private authService: AuthService,
+    private tokenService: TokenService,
     private webSocketService: WebSocketService) { }
 
   ngOnInit(): void {
@@ -47,6 +48,19 @@ export class AppHeader {
           break;
       }
     });
+
+    if (this.isLoggedIn()) {
+      this.webSocketService.connect()
+        .then((wsConnection) => {
+          // console.info('[WS] conectado.');
+          const id = this.tokenService.getIdentityFromToken();
+          wsConnection.send({
+            event: 'login',
+            data: id
+          });
+        })
+        .catch(error => console.error('Erro ao conectar com WebSocket.', error));
+    }
   }
 
   isLoggedIn() {

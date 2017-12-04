@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthService } from '@demoiselle/security';
+import { AuthService, TokenService } from '@demoiselle/security';
 import { NotificationService } from '../../core/notification.service';
 import { ServiceWorkerService } from '../../core/sw.service';
 import { CredentialManagementService } from '../credentials.service';
@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
     protected router: Router,
     protected notificationService: NotificationService,
     protected serviceWorkerService: ServiceWorkerService,
+    protected tokenService: TokenService,
     protected credentialManagementService: CredentialManagementService,
     protected webSocketService: WebSocketService
   ) { }
@@ -121,9 +122,10 @@ export class LoginComponent implements OnInit {
     this.webSocketService.connect()
       .then((wsConnection) => {
         // console.info('[WS] conectado.');
+        const id = this.tokenService.getIdentityFromToken();
         wsConnection.send({
           event: 'login',
-          data: 'b83810af-7ba9-4aea-8bb6-f4992a72c5fb'
+          data: id
         });
       })
       .catch(error => console.error('Erro ao conectar com WebSocket.', error));
