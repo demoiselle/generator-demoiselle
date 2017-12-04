@@ -13,7 +13,7 @@ export class ServiceWorkerService {
 
   constructor(private sw: NgServiceWorker, private http: HttpClient) { }
 
-  getPermission(){
+  getPermission() {
     if ('serviceWorker' in navigator) {
       Notification.requestPermission(permission => {
         // If the user accepts, let's create a notification
@@ -41,8 +41,9 @@ export class ServiceWorkerService {
         throw new Error('Wrong registration structure?');
       }
 
-      let fingerprint = url.split('/').pop();
-      return fingerprint;
+      // const fingerprint = url.split('/').pop();
+      // return fingerprint;
+      return url;
     });
   }
 
