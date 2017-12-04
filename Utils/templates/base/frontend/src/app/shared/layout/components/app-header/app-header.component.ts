@@ -9,6 +9,7 @@ import { WebSocketService } from '../../../../core/websocket.service';
 })
 export class AppHeader {
 
+  user;
   connectedUsers = [];
   totalUsers = 0;
 
@@ -53,10 +54,14 @@ export class AppHeader {
       this.webSocketService.connect()
         .then((wsConnection) => {
           // console.debug('[WS] conectado.');
-          const id = this.tokenService.getIdentityFromToken();
+          this.user = {
+            id: this.tokenService.getIdentityFromToken(),
+            name: this.tokenService.getNameFromToken(),
+            roles: this.tokenService.getRolesFromToken()
+          }
           wsConnection.send({
             event: 'login',
-            data: id
+            data: this.user.id
           });
         })
         .catch(error => console.error('Erro ao conectar com WebSocket.', error));

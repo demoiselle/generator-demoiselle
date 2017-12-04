@@ -317,6 +317,7 @@ module.exports = class AppGenerator extends Generator {
         obj.dependencies['ngx-progressbar'] = '^2.1.1';
         obj.dependencies['simple-line-icons'] = '^2.4.1';
         obj.dependencies['@angular/service-worker'] = '^1.0.0-beta.16';
+        obj.dependencies['animate.css'] = '^3.5.2';
 
         // XXX: hotfix para problemas do versão RXJS
         // https://github.com/ReactiveX/rxjs/issues/3151
