@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { NotificationService } from '../shared';
+import { NotificationService } from '../core/notification.service';
 import { <%= name.capital %>Service } from './<%= name.lower %>.service';
 import { <%= name.capital %> } from './<%= name.lower %>.model';
 

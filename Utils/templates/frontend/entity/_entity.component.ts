@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap';
 
-import { NotificationService } from '../shared';
+import { NotificationService } from '../core/notification.service';
 import { <%= name.capital %>Service } from './<%= name.lower %>.service';
 import { <%= name.capital %> } from './<%= name.lower %>.model';
 

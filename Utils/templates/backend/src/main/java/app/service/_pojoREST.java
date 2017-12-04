@@ -25,7 +25,7 @@ public class <%= name.capital %>REST extends AbstractREST< <%= name.capital %>, 
     @GET
     @Override
     @Transactional
-    @Search(fields = {"id", "description"}) // Escolha quais campos serão passados para o frontend
+    @Search(fields = {"*"}) // Escolha quais campos vão para o frontend Ex: {"id", "description"}
     public Result find() {
         return bc.find();
     }
