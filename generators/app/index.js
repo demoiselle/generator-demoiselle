@@ -171,11 +171,11 @@ module.exports = class AppGenerator extends Generator {
     } else {
       this.log('[install] Ignorado.');
 
-      if (this.options['skip-backend']) {
+      if (!this.options['skip-backend']) {
         this.log('[install] TO-DO: execute manualmente "mvn install" na pasta "/backend".')
       }
 
-      if (this.options['skip-frontend']) {
+      if (!this.options['skip-frontend']) {
         this.log('[install] TO-DO: execute manualmente "npm install" na pasta "/frontend".')
       }
     }
@@ -186,7 +186,7 @@ module.exports = class AppGenerator extends Generator {
    */
   end() {
     this.log(yosay(
-      'Pronto! Agora é a sua vez... ' + chalk.green('Ligue as turbinas!')
+      'Estamos pronto para ' + chalk.green('ligar as turbinas') + '.'
     ));
   }
 
@@ -254,6 +254,11 @@ module.exports = class AppGenerator extends Generator {
     from = this.templatePath('base/frontend/ngsw-manifest.json');
     to = this.destinationPath('frontend/ngsw-manifest.json');
     this.fs.copyTpl(from, to);
+
+    // TODO: optional SW ~ if SW === true:
+    from = this.templatePath('base/frontend/src/service-worker/');
+    to = this.destinationPath('frontend/src/service-worker/');
+    this.fs.copy(from, to);
   }
 
   _generateProjectBackend() {
