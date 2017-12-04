@@ -52,7 +52,7 @@ export class AppHeader {
     if (this.isLoggedIn()) {
       this.webSocketService.connect()
         .then((wsConnection) => {
-          // console.info('[WS] conectado.');
+          // console.debug('[WS] conectado.');
           const id = this.tokenService.getIdentityFromToken();
           wsConnection.send({
             event: 'login',
@@ -88,6 +88,6 @@ export class AppHeader {
       };
     });
     this.connectedUsers = users;
-    console.debug({ users });
+    // console.debug({ users });
   }
 }

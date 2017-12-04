@@ -35,14 +35,13 @@ export class ServiceWorkerService {
 
   getFingerprint(): Promise<string> {
     return this.subscribeToPush().then((registration) => {
+      // console.log({ registration });
       const url = registration.url;
       if (!url) {
         console.debug('Wrong registration structure?', registration);
         throw new Error('Wrong registration structure?');
       }
 
-      // const fingerprint = url.split('/').pop();
-      // return fingerprint;
       return url;
     });
   }
@@ -60,6 +59,7 @@ export class ServiceWorkerService {
       }
 
       const subs = this.sw.registerForPush({
+        // XXX: será usado o FCM por enquanto e não precisamos declarar o "applicationServerKey".
         // applicationServerKey: environment.applicationServerKey,
       })
         .subscribe((r: NgPushRegistration) => {

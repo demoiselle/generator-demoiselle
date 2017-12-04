@@ -104,7 +104,6 @@ export class LoginComponent implements OnInit {
       }
       this.user.password = '';
     }
-
   }
 
   private _sendFingerprint() {
@@ -121,7 +120,7 @@ export class LoginComponent implements OnInit {
   private _sendLoginWebSocket() {
     this.webSocketService.connect()
       .then((wsConnection) => {
-        // console.info('[WS] conectado.');
+        // console.debug('[WS] conectado.');
         const id = this.tokenService.getIdentityFromToken();
         wsConnection.send({
           event: 'login',
