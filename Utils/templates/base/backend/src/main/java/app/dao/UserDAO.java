@@ -52,7 +52,7 @@ public class UserDAO extends AbstractDAO<User, String> {
 
     @Inject
     private DemoiselleSecurityMessages bundle;
-    
+
     @Inject
     private FingerprintDAO fingerprintDAO;
 
@@ -96,13 +96,13 @@ public class UserDAO extends AbstractDAO<User, String> {
         );
 
         if (typedQuery.getResultList().isEmpty()) {
-            throw new DemoiselleSecurityException("Usu·rio n„o existe", UNAUTHORIZED.getStatusCode());
+            throw new DemoiselleSecurityException("Usu√°rio n√£o existe", UNAUTHORIZED.getStatusCode());
         }
 
         User usu = typedQuery.getResultList().get(0);
 
         if (usu == null) {
-            throw new DemoiselleSecurityException("Usu·rio n„o existe", UNAUTHORIZED.getStatusCode());
+            throw new DemoiselleSecurityException("Usu√°rio n√£o existe", UNAUTHORIZED.getStatusCode());
         }
 
         return usu;
@@ -125,7 +125,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         if (usu == null) {
             throw new DemoiselleSecurityException(bundle.invalidCredentials(), UNAUTHORIZED.getStatusCode());
         }
-        
+
         loggedUser.setName(usu.getFirstName());
         loggedUser.setIdentity(usu.getId());
         loggedUser.addRole(usu.getPerfil().getValue());
@@ -141,7 +141,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         securityContext.setUser(loggedUser);
         return token;
     }
-    
+
         /**
      *
      * @param credentials
@@ -151,7 +151,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         LOG.log(Level.INFO, "Enviando lembran\u00e7a para : {0}", credentials.getUsername());
         //return login(credentials);
     }
-    
+
     /**
      *
      * @param credentials
@@ -174,7 +174,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         sen = hash.toString(16);
         return sen;
     }
-    
+
         /**
      *
      * @param social
@@ -183,11 +183,11 @@ public class UserDAO extends AbstractDAO<User, String> {
     public Token social(Social social) {
 
         if (social.getProvider().equalsIgnoreCase("google") && !validateGoogle(social.getIdToken())) {
-            throw new DemoiselleSecurityException("N„o validado pelo Google", Response.Status.PRECONDITION_FAILED.getStatusCode());
+            throw new DemoiselleSecurityException("NÔøΩo validado pelo Google", Response.Status.PRECONDITION_FAILED.getStatusCode());
         }
 
         if (social.getProvider().equalsIgnoreCase("facebook") && !validateFacebook(social.getToken())) {
-            throw new DemoiselleSecurityException("N„o validado pelo Facebook", Response.Status.PRECONDITION_FAILED.getStatusCode());
+            throw new DemoiselleSecurityException("NÔøΩo validado pelo Facebook", Response.Status.PRECONDITION_FAILED.getStatusCode());
         }
 
         User usu = verifyEmail(social.getEmail());
@@ -245,7 +245,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         }
         return false;
     }
-    
+
     public void setFingerprint(String fingerprint) {
         if (fingerprint != null && !fingerprint.isEmpty()) {
             List<Fingerprint> fps = fingerprintDAO.findByCodigo(fingerprint);
