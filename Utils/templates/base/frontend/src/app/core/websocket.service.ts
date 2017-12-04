@@ -11,7 +11,6 @@ interface WSResult {
 export class WebSocketService {
   private ws: WebSocket;
   private wsSource = new Subject<any>();
-  private isOpen = false;
   public events = this.wsSource.asObservable();
   private wsConnection: WSResult = null;
 
@@ -23,14 +22,14 @@ export class WebSocketService {
         return reject(new Error('Not support for WebSocket.'));
       }
 
-      if (this.wsConnection) {
+      if (this.wsConnection && this.ws.readyState === this.ws.OPEN) {
         return resolve(this.wsConnection);
       }
 
       // create ws
       if (!this.ws) {
         this.ws = new WebSocket(socketUrl);
-        // console.debug('[WS] created.');
+
         // this.ws.onopen = this.onOpen.bind(this);
         this.ws.onclose = this.onClose.bind(this);
         this.ws.onmessage = this.onMessage.bind(this);
@@ -54,7 +53,6 @@ export class WebSocketService {
 
   private onClose(event) {
     // console.debug('[WS] onclose:', event);
-    this.isOpen = false;
     this.wsSource.next(event);
   }
 
