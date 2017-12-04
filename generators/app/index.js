@@ -318,6 +318,10 @@ module.exports = class AppGenerator extends Generator {
         obj.dependencies['simple-line-icons'] = '^2.4.1';
         obj.dependencies['@angular/service-worker'] = '^1.0.0-beta.16';
 
+        // XXX: hotfix para problemas do versão RXJS
+        // https://github.com/ReactiveX/rxjs/issues/3151
+        obj.dependencies['rxjs'] = '5.5.2';
+
         log('Add devDependencies into package.json ...');
         obj.devDependencies['rollup'] = '^0.51.8';
         obj.devDependencies['rollup-plugin-commonjs'] = '^8.2.6';
