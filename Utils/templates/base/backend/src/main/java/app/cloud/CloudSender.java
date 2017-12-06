@@ -1,4 +1,4 @@
-package <%= package.lower %>.<%= project.lower %>.fcm;
+package <%= package.lower %>.<%= project.lower %>.cloud;
 
 import com.google.gson.Gson;
 import java.io.BufferedReader;
@@ -18,9 +18,9 @@ import static javax.ws.rs.core.HttpHeaders.USER_AGENT;
  * @author gladson
  */
 @Stateless
-public class Fcm {
+public class CloudSender {
 
-    private static final Logger LOG = Logger.getLogger(Fcm.class.getName());
+    private static final Logger LOG = Logger.getLogger(CloudSender.class.getName());
 
     /**
      *
@@ -31,20 +31,15 @@ public class Fcm {
 
         try {
 
-            WebNotification webn = new WebNotification();
+            CloudNotification webn = new CloudNotification();
             webn.setBody(textMessage);
             webn.setClick_action("https://seuapp.com.br/");
             webn.setIcon("https://seuapp.com.br/images/logo-large.png");
             webn.setTitle("seuapp.com.br");
 
-            WebData data = new WebData();
-            data.setEvent("push");
-            data.setData(textMessage);
-
-            WebMessage men = new WebMessage();
+            CloudMessage men = new CloudMessage();
             men.setPriority("normal");
             men.setNotification(webn);
-            men.setData(data);
             men.setTo(fingerprint);
             men.setContent_available(Boolean.TRUE);
 
@@ -74,9 +69,9 @@ public class Fcm {
             }
 
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Fcm.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudSender.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Fcm.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudSender.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

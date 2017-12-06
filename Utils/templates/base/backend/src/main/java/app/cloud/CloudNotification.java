@@ -1,10 +1,10 @@
-package <%= package.lower %>.<%= project.lower %>.fcm;
+package <%= package.lower %>.<%= project.lower %>.cloud;
 
 /**
  *
  * @author paulo
  */
-public class WebNotification {
+public class CloudNotification {
 
     private String title;
     private String body;

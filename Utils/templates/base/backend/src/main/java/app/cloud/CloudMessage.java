@@ -1,13 +1,12 @@
-package <%= package.lower %>.<%= project.lower %>.fcm;
+package <%= package.lower %>.<%= project.lower %>.cloud;
 
 /**
  *
  * @author paulo
  */
-public class WebMessage {
+public class CloudMessage {
 
-    private WebNotification notification;
-    private WebData data;
+    private CloudNotification notification;
     private String priority;
     private String to;
     private Boolean content_available;
@@ -16,7 +15,7 @@ public class WebMessage {
      *
      * @return
      */
-    public WebNotification getNotification() {
+    public CloudNotification getNotification() {
         return notification;
     }
 
@@ -24,7 +23,7 @@ public class WebMessage {
      *
      * @param notification
      */
-    public void setNotification(WebNotification notification) {
+    public void setNotification(CloudNotification notification) {
         this.notification = notification;
     }
 
@@ -58,14 +57,6 @@ public class WebMessage {
      */
     public void setPriority(String priority) {
         this.priority = priority;
-    }
-
-    public WebData getData() {
-        return data;
-    }
-
-    public void setData(WebData data) {
-        this.data = data;
     }
 
     public Boolean getContent_available() {
