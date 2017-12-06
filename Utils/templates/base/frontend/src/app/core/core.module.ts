@@ -29,7 +29,7 @@ import { AuthOptions } from '@demoiselle/security/dist/auth-options';
 // Import 3rd party components
 import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { NgProgressModule, NgProgressBrowserXhr } from 'ngx-progressbar';
+import { NgProgressModule, NgProgressInterceptor } from 'ngx-progressbar';
 
 import { environment } from '../../environments/environment';
 
@@ -142,7 +142,7 @@ export class CoreModule {
         NotificationService,
         { provide: ToastOptions, useClass: CustomOption },
         { provide: LocationStrategy, useClass: HashLocationStrategy },
-        { provide: BrowserXhr, useClass: NgProgressBrowserXhr }
+        { provide: HTTP_INTERCEPTORS, useClass: NgProgressInterceptor, multi: true }
       ]
     };
   }
