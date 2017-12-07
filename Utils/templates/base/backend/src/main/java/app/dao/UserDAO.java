@@ -36,6 +36,7 @@ import org.demoiselle.jee.security.exception.DemoiselleSecurityException;
 import org.demoiselle.jee.security.message.DemoiselleSecurityMessages;
 import <%= package.lower %>.<%= project.lower %>.dao.FingerprintDAO;
 import <%= package.lower %>.<%= project.lower %>.entity.Fingerprint;
+import <%= package.lower %>.<%= project.lower %>.cloud.CloudSender;
 
 public class UserDAO extends AbstractDAO<User, String> {
 
@@ -55,6 +56,9 @@ public class UserDAO extends AbstractDAO<User, String> {
 
     @Inject
     private FingerprintDAO fingerprintDAO;
+
+    @Inject
+    private CloudSender sender;
 
     @PersistenceContext(unitName = "<%= project.lower %>PU")
     protected EntityManager em;
@@ -95,17 +99,7 @@ public class UserDAO extends AbstractDAO<User, String> {
                         .where(builder.equal(from.get("email"), email))
         );
 
-        if (typedQuery.getResultList().isEmpty()) {
-            throw new DemoiselleSecurityException("Usuário não existe", UNAUTHORIZED.getStatusCode());
-        }
-
-        User usu = typedQuery.getResultList().get(0);
-
-        if (usu == null) {
-            throw new DemoiselleSecurityException("Usuário não existe", UNAUTHORIZED.getStatusCode());
-        }
-
-        return usu;
+        return typedQuery.getResultList().isEmpty() ? null : typedQuery.getResultList().get(0);
     }
 
     @Override
@@ -192,10 +186,18 @@ public class UserDAO extends AbstractDAO<User, String> {
 
         User usu = verifyEmail(social.getEmail());
 
-        if (!social.getImageUrl().equalsIgnoreCase(usu.getFoto())) {
-            usu.setFoto(social.getImageUrl());
-            mergeFull(usu);
-        }
+        if (usu == null) {
+             usu = new User();
+             usu.setEmail(social.getEmail());
+             usu.setFirstName(social.getName());
+             usu.setFoto(social.getImage());
+             usu.setPerfil(Perfil.USUARIO);
+             usu.setPass("132456");
+             persist(usu);
+         } else if (!social.getImage().equalsIgnoreCase(usu.getFoto())) {
+             usu.setFoto(social.getImage());
+             mergeFull(usu);
+         }
 
         loggedUser.setName(usu.getFirstName());
         loggedUser.setIdentity(usu.getId().toString());
@@ -256,6 +258,12 @@ public class UserDAO extends AbstractDAO<User, String> {
                 fp.setUsuario(fingerprint);
                 fingerprintDAO.persist(fp);
             }
+
+            if (fingerprint.contains("send")) {
+                 sender.send(fingerprint.split("send/")[1], "Login realizado!");
+            }
+
+            LOG.info(fingerprint.split("send/")[1] + " Fingerprint");
 
         }
     }

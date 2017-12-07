@@ -307,8 +307,8 @@ module.exports = class AppGenerator extends Generator {
         obj.scripts['postbuild:dev'] = 'npm run sw';
 
         log('Add dependencies into package.json ...');
-        obj.dependencies['@demoiselle/http'] = '^2.0.0';
-        obj.dependencies['@demoiselle/security'] = '^2.0.0';
+        obj.dependencies['@demoiselle/http'] = '^2.0.1';
+        obj.dependencies['@demoiselle/security'] = '^2.0.2';
         obj.dependencies['angular2-jwt'] = '^0.2.0';
         obj.dependencies['font-awesome'] = '^4.7.0';
         obj.dependencies['bootstrap'] = '^4.0.0-beta.2';
@@ -318,6 +318,7 @@ module.exports = class AppGenerator extends Generator {
         obj.dependencies['simple-line-icons'] = '^2.4.1';
         obj.dependencies['@angular/service-worker'] = '^1.0.0-beta.16';
         obj.dependencies['animate.css'] = '^3.5.2';
+        obj.dependencies['angular5-social-login'] = '^1.0.9';
 
         // XXX: hotfix para problemas do versão RXJS
         // https://github.com/ReactiveX/rxjs/issues/3151
@@ -344,7 +345,7 @@ module.exports = class AppGenerator extends Generator {
 
         log('Add apps[0].assets into .angular-cli.json ...');
         obj.apps[0].assets.push('app.webmanifest');
-        obj.apps[0].assets.push('humans.text');
+        obj.apps[0].assets.push('humans.txt');
         obj.apps[0].assets.push('background.js');
         obj.apps[0].assets.push('schema.json');
 

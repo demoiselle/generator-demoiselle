@@ -6,12 +6,12 @@ package <%= package.lower %>.<%= project.lower %>.security;
  */
 public class Social {
     private String email;
+    private String id;
     private String idToken;
-    private String imageUrl;
+    private String image;
     private String name;
     private String provider;
     private String token;
-    private String uid;
 
     /**
      *
@@ -49,16 +49,16 @@ public class Social {
      *
      * @return
      */
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImage() {
+        return image;
     }
 
     /**
      *
      * @param imageUrl
      */
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     /**
@@ -113,17 +113,17 @@ public class Social {
      *
      * @return
      */
-    public String getUid() {
-        return uid;
+    public String getId() {
+        return id;
     }
 
     /**
      *
      * @param uid
      */
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setId(String id) {
+        this.id = id;
     }
-    
-    
+
+
 }

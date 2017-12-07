@@ -31,7 +31,7 @@ public class User implements Serializable {
     @NotNull
     @Basic(optional = false)
     @Size(min = 3, max = 128)
-    @Column(unique = true, nullable = false, length = 128)
+    @Column(nullable = false, length = 128)
     private String firstName;
 
     @Email
@@ -46,7 +46,7 @@ public class User implements Serializable {
     @Size(min = 8, max = 128)
     @Column(length = 128)
     private String pass;
-    
+
     @Size(max = 2048)
     @Column(length = 2048)
     private String foto;
@@ -89,7 +89,7 @@ public class User implements Serializable {
     public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
     }
-    
+
     public String getFoto() {
         return foto;
     }
