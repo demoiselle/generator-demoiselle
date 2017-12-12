@@ -259,6 +259,10 @@ module.exports = class AppGenerator extends Generator {
     from = this.templatePath('base/frontend/src/service-worker/');
     to = this.destinationPath('frontend/src/service-worker/');
     this.fs.copy(from, to);
+
+    from = this.templatePath('base/frontend/.prettierrc');
+    to = this.destinationPath('frontend/.prettierrc');
+    this.fs.copyTpl(from, to);
   }
 
   _generateProjectBackend() {
@@ -307,7 +311,7 @@ module.exports = class AppGenerator extends Generator {
         obj.scripts['postbuild:dev'] = 'npm run sw';
 
         log('Add dependencies into package.json ...');
-        obj.dependencies['@demoiselle/http'] = '^2.0.1';
+        obj.dependencies['@demoiselle/http'] = '^2.0.2';
         obj.dependencies['@demoiselle/security'] = '^2.0.2';
         obj.dependencies['angular2-jwt'] = '^0.2.0';
         obj.dependencies['font-awesome'] = '^4.7.0';

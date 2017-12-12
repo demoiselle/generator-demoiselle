@@ -14,7 +14,7 @@ module.exports = class FrontendUtil {
         config = config || {};
         config.dest = config.dest || 'frontend/src/app/';
         const fromPath = 'frontend/entity/';
-        //const template = entity;
+
         const template = Object.assign(entity, {
             project: config.project,
             prefix: config.prefix
@@ -127,7 +127,7 @@ module.exports = class FrontendUtil {
 
     /**
      * Adiciona o carregamento do sub módulo como children em app-routing.module
-     * @param {*} template 
+     * @param {*} template
      */
     _addChildrenRoute(template) {
 
