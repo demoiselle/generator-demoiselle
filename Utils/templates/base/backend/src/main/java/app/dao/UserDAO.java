@@ -68,12 +68,6 @@ public class UserDAO extends AbstractDAO<User, String> {
         return em;
     }
 
-    /**
-     *
-     * @param email
-     * @param password
-     * @return
-     */
     public User verifyEmail(String email, String password) {
 
         User usu = verifyEmail(email);
@@ -85,11 +79,6 @@ public class UserDAO extends AbstractDAO<User, String> {
         return usu;
     }
 
-    /**
-     *
-     * @param email
-     * @return
-     */
     public User verifyEmail(String email) {
         CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<User> query = builder.createQuery(User.class);
@@ -120,7 +109,7 @@ public class UserDAO extends AbstractDAO<User, String> {
             throw new DemoiselleSecurityException(bundle.invalidCredentials(), UNAUTHORIZED.getStatusCode());
         }
 
-        loggedUser.setName(usu.getFirstName());
+        loggedUser.setName(usu.getDescription());
         loggedUser.setIdentity(usu.getId());
         loggedUser.addRole(usu.getPerfil().getValue());
 
@@ -136,20 +125,12 @@ public class UserDAO extends AbstractDAO<User, String> {
         return token;
     }
 
-        /**
-     *
-     * @param credentials
-     */
     public void register(Credentials credentials) {
         // envia email
         LOG.log(Level.INFO, "Enviando lembran\u00e7a para : {0}", credentials.getUsername());
         //return login(credentials);
     }
 
-    /**
-     *
-     * @param credentials
-     */
     public void amnesia(Credentials credentials) {
         // envia email
         LOG.log(Level.INFO, "Enviando lembran\u00e7a para : {0}", credentials.getUsername());
@@ -169,11 +150,6 @@ public class UserDAO extends AbstractDAO<User, String> {
         return sen;
     }
 
-        /**
-     *
-     * @param social
-     * @return
-     */
     public Token social(Social social) {
 
         if (social.getProvider().equalsIgnoreCase("google") && !validateGoogle(social.getIdToken())) {
@@ -189,7 +165,7 @@ public class UserDAO extends AbstractDAO<User, String> {
         if (usu == null) {
              usu = new User();
              usu.setEmail(social.getEmail());
-             usu.setFirstName(social.getName());
+             usu.setDescription(social.getName());
              usu.setFoto(social.getImage());
              usu.setPerfil(Perfil.USUARIO);
              usu.setPass("132456");
@@ -199,7 +175,7 @@ public class UserDAO extends AbstractDAO<User, String> {
              mergeFull(usu);
          }
 
-        loggedUser.setName(usu.getFirstName());
+        loggedUser.setName(usu.getDescription());
         loggedUser.setIdentity(usu.getId().toString());
         loggedUser.addRole(usu.getPerfil().toString());
 

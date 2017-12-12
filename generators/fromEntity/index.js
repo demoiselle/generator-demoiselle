@@ -246,6 +246,10 @@ function getHtmlTypeOfProperty(property) {
     return 'password';
   }
 
+  if (/^date$/i.test(property.type) || /^datetime$/i.test(property.type)) {
+    return 'date';
+  }
+
   // select options
   // if (false) {
   //   return 'select';
@@ -284,6 +288,8 @@ function isPrimitive(property) {
     /void/i,
     // convention dml
     /uuid/i,
+    /^date$/i,
+    /^datetime$/i,
     /number/i,
     /string/i,
   ];

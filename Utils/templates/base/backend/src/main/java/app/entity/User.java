@@ -1,5 +1,6 @@
 package <%= package.lower %>.<%= project.lower %>.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
 import java.io.Serializable;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class User implements Serializable {
     @Basic(optional = false)
     @Size(min = 3, max = 128)
     @Column(nullable = false, length = 128)
-    private String firstName;
+    private String description;
 
     @Email
     @NotNull
@@ -58,12 +59,12 @@ public class User implements Serializable {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getEmail() {
@@ -74,10 +75,12 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    @JsonIgnore
     public String getPass() {
         return pass;
     }
 
+    @JsonIgnore
     public void setPass(String pass) {
         this.pass = pass;
     }
@@ -126,7 +129,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", firstName=" + firstName + ", email=" + email + ", pass=" + pass + ", perfil=" + perfil + '}';
+        return "User{" + "id=" + id + ", description=" + description + ", email=" + email + ", pass=" + pass + ", perfil=" + perfil + '}';
     }
 
 }
