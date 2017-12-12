@@ -21,9 +21,9 @@ export class <%= name.capital %>Component implements OnInit {
   public isLoading = true;
 
   // Pagination
-  public itemsPerPage: number = 10;
-  public totalItems: number = 0;
-  public currentPage: number = 1;
+  public itemsPerPage = 10;
+  public totalItems = 0;
+  public currentPage = 1;
 
   // Filter
   public ascValue = '⇧';
@@ -42,7 +42,6 @@ export class <%= name.capital %>Component implements OnInit {
   }
 
   ngOnInit() {
-    console.debug('[<%= name.capital %>Component] created.');
     this.isLoading = false;
 
     // populate table
@@ -71,7 +70,6 @@ export class <%= name.capital %>Component implements OnInit {
         this.notificationService.error('Não foi possível carregar a lista de itens!');
       },
       () => {
-        console.debug('<%= name.capital %>Component.list() - completed.');
         this.isLoading = false;
       }
     );
@@ -91,7 +89,6 @@ export class <%= name.capital %>Component implements OnInit {
         this.notificationService.error('Não foi possível remover!');
       },
       () => {
-        console.debug('<%= name.capital %>Component.delete() - completed.');
         this.isLoading = false;
       }
     );
@@ -104,7 +101,7 @@ export class <%= name.capital %>Component implements OnInit {
   }
 
   toggleSelected(<%= name.lower %>: <%= name.capital %>) {
-    let index = this.selecteds.indexOf(<%= name.lower %>);
+    const index = this.selecteds.indexOf(<%= name.lower %>);
     if(index === -1) {
       this.selecteds.push(<%= name.lower %>);
     } else {

@@ -27,13 +27,14 @@
                       <table class="table table-sm table-responsive-md table-responsive-lg table-responsive-xl table-responsive-card">
                             <thead>
                                 <tr>
-                                    <% properties.forEach(function (property) {
-                                      %><th scope="col"><% if (!/id/i.test(property.name)) { %>
-                                        <button type="button" class="th-button" (click)="orderBy('<%= property.name %>')">
-                                          <span><%= property.name %> {{formOrder.<%= property.name %>}}</span>
-                                        </button>
-                                    <% } %></th><% }); %>
-                                    <th scope="col">Ações</th>
+                                  <% properties.forEach(function (property) {
+                                    %><th scope="col"><% if (!/id/i.test(property.name)) { %>
+                                    <button type="button" class="th-button" (click)="orderBy('<%= property.name %>')">
+                                      <span><%= property.name %> {{formOrder.<%= property.name %>}}</span>
+                                    </button>
+                                  <% } %>
+                                  </th><% }); %>
+                                  <th scope="col">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,10 +43,9 @@
                                 <% if(/id/i.test(property.name)) { %><td class="d-none d-md-block">
                                     <input type="hidden" name="id" [value]="<%= name.lower %>.<%= property.name %>">
                                     <input type="checkbox" [checked]="<%= name.lower %>.checked" (change)="toggleSelected(<%= name.lower %>)">
-                                </td><% }
-                                  else if (index === 1) { %><th scope="row">{{<%= name.lower %>.<%= property.name %>}}</th><% }
-                                    else { %><td data-title="<%= property.name %>">{{<%= name.lower %>.<%= property.name %>}}</td>
-                                <% } %><% }); %>
+                                </td>
+                                <% } else if (index === 1) { %><th scope="row">{{<%= name.lower %>.<%= property.name %>}}</th>
+                                <% } else { %><td data-title="<%= property.name %>">{{<%= name.lower %>.<%= property.name %>}}</td><% } }); %>
                                 <td>
                                   <a class="btn btn-sm btn-link d-md-none text-danger" (click)="delete(<%= name.lower %>)">Remover</a>
                                   <a class="btn btn-sm btn-primary" [routerLink]="['/<%= name.lower %>','edit', <%= name.lower %>.id]">Visualizar</a>
