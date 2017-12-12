@@ -230,7 +230,7 @@ module.exports = class AppGenerator extends Generator {
 
     from = this.templatePath('base/frontend/src/environments/');
     to = this.destinationPath('frontend/src/environments/');
-    this.fs.copy(from, to, template);
+    this.fs.copyTpl(from, to, template);
 
     from = this.templatePath('base/frontend/src/scss/');
     to = this.destinationPath('frontend/src/scss/');
