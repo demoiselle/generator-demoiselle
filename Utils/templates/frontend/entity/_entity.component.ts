@@ -9,7 +9,6 @@ import { <%= name.capital %> } from './<%= name.lower %>.model';
   selector: '<%= prefix.lower %>-<%= name.lower %>',
   templateUrl: './<%= name.lower %>.component.html',
   styleUrls: ['./<%= name.lower %>.component.scss']
-
 })
 export class <%= name.capital %>Component implements OnInit {
   <%= name.lower %>: <%= name.capital %>;
@@ -45,10 +44,10 @@ export class <%= name.capital %>Component implements OnInit {
     this.isLoading = false;
 
     // populate table
-    this.list();
+    this.loadList();
   }
 
-  list(field: string = null, desc: boolean = false) {
+  loadList(field: string = null, desc: boolean = false) {
     this.isLoading = true;
     const filter = this.processFilter();
     this.service.findAll(this.currentPage, this.itemsPerPage, filter, field, desc).subscribe(
@@ -56,8 +55,7 @@ export class <%= name.capital %>Component implements OnInit {
         try {
           this.<%= name.lower %>s = result.body;
         } catch (e) {
-          console.log('Can not convert result to JSON.');
-          console.log(e);
+          console.log('Can not convert result to JSON.', e);
           this.<%= name.lower %>s = [];
         }
         const contentRange = result.headers.get('Content-Range');
@@ -82,7 +80,7 @@ export class <%= name.capital %>Component implements OnInit {
         this.<%= name.lower %> = null;
         this.staticModalDelete.hide();
         this.notificationService.success("<%= name.capital %> removido com sucesso!");
-        this.list();
+        this.loadList();
       },
       (error) => {
         console.error(error);
@@ -124,7 +122,7 @@ export class <%= name.capital %>Component implements OnInit {
   // Pagination
   pageChanged(event: any) {
     this.currentPage = event.page;
-    this.list();
+    this.loadList();
   }
 
   onPageItemsChange(itemsPerPage) {
@@ -145,7 +143,7 @@ export class <%= name.capital %>Component implements OnInit {
 
   orderBy(field) {
     this.toggleFormOrder(field);
-    this.list(field, this.formOrder[field] === this.descValue ? true : false);
+    this.loadList(field, this.formOrder[field] === this.descValue ? true : false);
   }
 
   toggleFormOrder(field) {

@@ -11,14 +11,21 @@
       <div class="panel-body" style="min-height: 300px;">
 
       <form class="col-xs-6" role="form" #<%= name.lower %>Form="ngForm" (ngSubmit)="save(<%= name.lower %>)">
-        <fieldset [disabled]="isLoading">
-          <% properties.forEach(function (property) { %>
+        <fieldset [disabled]="isLoading"><%
+          properties.forEach(function (property) {
+            if (property.isPrimitive) {
+          %>
           <div class="form-group">
             <label for="<%= name.lower %>-<%= property.name %>" class="control-label"><%= property.name %></label>
             <input type="<%= property.htmlType %>" name="<%= property.name %>" id="<%= name.lower %>-<%= property.name %>" class="form-control" [(ngModel)]="<%= name.lower %>.<%= property.name %>" <% if (property.isReadOnly){%>readonly="true"<% } %>>
-          </div><% }); %>
+          </div><% } else { %>
+          <div class="form-group">
+            <label for="<%= name.lower %>-<%= property.name %>"><%= property.name %></label>
+            <select class="form-control" id="<%= name.lower %>-<%= property.name %>" *ngIf="<%= property.name %>Options" [(ngModel)]="<%= name.lower %>.<%= property.name %>" name="<%= property.name %>">
+              <option *ngFor="let <%= property.name %> of <%= property.name %>Options" [ngValue]="<%= property.name %>">{{ <%= property.name %>.description }}</option>
+            </select>
+          </div><% } }); %>
         </fieldset>
-
         <div class="card-footer clearfix">
           <fieldset [disabled]="isLoading" class="pull-right">
             <button type="button" class="btn btn-link text-danger mr-1" (click)="remove()" *ngIf="<%= name.lower %>.id">

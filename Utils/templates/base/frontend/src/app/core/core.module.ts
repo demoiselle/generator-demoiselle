@@ -21,6 +21,7 @@ import { NgServiceWorker } from '@angular/service-worker';
 import { CredentialManagementService } from '../auth/credentials.service';
 import { WebSocketService } from './websocket.service';
 import { NotificationService } from './notification.service';
+import { UtilService } from './util.service';
 
 import { AuthService, SecurityModule, TokenService } from '@demoiselle/security';
 import { ExceptionService, AuthInterceptor, DmlHttpModule } from '@demoiselle/http';
@@ -162,6 +163,7 @@ export class CoreModule {
         CredentialManagementService,
         WebSocketService,
         NotificationService,
+        UtilService,
         { provide: ToastOptions, useClass: CustomOption },
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: NgProgressInterceptor, multi: true }
