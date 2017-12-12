@@ -6,21 +6,18 @@ import { <%= name.capital %>Component } from './<%= name.lower %>.component';
 import { <%= name.capital %>EditComponent } from './<%= name.lower %>-edit.component';
 import { <%= name.capital %>Resolver } from './<%= name.lower %>.resolver';
 
-const routes: Routes = [
-    {
+const routes: Routes = [{
         path: '',
         canActivate: [AuthGuard],
         component: <%= name.capital %>Component
-    },
-    {
+    }, {
         path: 'edit/:id',
         canActivate: [AuthGuard],
         component: <%= name.capital %>EditComponent,
         resolve: {
             <%= name.lower %>: <%= name.capital %>Resolver
         }
-    },
-    {
+    }, {
         path: 'edit',
         component: <%= name.capital %>EditComponent
     }

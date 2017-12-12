@@ -163,12 +163,9 @@ module.exports = class AppGenerator extends Generator {
    * Where installation are run (npm, bower)
    */
   install() {
-    let skipInstall = this.options['skip-install'];
+    const skipInstall = this.options['skip-install'];
 
-    if (!skipInstall) {
-      this.spawnCommand('npm', ['install'], { cwd: 'frontend' });
-      this.spawnCommand('mvn', ['install'], { cwd: 'backend' });
-    } else {
+    if (skipInstall) {
       this.log('[install] Ignorado.');
 
       if (!this.options['skip-backend']) {
@@ -177,6 +174,14 @@ module.exports = class AppGenerator extends Generator {
 
       if (!this.options['skip-frontend']) {
         this.log('[install] TO-DO: execute manualmente "npm install" na pasta "/frontend".')
+      }
+    } else {
+      if (!this.options['skip-backend']) {
+        this.spawnCommand('mvn', ['install'], { cwd: 'backend' });
+      }
+
+      if (!this.options['skip-frontend']) {
+        this.spawnCommand('npm', ['install'], { cwd: 'frontend' });
       }
     }
   }
@@ -259,6 +264,10 @@ module.exports = class AppGenerator extends Generator {
     from = this.templatePath('base/frontend/src/service-worker/');
     to = this.destinationPath('frontend/src/service-worker/');
     this.fs.copy(from, to);
+
+    from = this.templatePath('base/frontend/.prettierrc');
+    to = this.destinationPath('frontend/.prettierrc');
+    this.fs.copyTpl(from, to);
   }
 
   _generateProjectBackend() {
@@ -287,7 +296,7 @@ module.exports = class AppGenerator extends Generator {
 
     from = this.templatePath('base/backend/run-dev.sh');
     to = this.destinationPath('backend/run-dev.sh');
-    this.fs.copyTpl(from, to);
+    this.fs.copyTpl(from, to, template);
 
     this.log('Backend successfully created.');
   }
@@ -307,7 +316,7 @@ module.exports = class AppGenerator extends Generator {
         obj.scripts['postbuild:dev'] = 'npm run sw';
 
         log('Add dependencies into package.json ...');
-        obj.dependencies['@demoiselle/http'] = '^2.0.1';
+        obj.dependencies['@demoiselle/http'] = '^2.0.2';
         obj.dependencies['@demoiselle/security'] = '^2.0.2';
         obj.dependencies['angular2-jwt'] = '^0.2.0';
         obj.dependencies['font-awesome'] = '^4.7.0';

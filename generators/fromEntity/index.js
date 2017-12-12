@@ -156,7 +156,7 @@ module.exports = class FromEntityGenerator extends Generator {
         const dir = 'backend/src/main/java/' + this.package.replace(/\./g, '/').toLowerCase() + '/' + this.project.toLowerCase() + '/entity/'
         this._entityPath = path.normalize(dir);
 
-        console.log('Lendo entidades da pasta: ' + dir + ' ...');
+        console.log(`Lendo entidades da pasta: ${dir} ...`);
 
         fs.readdirSync(this._entityPath).forEach(function (entityFilename) {
 
@@ -169,6 +169,10 @@ module.exports = class FromEntityGenerator extends Generator {
             };
 
             template.properties = generator._extractPropertiesFromFile(filePath);
+
+            // flag que sinaliza quando uma entidade possui relacionamento com outra entidade (1:1)
+            template.hasCustomEntity = template.properties.some(p => !p.isPrimitive);
+
             generator._entities.push(template);
         });
     }
@@ -215,6 +219,7 @@ module.exports = class FromEntityGenerator extends Generator {
 
             property.htmlType = getHtmlTypeOfProperty(property);
             property.isReadOnly = isPropertyReadOnly(property);
+            property.isPrimitive = isPrimitive(property);
 
             properties.push(property);
         }
@@ -261,4 +266,27 @@ function isPropertyReadOnly(property) {
   }
 
   return false;
+}
+
+function isPrimitive(property) {
+  const primitivesRegex = [
+    // integer
+    /byte/i,
+    /char/i,
+    /short/i,
+    /int/i,
+    /long/i,
+    // float
+    /float/i,
+    /double/i,
+    // others
+    /boolean/i,
+    /void/i,
+    // convention dml
+    /uuid/i,
+    /number/i,
+    /string/i,
+  ];
+
+  return primitivesRegex.some((regex) => regex.test(property.type));
 }
