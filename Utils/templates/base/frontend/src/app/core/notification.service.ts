@@ -1,18 +1,44 @@
 import { Injectable } from '@angular/core';
-import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ToastrService } from 'ngx-toastr';
 import { Http } from '@angular/http';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { ExceptionService } from '@demoiselle/http';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class NotificationService {
   errorsSubscription: Subscription;
-  constructor(private toastr: ToastsManager , private exceptionService: ExceptionService, private router: Router) {
+  constructor(private toastr: ToastrService , private exceptionService: ExceptionService, private router: Router) {
     this.errorsSubscription = this.exceptionService.errors$.subscribe(
       error => this.handleError(error)
     );
   }
+
+  notification(title, message) {
+    const options = {
+      body: message,
+      icon: 'assets/logo.png'
+    };
+      // Let's check if the browser supports notifications
+      if (!('Notification' in window)) {
+        console.log('This browser does not support system notifications');
+      } else if (Notification['permission'] === 'granted') {
+        // If it's okay let's create a notification
+        navigator.serviceWorker.ready.then(reg => {
+          return reg.showNotification(title, options);
+        });
+      } else if (Notification['permission'] !== 'denied') {
+        Notification.requestPermission(function (permission) {
+          // If the user accepts, let's create a notification
+          if (permission === 'granted') {
+            navigator.serviceWorker.ready.then(reg => {
+              return reg.showNotification(title, options);
+            });
+          }
+        });
+      }
+  }
+
 
   success(text: string) {
     this.toastr.success(text);

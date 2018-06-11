@@ -12,12 +12,11 @@ import { HttpModule, BrowserXhr } from '@angular/http';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { Http, RequestOptions, ConnectionBackend, RequestOptionsArgs, Response, XHRBackend } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { ServiceWorkerService } from './sw.service';
-import { NgServiceWorker } from '@angular/service-worker';
 import { CredentialManagementService } from '../auth/credentials.service';
 import { WebSocketService } from './websocket.service';
 import { NotificationService } from './notification.service';
@@ -28,16 +27,16 @@ import { ExceptionService, AuthInterceptor, DmlHttpModule } from '@demoiselle/ht
 import { AuthOptions } from '@demoiselle/security/dist/auth-options';
 
 // Import 3rd party components
-import { ToastModule, ToastOptions } from 'ng2-toastr/ng2-toastr';
+import { ToastrModule, ToastrConfig } from 'ngx-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { NgProgressModule, NgProgressInterceptor } from 'ngx-progressbar';
 
 import { environment } from '../../environments/environment';
 
-import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider } from "angular5-social-login";
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 export function getAuthServiceConfigs() {
-  let config = new AuthServiceConfig(
+  const config = new AuthServiceConfig(
  [
    {
      id: FacebookLoginProvider.PROVIDER_ID,
@@ -58,13 +57,13 @@ export class MyAuthOptions extends AuthOptions {
 }
 
 // Toastr Custom configs (defined at forRoot() providers below)
-export class CustomOption extends ToastOptions {
-  animate = 'flyRight'; // you can override any options available
-  positionClass = 'toast-bottom-right';
-  showCloseButton = true;
-  dismiss = 'auto';
-  toastLife = 7000;
-}
+const customToastrOptions = {
+  animate: 'flyRight', // you can override any options available
+  positionClass: 'toast-bottom-right',
+  showCloseButton: true,
+  dismiss: 'auto',
+  toastLife: 7000
+};
 
 // Import containers
 import {
@@ -75,7 +74,7 @@ import {
 const APP_CONTAINERS = [
   FullLayout,
   SimpleLayout
-]
+];
 
 // Import components
 import {
@@ -100,7 +99,7 @@ const APP_COMPONENTS = [
   AppSidebarForm,
   AppSidebarHeader,
   AppSidebarMinimizer
-]
+];
 
 // Import directives
 import {
@@ -113,7 +112,7 @@ const APP_DIRECTIVES = [
   AsideToggleDirective,
   NAV_DROPDOWN_DIRECTIVES,
   SIDEBAR_TOGGLE_DIRECTIVES
-]
+];
 
 
 @NgModule({
@@ -127,7 +126,7 @@ const APP_DIRECTIVES = [
     RouterModule,
     SecurityModule.forRoot(),
     BsDropdownModule.forRoot(),
-    ToastModule.forRoot()
+    ToastrModule.forRoot(customToastrOptions)
 
   ],
   declarations: [
@@ -159,12 +158,10 @@ export class CoreModule {
         },
         ExceptionService,
         ServiceWorkerService,
-        NgServiceWorker,
         CredentialManagementService,
         WebSocketService,
         NotificationService,
         UtilService,
-        { provide: ToastOptions, useClass: CustomOption },
         { provide: LocationStrategy, useClass: HashLocationStrategy },
         { provide: HTTP_INTERCEPTORS, useClass: NgProgressInterceptor, multi: true }
       ]

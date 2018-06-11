@@ -13,7 +13,7 @@
     "description": "Demoiselle Framework Exemplo",
     "offline_enabled": true,
     "serviceworker": {
-        "src": "worker-basic.min.js",
+        "src": "ngsw-worker.js",
         "scope": "/",
         "use_cache": true
     },

@@ -1,13 +1,14 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService, TokenService } from '@demoiselle/security';
 import { WebSocketService } from '../../../../core/websocket.service';
+import { ServiceWorkerService } from '../../../../core/sw.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './app-header.component.html'
 })
-export class AppHeader {
+export class AppHeader implements OnInit {
 
   user;
   connectedUsers = [];
@@ -18,7 +19,8 @@ export class AppHeader {
     private router: Router,
     private authService: AuthService,
     private tokenService: TokenService,
-    private webSocketService: WebSocketService) { }
+    private webSocketService: WebSocketService,
+    private serviceWorkerService: ServiceWorkerService) { }
 
   ngOnInit(): void {
     // wait for the component to render completely
@@ -58,7 +60,7 @@ export class AppHeader {
             id: this.tokenService.getIdentityFromToken(),
             name: this.tokenService.getNameFromToken(),
             roles: this.tokenService.getRolesFromToken()
-          }
+          };
           wsConnection.send({
             event: 'login',
             data: this.user.id
@@ -73,8 +75,8 @@ export class AppHeader {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigateByUrl('/login');
+    this.serviceWorkerService.unsubscribeFromPushAndDoLogout();
+
   }
 
   private handleCountEvent(data) {

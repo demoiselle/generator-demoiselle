@@ -3,6 +3,7 @@
 > Gerador para Demoiselle 3.0
 
 Versões do Gerador (Compatibilidade com Demoiselle Frontend https://github.com/demoiselle/frontend/)
+- 3.x.x para Angular 6 (Node 8+, Angular CLI 6, Demoiselle Frontend 3.x)
 - 2.x.x para Angular 5 com Angular CLI (Demoiselle Frontend 2.x)
 - 1.1.X para Angular 4 (Demoiselle Frontend 1.x)
 - 1.0.X para Angular 2.3.0 (Demoiselle Frontend 1.x)

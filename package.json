@@ -1,6 +1,6 @@
 {
   "name": "generator-demoiselle",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "description": "Gerador Demoiselle 3.0 JEE7 com Angular2",
   "homepage": "https://github.com/demoiselle/generator-demoiselle",
   "authors": [
@@ -46,7 +46,7 @@
     "swagger-parser": "^3.4.1",
     "typescript": "^2.1.5",
     "typescript-formatter": "^4.0.1",
-    "yeoman-generator": "^1.0.0",
+    "yeoman-generator": "^2.0.5",
     "yosay": "^1.2.1"
   },
   "devDependencies": {
