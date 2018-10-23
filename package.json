@@ -47,7 +47,8 @@
     "typescript": "^2.1.5",
     "typescript-formatter": "^4.0.1",
     "yeoman-generator": "^2.0.5",
-    "yosay": "^1.2.1"
+    "yosay": "^1.2.1",
+    "snyk": "^1.104.2"
   },
   "devDependencies": {
     "eslint": "^3.1.1",
@@ -83,7 +84,10 @@
   "repository": "demoiselle/generator-demoiselle",
   "scripts": {
     "prepublish": "gulp prepublish",
-    "test": "gulp"
+    "test": "gulp",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "snyk": true
 }
