@@ -43,7 +43,7 @@
     "js-beautify": "1.6.14",
     "jsonq": "^1.1.0",
     "lodash": "^4.17.11",
-    "swagger-parser": "^3.4.1",
+    "swagger-parser": "^9.0.0",
     "typescript": "^2.1.5",
     "typescript-formatter": "^4.0.1",
     "yeoman-generator": "^2.0.5",
