@@ -1,0 +1,87 @@
+{
+  "@@locale": "en",
+
+  "loginTitle": "Sign In",
+  "loginEmail": "Email",
+  "loginPassword": "Password",
+  "loginSubmit": "Sign In",
+  "loginForgotPassword": "Forgot password",
+  "loginRegister": "Create account",
+
+  "registerTitle": "Create Account",
+  "registerName": "Name",
+  "registerEmail": "Email",
+  "registerPassword": "Password",
+  "registerConfirmPassword": "Confirm Password",
+  "registerSubmit": "Register",
+  "registerAlreadyHaveAccount": "Already have an account? Sign in",
+  "registerSuccess": "Account created successfully!",
+  "registerConfirmEmail": "Check your email to confirm your registration.",
+  "registerGoToLogin": "Go to Login",
+
+  "forgotPasswordTitle": "Forgot Password",
+  "forgotPasswordDescription": "Enter your email to receive a password reset link.",
+  "forgotPasswordEmail": "Email",
+  "forgotPasswordSubmit": "Send",
+  "forgotPasswordBackToLogin": "Back to Login",
+  "forgotPasswordSuccess": "Email sent!",
+  "forgotPasswordCheckEmail": "Check your inbox to reset your password.",
+
+  "resetPasswordTitle": "Reset Password",
+  "resetPasswordToken": "Verification code",
+  "resetPasswordNewPassword": "New Password",
+  "resetPasswordConfirmPassword": "Confirm New Password",
+  "resetPasswordSubmit": "Reset Password",
+  "resetPasswordSuccess": "Password reset successfully!",
+  "resetPasswordGoToLogin": "Go to Login",
+
+  "dashboardTitle": "Dashboard",
+  "dashboardError": "Failed to load statistics.",
+
+  "auditTitle": "Audit",
+  "auditAccessDenied": "Access restricted to administrators.",
+  "auditEmpty": "No audit records found.",
+  "auditFilters": "Filters",
+  "auditFilterEntity": "Entity",
+  "auditFilterUser": "User",
+  "auditApplyFilters": "Apply",
+  "auditChangesTitle": "Changes",
+
+  "notificationsTitle": "Notifications",
+  "notificationsEmpty": "No notifications.",
+
+  "settingsTitle": "Settings",
+  "settingsAppearance": "Appearance",
+  "settingsTheme": "Theme",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
+  "settingsThemeSystem": "System",
+  "settingsLanguage": "Language",
+  "settingsLanguageSelect": "Select language",
+  "settingsAccount": "Account",
+  "settingsLogout": "Sign Out",
+  "settingsLogoutConfirmTitle": "Sign out",
+  "settingsLogoutConfirmMessage": "Are you sure you want to sign out?",
+
+  "commonCancel": "Cancel",
+  "commonRetry": "Retry",
+  "commonClear": "Clear",
+  "commonClose": "Close",
+
+  "validationRequired": "Required field",
+  "validationEmail": "Invalid email",
+  "validationMinLength": "Minimum 6 characters",
+  "validationPasswordMatch": "Passwords do not match",
+
+  "filterTitle": "Filters",
+  "filterClear": "Clear",
+  "filterApply": "Apply",
+
+  "exportCsv": "Export CSV",
+  "exportPdf": "Export PDF",
+
+  "fileUploadSelectFile": "Select a file to upload",
+  "fileUploadFile": "File",
+  "fileUploadImage": "Image",
+  "fileUploadUpload": "Upload"
+}

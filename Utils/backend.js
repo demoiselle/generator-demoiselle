@@ -1,4 +1,5 @@
 const Util = require('./util');
+const QueryGeneratorUtil = require('./queryGenerator');
 const _ = require('lodash');
 const path = require('path');
 const cheerio = require('cheerio');
@@ -9,6 +10,7 @@ module.exports = class BackendUtil {
         this.util = new Util(vm);
         this.vm = vm;
         this.fs = vm.fs;
+        this.queryGenerator = new QueryGeneratorUtil();
     }
 
     createCrud(entity, config) {
@@ -20,6 +22,11 @@ module.exports = class BackendUtil {
             project: config.project,
             package: config.package
         });
+
+        // Ensure properties are available for export endpoints in REST template
+        if (!template.properties) {
+            template.properties = [];
+        }
 
         const files = [
             'entity/_pojo.java',
@@ -36,16 +43,28 @@ module.exports = class BackendUtil {
         });
 
         this._addEntityToPersistenceXml(template);
+        this._addEntityToDashboardStats(template);
     }
 
     createFromEntity(entity, config) {
         config = config || {};
         config.dest = config.dest || 'backend/src/main/java/' + config.package.lower.replace(/\./g, '/') + '/' + config.project.lower + '/';
         const fromPath = 'backend/src/main/java/app/';
+
+        // Generate query methods from entity properties using QueryGeneratorUtil
+        const queryMethods = this.queryGenerator.generateQueryMethods(entity.properties || []);
+
         const template = Object.assign(entity, {
             project: config.project,
-            package: config.package
+            package: config.package,
+            queryMethods: queryMethods
         });
+
+        // Ensure properties are available for export endpoints in REST template
+        if (!template.properties) {
+            template.properties = [];
+        }
+
         const files = [
             'bc/_pojoBC.java',
             'dao/_pojoDAO.java',
@@ -60,6 +79,57 @@ module.exports = class BackendUtil {
         });
 
         this._addEntityToPersistenceXml(template);
+        this._addEntityToDashboardStats(template);
+    }
+
+    /**
+     * Adiciona a entidade ao DashboardREST.java — injeta DAO e contagem no endpoint /dashboard/stats.
+     * Modifica o arquivo DashboardREST.java existente para:
+     * 1. Adicionar import do DAO da entidade
+     * 2. Adicionar @Inject do DAO
+     * 3. Adicionar contagem da entidade no mapa de stats
+     * @param {object} template - template com name, package, project
+     * @private
+     */
+    _addEntityToDashboardStats(template) {
+        const dashboardPath = this.vm.destinationPath('backend/src/main/java/' + template.package.lower.replace(/\./g, '/') + '/' + template.project.lower + '/service/DashboardREST.java');
+        const entityName = template.name.capital;
+        const entityLower = template.name.lower;
+        const packageLower = template.package.lower;
+        const projectLower = template.project.lower;
+
+        this.fs.copy(dashboardPath, dashboardPath, {
+            process: function (content) {
+                let contentStr = content.toString();
+
+                // Avoid duplicates — check if this entity's DAO is already injected
+                if (contentStr.indexOf(entityName + 'DAO') !== -1) {
+                    return content;
+                }
+
+                // 1. Add import for the entity's DAO (before the class declaration)
+                const importStatement = `import ${packageLower}.${projectLower}.dao.${entityName}DAO;\n`;
+                const importRegEx = /^(import [^;]+;\s*\n)(?!import)/m;
+                contentStr = contentStr.replace(importRegEx, '$1' + importStatement);
+
+                // 2. Add @Inject for the DAO at the marker comment
+                const daoInject = `    @Inject\n    private ${entityName}DAO ${entityLower}DAO;\n\n`;
+                contentStr = contentStr.replace(
+                    '// ENTITY_STATS_INJECT',
+                    `${daoInject}    // ENTITY_STATS_INJECT`
+                );
+
+                // 3. Add count call in the stats method at the marker comment
+                const countLine = `            stats.put("${entityLower}", ${entityLower}DAO.count());\n`;
+                contentStr = contentStr.replace(
+                    '// ENTITY_COUNT_INJECT',
+                    `${countLine}            // ENTITY_COUNT_INJECT`
+                );
+
+                return contentStr;
+            }
+        });
+        this.fs.commit(function () { });
     }
 
     _addEntityToPersistenceXml(template) {

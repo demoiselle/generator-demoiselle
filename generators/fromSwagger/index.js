@@ -3,14 +3,10 @@ const path = require('path');
 const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
 const BackendUtil = require('../../Utils/backend');
+const MobileUtil = require('../../Utils/mobile');
 const SwaggerParser = new (require('swagger-parser'))();
 const jsonQ = require('jsonq');
 const _ = require('lodash');
-const filter = require('gulp-filter');
-const htmlFilter = filter(['**/*.html'], { restore: true });
-const htmlBeautify = require('gulp-prettify');
-const tsFilter = filter(['**/*.ts'], { restore: true });
-const tsBeautify = require('gulp-typescript-formatter');
 // const htmlWiring = require('html-wiring');
 // const cheerio = require('cheerio');
 
@@ -32,6 +28,7 @@ module.exports = class SwaggerGenerator extends Generator {
 
     this.frontendUtil = new FrontendUtil(this);
     this.backendUtil = new BackendUtil(this);
+    this.mobileUtil = new MobileUtil(this);
     Util.changeRootPath(this);
 
     // Objeto que armazena as informações passadas aos arquivos templates
@@ -52,6 +49,7 @@ module.exports = class SwaggerGenerator extends Generator {
     this.option('no-transform');
     this.option('skip-frontend');
     this.option('skip-backend');
+    this.option('skip-mobile');
   }
 
   /**
@@ -59,22 +57,6 @@ module.exports = class SwaggerGenerator extends Generator {
    */
   initializing() {
     this.log('[initializing] done.');
-
-    // Configure beautify
-    if (!this.options['skip-transform']) {
-      // HTML
-      this.registerTransformStream(htmlFilter);
-      this.registerTransformStream(htmlBeautify());
-      this.registerTransformStream(htmlFilter.restore);
-      // TS
-      this.registerTransformStream(tsFilter);
-      this.registerTransformStream(tsBeautify({
-        tslint: false, // use tslint.json file?
-        tsfmt: false, // use tsfmt.json file? Overrides settings in tslint.json (at least indentSize)
-        editorconfig: false
-      }));
-      this.registerTransformStream(tsFilter.restore);
-    }
 
     // Read swagger.json
     this._readSwaggerFile();
@@ -145,6 +127,9 @@ module.exports = class SwaggerGenerator extends Generator {
         }, {
           name: 'backend',
           checked: true
+        }, {
+          name: 'mobile',
+          checked: !!this.config.get('mobile')
         }]
       });
     }
@@ -157,6 +142,7 @@ module.exports = class SwaggerGenerator extends Generator {
       });
       this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
       this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+      this.options['skip-mobile'] = !(answers.skips.indexOf('mobile') > -1);
 
       this.project = this.config.get('project') || answers.project;
       this.package = this.config.get('package') || answers.package;
@@ -231,7 +217,17 @@ module.exports = class SwaggerGenerator extends Generator {
   _readEntities() {
     this._entities = this._entities || [];
 
+    // Support both Swagger 2.0 (definitions) and OpenAPI 3.0 (components.schemas)
     let definitions = this.swaggerQ.find('definitions').value()[0];
+    if (!definitions) {
+      const components = this.swaggerQ.find('components').value()[0];
+      if (components && components.schemas) {
+        definitions = components.schemas;
+      }
+    }
+
+    if (!definitions) return;
+
     jsonQ.each(definitions, (key, value) => {
       let entity = {
         name: Util.createNames(key),
@@ -239,21 +235,16 @@ module.exports = class SwaggerGenerator extends Generator {
         _entity: value
       };
 
-      jsonQ.each(value.properties, (key, value) => {
+      const props = value.properties || {};
+      jsonQ.each(props, (key, value) => {
         let property = {
           name: Util.createNames(key),
           type: value.type,
           format: value.format,
           description: value.description,
           isEnum: Array.isArray(value.enum)
-          // htmlType: Util.getCommonType(value.type, value.format),
         };
 
-        // STRG      -> input text, text area,
-        // STR/DATE  -> o
-        // BOOL      ->
-        // ENUM      -> select/option
-        // console.log('%s.%s (%s,%s)', entity.name.capital, property.name.camel, property.type, property.format);
         entity.properties.push(property);
       });
 
@@ -278,6 +269,13 @@ module.exports = class SwaggerGenerator extends Generator {
         this.backendUtil.createCrud(entity, {
             package: Util.createNames(this.package),
             project: Util.createNames(this.project)
+        });
+      }
+
+      if (!this.options['skip-mobile']) {
+        this.mobileUtil.createCrud(entity, {
+            project: Util.createNames(this.project),
+            prefix: Util.createNames(this.prefix)
         });
       }
     });
@@ -315,9 +313,9 @@ module.exports = class SwaggerGenerator extends Generator {
         this.frontendUtil.createService(endpoint);
       }
 
-      // if (!this.options['skip-backend']) {
-      //   this.backendUtil.createService(endpoint);
-      // }
+      if (!this.options['skip-mobile']) {
+        this.mobileUtil.createService(endpoint);
+      }
     });
   }
 };

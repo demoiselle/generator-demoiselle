@@ -8,7 +8,7 @@ var execSync = require('child_process').execSync;
 /**
  * yo demoiselle <project-name>
  *
- * Demoiselle generator for new projects.
+ * Gerador Demoiselle 4.0 — Jakarta EE + Vue.js 3 + Flutter
  */
 module.exports = class AppGenerator extends Generator {
   constructor(args, opts) {
@@ -41,13 +41,13 @@ module.exports = class AppGenerator extends Generator {
     this.option('skip-install');
     this.option('skip-frontend');
     this.option('skip-backend');
+    this.option('skip-mobile');
   }
 
   /**
    * Your initialization methods (checking current project state, getting configs, etc)
    */
   initializing() {
-    // this.log('[initializing] done.');
     if (!this.options['skip-message']) {
       this.log(yosay(
         'Bem vindo ao ' + chalk.red('generator-demoiselle') + '. Começe seu projeto!'
@@ -89,17 +89,20 @@ module.exports = class AppGenerator extends Generator {
       });
     }
 
-    if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+    if (!this.options['skip-frontend'] && !this.options['skip-backend'] && !this.options['skip-mobile']) {
       prompts.push({
         type: 'checkbox',
         name: 'skips',
         message: 'Você quer gerar arquivos para:',
         choices: [{
+          name: 'backend',
+          checked: true
+        }, {
           name: 'frontend',
           checked: true
         }, {
-          name: 'backend',
-          checked: true
+          name: 'mobile',
+          checked: false
         }]
       });
     }
@@ -118,9 +121,10 @@ module.exports = class AppGenerator extends Generator {
       this.project = this.options.project || answers.project;
       this.package = this.options.package || answers.package;
       this.prefix = this.options.prefix || answers.prefix;
-      if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
+      if (!this.options['skip-frontend'] && !this.options['skip-backend'] && !this.options['skip-mobile']) {
         this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
         this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+        this.options['skip-mobile'] = !(answers.skips.indexOf('mobile') > -1);
       }
       if (!this.options['skip-install']) {
         this.options['skip-install'] = !answers['do-install'];
@@ -130,6 +134,7 @@ module.exports = class AppGenerator extends Generator {
       this.config.set('project', this.project);
       this.config.set('package', this.package);
       this.config.set('prefix', this.prefix);
+      this.config.set('mobile', !this.options['skip-mobile']);
 
     }.bind(this));
   }
@@ -138,17 +143,26 @@ module.exports = class AppGenerator extends Generator {
    * Where you write the generator specific files (routes, controllers, etc)
    */
   writing() {
+    // Verificar ferramentas necessárias
+    this._checkRequiredTools();
+
     // Generate Project
     if (!this.options['skip-frontend']) {
       this._generateProjectFrontend();
     } else {
-      this.log('[writing] frontend ignored.');
+      this.log(chalk.yellow('[escrita] Frontend ignorado.'));
     }
 
     if (!this.options['skip-backend']) {
       this._generateProjectBackend();
     } else {
-      this.log('[writing] backend ignored.');
+      this.log(chalk.yellow('[escrita] Backend ignorado.'));
+    }
+
+    if (!this.options['skip-mobile']) {
+      this._generateProjectMobile();
+    } else {
+      this.log(chalk.yellow('[escrita] Mobile ignorado.'));
     }
   }
 
@@ -166,14 +180,18 @@ module.exports = class AppGenerator extends Generator {
     const skipInstall = this.options['skip-install'];
 
     if (skipInstall) {
-      this.log('[install] Ignorado.');
+      this.log(chalk.yellow('[instalação] Ignorado.'));
 
       if (!this.options['skip-backend']) {
-        this.log('[install] TO-DO: execute manualmente "mvn install" na pasta "/backend".')
+        this.log(chalk.cyan('[instalação] Execute manualmente "mvn install" na pasta "/backend".'));
       }
 
       if (!this.options['skip-frontend']) {
-        this.log('[install] TO-DO: execute manualmente "npm install" na pasta "/frontend".')
+        this.log(chalk.cyan('[instalação] Execute manualmente "npm install" na pasta "/frontend".'));
+      }
+
+      if (!this.options['skip-mobile']) {
+        this.log(chalk.cyan('[instalação] Execute manualmente "flutter pub get" na pasta "/mobile".'));
       }
     } else {
       if (!this.options['skip-backend']) {
@@ -182,6 +200,10 @@ module.exports = class AppGenerator extends Generator {
 
       if (!this.options['skip-frontend']) {
         this.spawnCommand('npm', ['install'], { cwd: 'frontend' });
+      }
+
+      if (!this.options['skip-mobile']) {
+        this.spawnCommand('flutter', ['pub', 'get'], { cwd: 'mobile' });
       }
     }
   }
@@ -199,82 +221,85 @@ module.exports = class AppGenerator extends Generator {
   // PRIVATE methods
   // ---------------
 
+  /**
+   * Verifica se as ferramentas necessárias estão instaladas no sistema.
+   * Exibe mensagens descritivas em português para cada ferramenta ausente.
+   * @private
+   */
+  _checkRequiredTools() {
+    const tools = [];
+
+    if (!this.options['skip-frontend'] || !this.options['skip-backend']) {
+      tools.push({
+        cmd: 'node --version',
+        name: 'Node.js',
+        message: 'Node.js não foi encontrado. Instale em https://nodejs.org/'
+      });
+    }
+
+    if (!this.options['skip-backend']) {
+      tools.push({
+        cmd: 'mvn --version',
+        name: 'Maven',
+        message: 'Apache Maven não foi encontrado. Instale em https://maven.apache.org/install.html'
+      });
+    }
+
+    if (!this.options['skip-frontend']) {
+      tools.push({
+        cmd: 'npx vite --version',
+        name: 'Vite',
+        message: 'Vite não foi encontrado. Instale com "npm install -g vite" ou será usado via npx.'
+      });
+    }
+
+    if (!this.options['skip-mobile']) {
+      tools.push({
+        cmd: 'flutter --version',
+        name: 'Flutter SDK',
+        message: 'Flutter SDK não foi encontrado. Instale em https://docs.flutter.dev/get-started/install'
+      });
+    }
+
+    tools.forEach((tool) => {
+      try {
+        execSync(tool.cmd, { stdio: 'ignore' });
+      } catch (e) {
+        this.log(chalk.red(`⚠ ${tool.message}`));
+      }
+    });
+  }
+
+  /**
+   * Gera o projeto frontend Vue.js 3 copiando o template base.
+   * Substitui a geração via `ng new` (Angular) por cópia direta do template Vue.js.
+   * @private
+   */
   _generateProjectFrontend() {
+    this.log(chalk.cyan('Criando projeto frontend Vue.js 3...'));
+
     let template = {
       project: Util.createNames(this.project),
       prefix: Util.createNames(this.prefix)
     };
 
-    this.log('Creating angular/cli frontend! please wait...');
-    this.log(execSync('ng new frontend --skip-install --skip-git').toString());
+    // Copiar template base Vue.js para frontend/
+    let from = this.templatePath('base/frontend/');
+    let to = this.destinationPath('frontend/');
+    this.fs.copyTpl(from, to, template, {}, { globOptions: { dot: true } });
 
+    // Atualizar package.json com dependências Vue.js 3
     this._updatePackageJson();
-    this._updateAngularCli();
 
-    // replacing src folders and styles.css
-
-    this.fs.delete(this.destinationPath('frontend/src/app'));
-    this.fs.delete(this.destinationPath('frontend/src/assets'));
-    this.fs.delete(this.destinationPath('frontend/src/environments'));
-    this.fs.delete(this.destinationPath('frontend/src/styles.css'));
-    this.fs.delete(this.destinationPath('frontend/src/index.html'));
-    this.fs.commit(function () { });
-
-    let from = this.templatePath('base/frontend/src/app/');
-    let to = this.destinationPath('frontend/src/app/');
-    this.fs.copyTpl(from, to, template);
-
-    from = this.templatePath('base/frontend/src/assets/');
-    to = this.destinationPath('frontend/src/assets/');
-    this.fs.copy(from, to);
-
-    from = this.templatePath('base/frontend/src/environments/');
-    to = this.destinationPath('frontend/src/environments/');
-    this.fs.copyTpl(from, to, template);
-
-    from = this.templatePath('base/frontend/src/scss/');
-    to = this.destinationPath('frontend/src/scss/');
-    this.fs.copyTpl(from, to, template);
-
-    from = this.templatePath('base/frontend/src/styles.css');
-    to = this.destinationPath('frontend/src/styles.css');
-    this.fs.copyTpl(from, to, template);
-
-    from = this.templatePath('base/frontend/src/index.html');
-    to = this.destinationPath('frontend/src/index.html');
-    this.fs.copyTpl(from, to, template);
-
-    from = this.templatePath('base/frontend/src/ngsw-config.json');
-    to = this.destinationPath('frontend/src/ngsw-config.json');
-    this.fs.copyTpl(from, to);
-
-    from = this.templatePath('base/frontend/src/manifest.json');
-    to = this.destinationPath('frontend/src/manifest.json');
-    this.fs.copyTpl(from, to);
-
-    from = this.templatePath('base/frontend/src/sw-app.js');
-    to = this.destinationPath('frontend/src/sw-app.js');
-    this.fs.copyTpl(from, to);
-
-    from = this.templatePath('base/frontend/src/sw-push.js');
-    to = this.destinationPath('frontend/src/sw-push.js');
-    this.fs.copyTpl(from, to);
-
-    from = this.templatePath('base/frontend/src/humans.txt');
-    to = this.destinationPath('frontend/src/humans.txt');
-    this.fs.copyTpl(from, to);
-
-    from = this.templatePath('base/frontend/src/background.js');
-    to = this.destinationPath('frontend/src/background.js');
-    this.fs.copyTpl(from, to);
-
-    from = this.templatePath('base/frontend/.prettierrc');
-    to = this.destinationPath('frontend/.prettierrc');
-    this.fs.copyTpl(from, to);
+    this.log(chalk.green('Projeto frontend Vue.js 3 criado com sucesso.'));
   }
 
+  /**
+   * Gera o projeto backend Demoiselle 4 (Jakarta EE).
+   * @private
+   */
   _generateProjectBackend() {
-    this.log('Creating backend ...');
+    this.log(chalk.cyan('Criando projeto backend Demoiselle 4...'));
 
     let template = {
       package: Util.createNames(this.package),
@@ -309,39 +334,63 @@ module.exports = class AppGenerator extends Generator {
     to = this.destinationPath('backend/run-dev.sh');
     this.fs.copyTpl(from, to, template);
 
-    this.log('Backend successfully created.');
+    this.log(chalk.green('Projeto backend Demoiselle 4 criado com sucesso.'));
   }
 
+  /**
+   * Gera o projeto mobile Flutter copiando o template base.
+   * @private
+   */
+  _generateProjectMobile() {
+    this.log(chalk.cyan('Criando projeto mobile Flutter...'));
+
+    let template = {
+      project: Util.createNames(this.project),
+      prefix: Util.createNames(this.prefix)
+    };
+
+    // Copiar template base Flutter para mobile/
+    let from = this.templatePath('base/mobile/');
+    let to = this.destinationPath('mobile/');
+    this.fs.copyTpl(from, to, template, {}, { globOptions: { dot: true } });
+
+    // Atualizar pubspec.yaml com dependências Flutter
+    this._updatePubspecYaml();
+
+    this.log(chalk.green('Projeto mobile Flutter criado com sucesso.'));
+  }
+
+  /**
+   * Atualiza o package.json do frontend com dependências Vue.js 3.
+   * @private
+   */
   _updatePackageJson() {
-    const log = this.log;
+    const log = this.log.bind(this);
     const templatePath = this.destinationPath('frontend/package.json');
     this.fs.copy(templatePath, templatePath, {
       process: function (content) {
         const str = content.toString();
-        const obj = JSON.parse(str);
+        let obj;
+        try {
+          obj = JSON.parse(str);
+        } catch (e) {
+          return content;
+        }
 
-        log('Add npm-scripts into package.json ...');
-        obj.scripts['sw'] = 'node src/service-worker/rollup.js';
-        obj.scripts['build:dev'] = 'ng build --prod --aot --environment=dev';
-        obj.scripts['postbuild'] = 'npm run sw';
-        obj.scripts['postbuild:dev'] = 'npm run sw';
+        log(chalk.cyan('Atualizando dependências Vue.js 3 no package.json...'));
 
-        log('Add dependencies into package.json ...');
-        obj.dependencies['@angular/service-worker'] = '^6.0.4';
-        obj.dependencies['@demoiselle/http'] = '^3.0.0';
-        obj.dependencies['@demoiselle/security'] = '^3.0.0';
-        obj.dependencies['font-awesome'] = '^4.7.0';
-        obj.dependencies['bootstrap'] = '^4.0.0-beta.2';
-        obj.dependencies['ngx-toastr'] = '^8.7.3';
-        obj.dependencies['ngx-bootstrap'] = '^2.0.0-beta.8';
-        obj.dependencies['ngx-progressbar'] = '^2.1.1';
-        obj.dependencies['simple-line-icons'] = '^2.4.1';
-        obj.dependencies['animate.css'] = '^3.5.2';
-        obj.dependencies['angularx-social-login'] = '^1.2.0';
+        // Garantir que as dependências Vue.js 3 estejam presentes
+        obj.dependencies = obj.dependencies || {};
+        obj.dependencies['vue'] = obj.dependencies['vue'] || '^3.4.0';
+        obj.dependencies['vue-router'] = obj.dependencies['vue-router'] || '^4.3.0';
+        obj.dependencies['pinia'] = obj.dependencies['pinia'] || '^2.1.0';
+        obj.dependencies['axios'] = obj.dependencies['axios'] || '^1.6.0';
+        obj.dependencies['vue-i18n'] = obj.dependencies['vue-i18n'] || '^9.9.0';
+        obj.dependencies['@vueuse/core'] = obj.dependencies['@vueuse/core'] || '^10.7.0';
 
-
-        log('Add devDependencies into package.json ...');
-        // obj.devDependencies['xxxxxx'] = '^0.51.8';
+        obj.devDependencies = obj.devDependencies || {};
+        obj.devDependencies['vite'] = obj.devDependencies['vite'] || '^5.0.0';
+        obj.devDependencies['@vitejs/plugin-vue'] = obj.devDependencies['@vitejs/plugin-vue'] || '^5.0.0';
 
         return JSON.stringify(obj, null, 2);
       }
@@ -349,33 +398,40 @@ module.exports = class AppGenerator extends Generator {
     this.fs.commit(function () { });
   }
 
-  _updateAngularCli() {
-    const log = this.log;
-    const templatePath = this.destinationPath('frontend/angular.json');
-    this.fs.copy(templatePath, templatePath, {
+  /**
+   * Atualiza o pubspec.yaml do projeto mobile Flutter com dependências.
+   * @private
+   */
+  _updatePubspecYaml() {
+    const log = this.log.bind(this);
+    const pubspecPath = this.destinationPath('mobile/pubspec.yaml');
+    this.fs.copy(pubspecPath, pubspecPath, {
       process: function (content) {
-        const str = content.toString();
-        const obj = JSON.parse(str);
+        let str = content.toString();
 
-        log('Add assets into angular.json ...');
-        obj.projects.frontend.architect.build.options.assets.push('src/manifest.json');
-        obj.projects.frontend.architect.build.options.assets.push('src/humans.txt');
-        obj.projects.frontend.architect.build.options.assets.push('src/background.js');
-        obj.projects.frontend.architect.build.options.assets.push('src/schema.json');
-        obj.projects.frontend.architect.build.options.assets.push('src/sw-app.js');
-        obj.projects.frontend.architect.build.options.assets.push('src/sw-push.js');
+        log(chalk.cyan('Verificando dependências Flutter no pubspec.yaml...'));
 
-        log('Add styles into angular.json ...');
-        obj.projects.frontend.architect.build.options.styles.push('src/scss/style.scss');
+        // Verificar se as dependências essenciais estão presentes
+        const requiredDeps = [
+          'dio', 'flutter_riverpod', 'go_router',
+          'flutter_secure_storage', 'intl',
+          'firebase_messaging', 'file_picker',
+          'image_picker', 'share_plus', 'shared_preferences'
+        ];
 
-        log('Set serviceWorker to "true" into angular.json ...');
-        obj.projects.frontend.architect.build.configurations.production.serviceWorker = true;
-        obj.projects.frontend.architect.build.configurations.production.ngswConfigPath = 'src/ngsw-config.json';
+        requiredDeps.forEach(function (dep) {
+          if (str.indexOf(dep + ':') === -1) {
+            // Adicionar dependência na seção dependencies
+            const depsRegex = /dependencies:\s*\n/;
+            if (depsRegex.test(str)) {
+              str = str.replace(depsRegex, 'dependencies:\n  ' + dep + ': any\n');
+            }
+          }
+        });
 
-        return JSON.stringify(obj, null, 2);
+        return str;
       }
     });
     this.fs.commit(function () { });
   }
 };
-

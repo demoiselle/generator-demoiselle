@@ -2,6 +2,8 @@ const Generator = require('yeoman-generator');
 const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
 const BackendUtil = require('../../Utils/backend');
+const MobileUtil = require('../../Utils/mobile');
+const QueryGeneratorUtil = require('../../Utils/queryGenerator');
 const path = require('path');
 const fs = require('fs');
 const _ = require('lodash');
@@ -18,6 +20,8 @@ module.exports = class FromEntityGenerator extends Generator {
         this._entities = [];
         this.frontendUtil = new FrontendUtil(this);
         this.backendUtil = new BackendUtil(this);
+        this.mobileUtil = new MobileUtil(this);
+        this.queryGenerator = new QueryGeneratorUtil();
 
         // Muda o caminho dos arquivos de templates.
         Util.changeRootPath(this);
@@ -28,6 +32,7 @@ module.exports = class FromEntityGenerator extends Generator {
         // Options - parecido com "argument", mas vão como "flags" (--option)
         this.option('skip-frontend');
         this.option('skip-backend');
+        this.option('skip-mobile');
     }
 
     /**
@@ -82,6 +87,9 @@ module.exports = class FromEntityGenerator extends Generator {
                     }, {
                         name: 'backend',
                         checked: true
+                    }, {
+                        name: 'mobile',
+                        checked: !!this.config.get('mobile')
                     }]
             });
         }
@@ -95,6 +103,7 @@ module.exports = class FromEntityGenerator extends Generator {
 
             this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
             this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+            this.options['skip-mobile'] = !(answers.skips.indexOf('mobile') > -1);
 
             this.project = this.config.get('project') || answers.project;
             this.package = this.config.get('package') || answers.package;
@@ -192,6 +201,13 @@ module.exports = class FromEntityGenerator extends Generator {
                     dest: path.resolve(this._entityPath, '../'),
                     package: Util.createNames(this.package),
                     project: Util.createNames(this.project)
+                });
+            }
+
+            if (!this.options['skip-mobile']) {
+                this.mobileUtil.createCrud(entity, {
+                    project: Util.createNames(this.project),
+                    prefix: Util.createNames(this.prefix)
                 });
             }
         });

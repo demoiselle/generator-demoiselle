@@ -1,26 +1,30 @@
 package <%= package.lower %>.<%= project.lower %>.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import <%= package.lower %>.<%= project.lower %>.constants.Perfil;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Set;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Email;
 
 @Entity
-@Table(uniqueConstraints = {
+@Table(name = "app_user", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"email"})})
-@XmlRootElement
 public class User implements Serializable {
 
     @Id
@@ -35,7 +39,6 @@ public class User implements Serializable {
     @Column(nullable = false, length = 128)
     private String description;
 
-    @Email
     @NotNull
     @Basic(optional = false)
     @Size(min = 5, max = 128)
@@ -44,16 +47,33 @@ public class User implements Serializable {
 
     @NotNull
     @Basic(optional = false)
-    @Size(min = 8, max = 128)
-    @Column(length = 128)
+    @Size(min = 8, max = 256)
+    @Column(length = 256)
     private String pass;
 
     @Size(max = 2048)
     @Column(length = 2048)
     private String foto;
 
-    @Column
-    private Perfil perfil;
+    @Column(name = "email_verified", nullable = false)
+    private boolean emailVerified = false;
+
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "reset_token")
+    private String resetToken;
+
+    @Column(name = "reset_token_expiry")
+    private LocalDateTime resetTokenExpiry;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_role",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     public String getId() {
         return id;
@@ -85,14 +105,6 @@ public class User implements Serializable {
         this.pass = pass;
     }
 
-    public Perfil getPerfil() {
-        return perfil;
-    }
-
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
-    }
-
     public String getFoto() {
         return foto;
     }
@@ -101,6 +113,48 @@ public class User implements Serializable {
         this.foto = foto;
     }
 
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    @JsonIgnore
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    @JsonIgnore
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    @JsonIgnore
+    public LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     @Override
     public int hashCode() {
@@ -121,15 +175,11 @@ public class User implements Serializable {
             return false;
         }
         final User other = (User) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", description=" + description + ", email=" + email + ", pass=" + pass + ", perfil=" + perfil + '}';
+        return "User{" + "id=" + id + ", description=" + description + ", email=" + email + '}';
     }
-
 }

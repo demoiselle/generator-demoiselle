@@ -2,6 +2,7 @@ const Generator = require('yeoman-generator');
 const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
 const BackendUtil = require('../../Utils/backend');
+const MobileUtil = require('../../Utils/mobile');
 // const _ = require('lodash');
 
 /**
@@ -20,6 +21,7 @@ module.exports = class AddGenerator extends Generator {
 
         this.frontendUtil = new FrontendUtil(this);
         this.backendUtil = new BackendUtil(this);
+        this.mobileUtil = new MobileUtil(this);
         Util.changeRootPath(this);
 
         // Arguments - passados direto pela cli (ex.: yo demoiselle:add my-feature)
@@ -29,6 +31,7 @@ module.exports = class AddGenerator extends Generator {
         // Options - parecido com "argument", mas vão como "flags" (--option)
         this.option('skip-frontend');
         this.option('skip-backend');
+        this.option('skip-mobile');
     }
 
     /**
@@ -117,6 +120,9 @@ module.exports = class AddGenerator extends Generator {
                     }, {
                         name: 'backend',
                         checked: true
+                    }, {
+                        name: 'mobile',
+                        checked: !!this.config.get('mobile')
                     }]
             });
         }
@@ -131,6 +137,7 @@ module.exports = class AddGenerator extends Generator {
             if (!this.options['skip-frontend'] && !this.options['skip-backend']) {
                 this.options['skip-frontend'] = !(answers.skips.indexOf('frontend') > -1);
                 this.options['skip-backend'] = !(answers.skips.indexOf('backend') > -1);
+                this.options['skip-mobile'] = !(answers.skips.indexOf('mobile') > -1);
             }
             // store config values if needed
             if (!this.config.get('project')) {
@@ -217,6 +224,10 @@ module.exports = class AddGenerator extends Generator {
             package: Util.createNames(this.package),
             project: Util.createNames(this.project)
         };
+        let configMobile = {
+            prefix: Util.createNames(this.prefix),
+            project: Util.createNames(this.project)
+        };
 
         // Generate Entity CRUD
         if (!this.options['skip-frontend']) {
@@ -224,6 +235,9 @@ module.exports = class AddGenerator extends Generator {
         }
         if (!this.options['skip-backend']) {
             this.backendUtil.createCrud(entity, configBackend);
+        }
+        if (!this.options['skip-mobile']) {
+            this.mobileUtil.createCrud(entity, configMobile);
         }
     }
 
