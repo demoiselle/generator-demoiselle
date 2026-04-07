@@ -9,10 +9,10 @@ const { entityNameArb, capitalize } = require('./generators/arbitraries');
 
 // --- Load source files ---
 
-const dashboardViewPath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'frontend', 'src', 'views', 'DashboardView.vue');
+const dashboardViewPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'dashboard', 'frontend', 'src', 'views', 'DashboardView.vue');
 const dashboardViewContent = fs.readFileSync(dashboardViewPath, 'utf-8');
 
-const dashboardScreenPath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'mobile', 'lib', 'screens', 'dashboard_screen.dart');
+const dashboardScreenPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'dashboard', 'mobile', 'lib', 'screens', 'dashboard_screen.dart');
 const dashboardScreenContent = fs.readFileSync(dashboardScreenPath, 'utf-8');
 
 const frontendUtilPath = path.join(__dirname, '..', 'Utils', 'frontend.js');

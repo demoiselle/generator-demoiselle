@@ -7,7 +7,7 @@ const path = require('path');
 
 // --- Paths ---
 
-const baseFrontendPath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'frontend', 'src');
+const baseFrontendPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'i18n', 'frontend', 'src');
 const i18nDir = path.join(baseFrontendPath, 'i18n');
 const componentsDir = path.join(baseFrontendPath, 'components');
 const viewsDir = path.join(baseFrontendPath, 'views');
@@ -414,7 +414,8 @@ describe('Property 16: Internacionalização completa', () => {
   it('LanguageSelector deve estar incluído no AppHeader para ser acessível no header da aplicação', function () {
     this.timeout(30000);
 
-    const headerPath = path.join(componentsDir, 'AppHeader.vue');
+    const baseComponentsDir = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'frontend', 'src', 'components');
+    const headerPath = path.join(baseComponentsDir, 'AppHeader.vue');
     assert.ok(
       fs.existsSync(headerPath),
       'AppHeader.vue deve existir'

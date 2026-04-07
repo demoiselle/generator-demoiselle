@@ -3,6 +3,7 @@ const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
 const BackendUtil = require('../../Utils/backend');
 const MobileUtil = require('../../Utils/mobile');
+const PackageRegistry = require('../../Utils/packageRegistry');
 const QueryGeneratorUtil = require('../../Utils/queryGenerator');
 const path = require('path');
 const fs = require('fs');
@@ -39,6 +40,14 @@ module.exports = class FromEntityGenerator extends Generator {
      * Your initialization methods (checking current project state, getting configs, etc)
      */
     initializing() {
+        // Lê configuração de pacotes do .yo-rc.json
+        this.selectedPackages = this.config.get('packages') || null;
+
+        // Compatibilidade retroativa: se não há config de pacotes, assume todos
+        if (this.selectedPackages === null) {
+            const registry = new PackageRegistry();
+            this.selectedPackages = registry.getAvailablePackages().map(p => p.slug);
+        }
     }
 
     /**
@@ -192,7 +201,8 @@ module.exports = class FromEntityGenerator extends Generator {
             if (!this.options['skip-frontend']) {
                 this.frontendUtil.createCrud(entity, {
                     project: Util.createNames(this.project),
-                    prefix: Util.createNames(this.prefix)
+                    prefix: Util.createNames(this.prefix),
+                    packages: this.selectedPackages
                 });
             }
 
@@ -200,14 +210,16 @@ module.exports = class FromEntityGenerator extends Generator {
                 this.backendUtil.createFromEntity(entity, {
                     dest: path.resolve(this._entityPath, '../'),
                     package: Util.createNames(this.package),
-                    project: Util.createNames(this.project)
+                    project: Util.createNames(this.project),
+                    packages: this.selectedPackages
                 });
             }
 
             if (!this.options['skip-mobile']) {
                 this.mobileUtil.createCrud(entity, {
                     project: Util.createNames(this.project),
-                    prefix: Util.createNames(this.prefix)
+                    prefix: Util.createNames(this.prefix),
+                    packages: this.selectedPackages
                 });
             }
         });

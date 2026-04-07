@@ -13,16 +13,6 @@ const daoTemplate = fs.readFileSync(templatePath, 'utf-8');
  * Supported Java types for property generation
  */
 const JAVA_TYPES = ['String', 'Integer', 'Long', 'Date', 'LocalDate', 'Double', 'BigDecimal', 'boolean'];
-const STRING_TYPES = ['String'];
-const DATE_NUMBER_TYPES = ['Integer', 'Long', 'Date', 'LocalDate', 'Double', 'BigDecimal'];
-
-function isStringType(type) {
-  return /^string$/i.test(type);
-}
-
-function isDateOrNumberType(type) {
-  return /^(date|localdate|localdatetime|integer|int|long|double|float|bigdecimal|number|short)$/i.test(type);
-}
 
 function capitalize(str) {
   if (!str) return '';
@@ -91,23 +81,21 @@ function renderDao(entityName, pkg, project, properties) {
 }
 
 /**
- * **Validates: Requirements 11.1, 11.2, 11.3, 11.4, 11.5, 11.6, 11.7**
+ * **Validates: Requirements 11.1 (Demoiselle 4.1 native)**
  *
- * Property 10: Geração completa de queries DAO por tipo de campo
+ * Property 10: DAO minimal — delegates filtering to AbstractDAO
  *
- * For any valid entity name and random array of properties (with random types),
- * the generated DAO must:
- * - Contain findBy<Campo> for each non-readOnly property (Req 11.1)
- * - Contain findBy<Campo>Like ONLY for String properties (Req 11.2)
- * - Contain findBy<Campo>Between ONLY for Date/Number properties (Req 11.3)
- * - Contain findBy<Campo>In for each non-readOnly property (Req 11.4)
- * - Contain findBy<Campo1>And<Campo2> for combinations of eligible fields (Req 11.5)
- * - Contain countBy<Campo> for each non-readOnly property (Req 11.6)
- * - Contain existsBy<Campo> for each non-readOnly property (Req 11.7)
+ * In Demoiselle 4.1, the AbstractDAO already provides filtering via query string
+ * operators (gt:, lt:, gte:, lte:, between:, in:, *pattern* for LIKE).
+ * The generated DAO must:
+ * - Extend AbstractDAO with correct generic params
+ * - Have @Cacheable annotation for query caching
+ * - NOT contain manual JPQL query methods (findBy, findByLike, findByBetween, etc.)
+ * - Provide EntityManager via getEntityManager()
  */
-describe('Property 10: Geração completa de queries DAO por tipo de campo', () => {
+describe('Property 10: DAO minimal — delegates filtering to AbstractDAO (Demoiselle 4.1)', () => {
 
-  it('DAO gerado deve conter todos os métodos de consulta corretos para qualquer entidade e propriedades válidas', function () {
+  it('DAO gerado deve ser minimal e delegar filtragem ao AbstractDAO para qualquer entidade e propriedades válidas', function () {
     this.timeout(60000);
 
     fc.assert(
@@ -115,99 +103,60 @@ describe('Property 10: Geração completa de queries DAO por tipo de campo', () 
         const dao = renderDao(entityName, pkg, project, properties);
         const capEntity = capitalize(entityName);
 
-        const nonReadOnly = properties.filter(p => !p.isReadOnly);
-        const readOnly = properties.filter(p => p.isReadOnly);
+        // DAO must extend AbstractDAO with correct generic params
+        const daoExtendsRegex = new RegExp(
+          `class\\s+${capEntity}DAO\\s+extends\\s+AbstractDAO\\s*<\\s*${capEntity}\\s*,\\s*UUID\\s*>`
+        );
+        assert.ok(
+          daoExtendsRegex.test(dao),
+          `DAO deve estender AbstractDAO<${capEntity}, UUID>`
+        );
 
-        // --- Req 11.1: findBy<Campo> for each non-readOnly property ---
-        nonReadOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          assert.ok(
-            dao.includes(`findBy${capName}(`),
-            `DAO deve conter findBy${capName} para propriedade não-readOnly '${prop.name}'`
-          );
-        });
+        // DAO must import AbstractDAO
+        assert.ok(
+          dao.includes('import org.demoiselle.jee.crud.AbstractDAO'),
+          'DAO deve importar org.demoiselle.jee.crud.AbstractDAO'
+        );
 
-        // readOnly properties should NOT have findBy
-        readOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          assert.ok(
-            !dao.includes(`findBy${capName}(`),
-            `DAO NÃO deve conter findBy${capName} para propriedade readOnly '${prop.name}'`
-          );
-        });
+        // DAO must have @Cacheable annotation
+        assert.ok(
+          /@Cacheable/.test(dao),
+          'DAO deve ter anotação @Cacheable para cache de queries'
+        );
 
-        // --- Req 11.2: findBy<Campo>Like ONLY for String properties ---
-        nonReadOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          if (isStringType(prop.type)) {
-            assert.ok(
-              dao.includes(`findBy${capName}Like(`),
-              `DAO deve conter findBy${capName}Like para propriedade String '${prop.name}'`
-            );
-          } else {
-            assert.ok(
-              !dao.includes(`findBy${capName}Like(`),
-              `DAO NÃO deve conter findBy${capName}Like para propriedade não-String '${prop.name}' (tipo: ${prop.type})`
-            );
-          }
-        });
+        // DAO must import Cacheable from Demoiselle
+        assert.ok(
+          dao.includes('import org.demoiselle.jee.crud.cache.Cacheable'),
+          'DAO deve importar org.demoiselle.jee.crud.cache.Cacheable'
+        );
 
-        // --- Req 11.3: findBy<Campo>Between ONLY for Date/Number properties ---
-        nonReadOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          if (isDateOrNumberType(prop.type)) {
-            assert.ok(
-              dao.includes(`findBy${capName}Between(`),
-              `DAO deve conter findBy${capName}Between para propriedade Date/Number '${prop.name}' (tipo: ${prop.type})`
-            );
-          } else {
-            assert.ok(
-              !dao.includes(`findBy${capName}Between(`),
-              `DAO NÃO deve conter findBy${capName}Between para propriedade não-Date/Number '${prop.name}' (tipo: ${prop.type})`
-            );
-          }
-        });
+        // DAO must provide EntityManager
+        assert.ok(
+          /getEntityManager/.test(dao),
+          'DAO deve implementar getEntityManager()'
+        );
+        assert.ok(
+          /EntityManager/.test(dao),
+          'DAO deve referenciar EntityManager'
+        );
 
-        // --- Req 11.4: findBy<Campo>In for each non-readOnly property ---
-        nonReadOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          assert.ok(
-            dao.includes(`findBy${capName}In(`),
-            `DAO deve conter findBy${capName}In para propriedade não-readOnly '${prop.name}'`
-          );
-        });
-
-        // --- Req 11.6: countBy<Campo> for each non-readOnly property ---
-        nonReadOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          assert.ok(
-            dao.includes(`countBy${capName}(`),
-            `DAO deve conter countBy${capName} para propriedade não-readOnly '${prop.name}'`
-          );
-        });
-
-        // --- Req 11.7: existsBy<Campo> for each non-readOnly property ---
-        nonReadOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          assert.ok(
-            dao.includes(`existsBy${capName}(`),
-            `DAO deve conter existsBy${capName} para propriedade não-readOnly '${prop.name}'`
-          );
-        });
-
-        // --- Req 11.5: findBy<Campo1>And<Campo2> for combinations of eligible fields ---
-        // Eligible: non-readOnly AND non-id
-        const eligible = nonReadOnly.filter(p => p.name !== 'id');
-        for (let i = 0; i < eligible.length; i++) {
-          for (let j = i + 1; j < eligible.length; j++) {
-            const capName1 = capitalize(eligible[i].name);
-            const capName2 = capitalize(eligible[j].name);
-            assert.ok(
-              dao.includes(`findBy${capName1}And${capName2}(`),
-              `DAO deve conter findBy${capName1}And${capName2} para combinação de campos elegíveis '${eligible[i].name}' e '${eligible[j].name}'`
-            );
-          }
-        }
+        // DAO must NOT contain manual JPQL query methods — AbstractDAO handles filtering
+        assert.ok(
+          !/findBy[A-Z]/.test(dao),
+          'DAO NÃO deve conter métodos findBy manuais (AbstractDAO provê filtragem via query string)'
+        );
+        assert.ok(
+          !/countBy[A-Z]/.test(dao),
+          'DAO NÃO deve conter métodos countBy manuais'
+        );
+        assert.ok(
+          !/existsBy[A-Z]/.test(dao),
+          'DAO NÃO deve conter métodos existsBy manuais'
+        );
+        assert.ok(
+          !/JPQL|createQuery/.test(dao),
+          'DAO NÃO deve conter JPQL manual ou createQuery'
+        );
 
         // Verify entity class name appears in the DAO
         assert.ok(

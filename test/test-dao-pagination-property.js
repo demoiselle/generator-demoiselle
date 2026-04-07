@@ -80,65 +80,22 @@ function renderDao(entityName, pkg, project, properties) {
 }
 
 /**
- * Extracts all method signatures that return List<Entity> from the DAO source.
- * Returns an array of { methodName, signatureLine, bodyText } objects.
- */
-function extractListMethods(daoSource, entityCapital) {
-  const methods = [];
-  const returnType = `List<${entityCapital}>`;
-
-  // Match method signatures: public List<Entity> methodName(params) {
-  const methodRegex = new RegExp(
-    `public\\s+${returnType.replace(/[<>]/g, '\\$&')}\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*\\{`,
-    'g'
-  );
-
-  let match;
-  while ((match = methodRegex.exec(daoSource)) !== null) {
-    const methodName = match[1];
-    const params = match[2];
-    const startIdx = match.index;
-
-    // Find the matching closing brace for this method body
-    let braceCount = 0;
-    let bodyStart = daoSource.indexOf('{', startIdx);
-    let bodyEnd = bodyStart;
-    for (let i = bodyStart; i < daoSource.length; i++) {
-      if (daoSource[i] === '{') braceCount++;
-      if (daoSource[i] === '}') braceCount--;
-      if (braceCount === 0) {
-        bodyEnd = i;
-        break;
-      }
-    }
-
-    const bodyText = daoSource.substring(bodyStart, bodyEnd + 1);
-
-    methods.push({
-      methodName,
-      params,
-      bodyText
-    });
-  }
-
-  return methods;
-}
-
-/**
- * **Validates: Requirements 11.8**
+ * **Validates: Requirements 11.8 (Demoiselle 4.1 native)**
  *
- * Property 11: Paginação e ordenação nos métodos de consulta DAO
+ * Property 11: Paginação e ordenação delegadas ao AbstractDAO
  *
- * For any valid entity name and random array of properties (with random types),
- * every method in the generated DAO that returns List<Entity> must:
- * - Include pagination parameters: int page, int size
- * - Include ordering parameters: String sortField, String sortDirection
- * - Use setFirstResult and setMaxResults in the method body
- * - Include ORDER BY logic with sortField/sortDirection
+ * In Demoiselle 4.1, pagination and sorting are handled by the framework's
+ * AbstractDAO via query string operators and the CrudFilter. The generated DAO
+ * must:
+ * - Extend AbstractDAO (which provides built-in pagination/sorting)
+ * - NOT contain manual JPQL pagination methods (setFirstResult, setMaxResults)
+ * - NOT contain manual ORDER BY logic
+ * - Have @Cacheable for query caching
+ * - Be minimal — only provide EntityManager
  */
-describe('Property 11: Paginação e ordenação nos métodos de consulta DAO', () => {
+describe('Property 11: Paginação e ordenação delegadas ao AbstractDAO (Demoiselle 4.1)', () => {
 
-  it('Todos os métodos que retornam List devem incluir paginação e ordenação', function () {
+  it('DAO deve delegar paginação e ordenação ao AbstractDAO do framework para qualquer entidade e propriedades válidas', function () {
     this.timeout(60000);
 
     fc.assert(
@@ -146,63 +103,60 @@ describe('Property 11: Paginação e ordenação nos métodos de consulta DAO', 
         const dao = renderDao(entityName, pkg, project, properties);
         const capEntity = capitalize(entityName);
 
-        const listMethods = extractListMethods(dao, capEntity);
+        // DAO must extend AbstractDAO
+        const daoExtendsRegex = new RegExp(
+          `class\\s+${capEntity}DAO\\s+extends\\s+AbstractDAO\\s*<\\s*${capEntity}\\s*,\\s*UUID\\s*>`
+        );
+        assert.ok(
+          daoExtendsRegex.test(dao),
+          `DAO deve estender AbstractDAO<${capEntity}, UUID>`
+        );
 
-        // There should be at least some list-returning methods if there are non-readOnly properties
-        const nonReadOnly = properties.filter(p => !p.isReadOnly);
-        if (nonReadOnly.length > 0) {
-          assert.ok(
-            listMethods.length > 0,
-            `DAO deve conter pelo menos um método que retorna List<${capEntity}> quando há propriedades não-readOnly`
-          );
-        }
+        // DAO must NOT contain manual pagination (setFirstResult, setMaxResults)
+        assert.ok(
+          !/setFirstResult/.test(dao),
+          'DAO NÃO deve conter setFirstResult (paginação é gerenciada pelo AbstractDAO)'
+        );
+        assert.ok(
+          !/setMaxResults/.test(dao),
+          'DAO NÃO deve conter setMaxResults (paginação é gerenciada pelo AbstractDAO)'
+        );
 
-        // For each list-returning method, verify pagination and ordering
-        listMethods.forEach(method => {
-          // --- Pagination parameters ---
-          assert.ok(
-            method.params.includes('int page'),
-            `Método ${method.methodName} deve incluir parâmetro 'int page'. Params: ${method.params}`
-          );
-          assert.ok(
-            method.params.includes('int size'),
-            `Método ${method.methodName} deve incluir parâmetro 'int size'. Params: ${method.params}`
-          );
+        // DAO must NOT contain manual ORDER BY logic
+        assert.ok(
+          !/ORDER BY/i.test(dao),
+          'DAO NÃO deve conter ORDER BY manual (ordenação é gerenciada pelo AbstractDAO)'
+        );
 
-          // --- Ordering parameters ---
-          assert.ok(
-            method.params.includes('String sortField'),
-            `Método ${method.methodName} deve incluir parâmetro 'String sortField'. Params: ${method.params}`
-          );
-          assert.ok(
-            method.params.includes('String sortDirection'),
-            `Método ${method.methodName} deve incluir parâmetro 'String sortDirection'. Params: ${method.params}`
-          );
+        // DAO must NOT contain manual JPQL queries
+        assert.ok(
+          !/createQuery/.test(dao),
+          'DAO NÃO deve conter createQuery manual'
+        );
 
-          // --- setFirstResult and setMaxResults in body ---
-          assert.ok(
-            method.bodyText.includes('setFirstResult'),
-            `Método ${method.methodName} deve usar setFirstResult no corpo do método`
-          );
-          assert.ok(
-            method.bodyText.includes('setMaxResults'),
-            `Método ${method.methodName} deve usar setMaxResults no corpo do método`
-          );
+        // DAO must have @Cacheable
+        assert.ok(
+          /@Cacheable/.test(dao),
+          'DAO deve ter @Cacheable para cache de queries'
+        );
 
-          // --- ORDER BY logic with sortField/sortDirection ---
-          assert.ok(
-            method.bodyText.includes('ORDER BY') || method.bodyText.includes('order by') || method.bodyText.includes('Order by'),
-            `Método ${method.methodName} deve incluir lógica ORDER BY no corpo do método`
-          );
-          assert.ok(
-            method.bodyText.includes('sortField'),
-            `Método ${method.methodName} deve referenciar sortField na lógica de ordenação`
-          );
-          assert.ok(
-            method.bodyText.includes('sortDirection') || method.bodyText.includes('DESC'),
-            `Método ${method.methodName} deve referenciar sortDirection na lógica de ordenação`
-          );
-        });
+        // DAO must provide EntityManager
+        assert.ok(
+          /getEntityManager/.test(dao),
+          'DAO deve implementar getEntityManager()'
+        );
+
+        // DAO must import AbstractDAO
+        assert.ok(
+          dao.includes('import org.demoiselle.jee.crud.AbstractDAO'),
+          'DAO deve importar org.demoiselle.jee.crud.AbstractDAO'
+        );
+
+        // Verify package declaration
+        assert.ok(
+          dao.includes(`package ${pkg.lower}.${project.lower}.dao`),
+          'DAO deve conter declaração de package correta'
+        );
       }),
       { numRuns: 100 }
     );

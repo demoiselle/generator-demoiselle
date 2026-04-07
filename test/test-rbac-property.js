@@ -8,13 +8,13 @@ const path = require('path');
 
 // --- Load EJS templates ---
 
-const basePath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'backend', 'src', 'main', 'java', 'app');
+const authPkgPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'auth', 'backend', 'src', 'main', 'java', 'app');
 const resourcesPath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'backend', 'src', 'main', 'resources');
 const entityTemplatePath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app');
 
-const roleTemplate = fs.readFileSync(path.join(basePath, 'entity', 'Role.java'), 'utf-8');
-const userTemplate = fs.readFileSync(path.join(basePath, 'entity', 'User.java'), 'utf-8');
-const jwtTokenProviderTemplate = fs.readFileSync(path.join(basePath, 'security', 'JwtTokenProvider.java'), 'utf-8');
+const roleTemplate = fs.readFileSync(path.join(authPkgPath, 'entity', 'Role.java'), 'utf-8');
+const userTemplate = fs.readFileSync(path.join(authPkgPath, 'entity', 'User.java'), 'utf-8');
+const authRestTemplate = fs.readFileSync(path.join(authPkgPath, 'service', 'AuthREST.java'), 'utf-8');
 const importSql = fs.readFileSync(path.join(resourcesPath, 'import.sql'), 'utf-8');
 const pojoRestTemplate = fs.readFileSync(path.join(entityTemplatePath, 'service', '_pojoREST.java'), 'utf-8');
 
@@ -44,19 +44,19 @@ function renderTemplate(template, data) {
 /**
  * **Validates: Requirements 15.1, 15.2, 15.3, 15.4, 15.5**
  *
- * Property 13: RBAC no token JWT e nos endpoints
+ * Property 13: RBAC via Demoiselle 4.1 security annotations e nos endpoints
  *
  * For any valid project name, package name, and entity name, the generated RBAC
  * system must be complete:
  * - Role.java entity exists with `id` and `name` fields (Req 15.1)
- * - _pojoREST.java template contains `@RolesAllowed` annotation (Req 15.2)
+ * - _pojoREST.java template contains `@Authenticated` and `@RequiredAnyRole` annotations (Req 15.2)
  * - import.sql contains ADMIN and USER role inserts (Req 15.3)
- * - JwtTokenProvider includes roles in the token payload (claim "roles") (Req 15.5)
- * - _pojoREST.java imports `jakarta.annotation.security.RolesAllowed`
+ * - AuthREST uses SecurityContext.setUser with DemoiselleUser including roles (Req 15.5)
+ * - _pojoREST.java imports Demoiselle security annotations
  */
-describe('Property 13: RBAC no token JWT e nos endpoints', () => {
+describe('Property 13: RBAC via Demoiselle 4.1 security annotations e nos endpoints', () => {
 
-  it('sistema RBAC deve estar completo para qualquer projeto, package e entidade válidos', function () {
+  it('sistema RBAC deve estar completo usando APIs nativas Demoiselle 4.1 para qualquer projeto, package e entidade válidos', function () {
     this.timeout(30000);
 
     fc.assert(
@@ -67,15 +67,16 @@ describe('Property 13: RBAC no token JWT e nos endpoints', () => {
         // Render User.java
         const user = renderTemplate(userTemplate, { project, package: pkg });
 
-        // Render JwtTokenProvider.java
-        const jwtTokenProvider = renderTemplate(jwtTokenProviderTemplate, { project, package: pkg });
+        // Render AuthREST.java
+        const authRest = renderTemplate(authRestTemplate, { project, package: pkg });
 
         // Render _pojoREST.java with entity name and minimal properties
         const pojoRest = renderTemplate(pojoRestTemplate, {
           project,
           package: pkg,
           name: entityName,
-          properties: []
+          properties: [],
+          packages: ['auth']
         });
 
         // --- Req 15.1: Role.java entity exists with id and name fields ---
@@ -116,24 +117,32 @@ describe('Property 13: RBAC no token JWT e nos endpoints', () => {
           'User.java deve referenciar tabela de junção user_role'
         );
 
-        // --- Req 15.2: _pojoREST.java contains @RolesAllowed annotation ---
+        // --- Req 15.2: _pojoREST.java contains @Authenticated and @RequiredAnyRole annotations ---
         assert.ok(
-          /@RolesAllowed/.test(pojoRest),
-          '_pojoREST.java deve conter anotação @RolesAllowed'
+          /@Authenticated/.test(pojoRest),
+          '_pojoREST.java deve conter anotação @Authenticated'
         );
         assert.ok(
-          /@RolesAllowed\s*\(\s*\{[^}]*"ADMIN"[^}]*\}\s*\)/.test(pojoRest),
-          '_pojoREST.java @RolesAllowed deve incluir papel ADMIN'
+          /@RequiredAnyRole/.test(pojoRest),
+          '_pojoREST.java deve conter anotação @RequiredAnyRole'
         );
         assert.ok(
-          /@RolesAllowed\s*\(\s*\{[^}]*"USER"[^}]*\}\s*\)/.test(pojoRest),
-          '_pojoREST.java @RolesAllowed deve incluir papel USER'
+          /@RequiredAnyRole\s*\(\s*\{[^}]*"ADMIN"[^}]*\}\s*\)/.test(pojoRest),
+          '_pojoREST.java @RequiredAnyRole deve incluir papel ADMIN'
+        );
+        assert.ok(
+          /@RequiredAnyRole\s*\(\s*\{[^}]*"USER"[^}]*\}\s*\)/.test(pojoRest),
+          '_pojoREST.java @RequiredAnyRole deve incluir papel USER'
         );
 
-        // _pojoREST.java must import RolesAllowed from jakarta
+        // _pojoREST.java must import Demoiselle security annotations
         assert.ok(
-          /import\s+jakarta\.annotation\.security\.RolesAllowed\s*;/.test(pojoRest),
-          '_pojoREST.java deve importar jakarta.annotation.security.RolesAllowed'
+          /import\s+org\.demoiselle\.jee\.security\.annotation\.Authenticated\s*;/.test(pojoRest),
+          '_pojoREST.java deve importar org.demoiselle.jee.security.annotation.Authenticated'
+        );
+        assert.ok(
+          /import\s+org\.demoiselle\.jee\.security\.annotation\.RequiredAnyRole\s*;/.test(pojoRest),
+          '_pojoREST.java deve importar org.demoiselle.jee.security.annotation.RequiredAnyRole'
         );
 
         // --- Req 15.3: import.sql contains ADMIN and USER role inserts ---
@@ -146,26 +155,20 @@ describe('Property 13: RBAC no token JWT e nos endpoints', () => {
           'import.sql deve conter INSERT de papel USER'
         );
 
-        // --- Req 15.5: JwtTokenProvider includes roles in the token payload ---
+        // --- Req 15.5: AuthREST uses SecurityContext.setUser with DemoiselleUser including roles ---
         assert.ok(
-          /\.claim\s*\(\s*"roles"/.test(jwtTokenProvider),
-          'JwtTokenProvider deve incluir claim "roles" no token JWT'
+          /securityContext\.setUser/.test(authRest),
+          'AuthREST deve usar securityContext.setUser para definir o usuário autenticado'
+        );
+        assert.ok(
+          /addRole/.test(authRest),
+          'AuthREST deve adicionar roles ao DemoiselleUser via addRole'
         );
 
-        // Verify roles claim is present in both generateToken and refreshToken
+        // AuthREST must use Demoiselle SecurityContext
         assert.ok(
-          /generateToken\s*\(/.test(jwtTokenProvider),
-          'JwtTokenProvider deve conter método generateToken'
-        );
-        assert.ok(
-          /refreshToken\s*\(/.test(jwtTokenProvider),
-          'JwtTokenProvider deve conter método refreshToken'
-        );
-
-        // The generateToken method should accept roles parameter
-        assert.ok(
-          /generateToken\s*\([^)]*List<String>\s+roles[^)]*\)/.test(jwtTokenProvider),
-          'JwtTokenProvider.generateToken deve aceitar parâmetro List<String> roles'
+          /import\s+org\.demoiselle\.jee\.core\.api\.security\.SecurityContext/.test(authRest),
+          'AuthREST deve importar SecurityContext do Demoiselle'
         );
       }),
       { numRuns: 100 }

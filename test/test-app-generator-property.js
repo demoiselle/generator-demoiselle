@@ -74,8 +74,8 @@ describe('Property 27: Opção mobile no prompt do gerador', function () {
   // --- Req 24.2: _generateProjectMobile() method exists and copies Flutter template ---
 
   it('_generateProjectMobile() deve existir e copiar template base Flutter para mobile/', function () {
-    // Method must exist
-    const methodRegex = /_generateProjectMobile\s*\(\s*\)\s*\{/;
+    // Method must exist (accepts packages parameter)
+    const methodRegex = /_generateProjectMobile\s*\([^)]*\)\s*\{/;
     assert.ok(
       methodRegex.test(generatorSource),
       '_generateProjectMobile() deve existir como método'

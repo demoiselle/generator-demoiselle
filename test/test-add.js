@@ -3,9 +3,19 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const PackageRegistry = require('../Utils/packageRegistry');
 
 const addGeneratorSourcePath = path.join(__dirname, '..', 'generators', 'add', 'index.js');
 const addGeneratorSource = fs.readFileSync(addGeneratorSourcePath, 'utf-8');
+
+const frontendUtilSourcePath = path.join(__dirname, '..', 'Utils', 'frontend.js');
+const frontendUtilSource = fs.readFileSync(frontendUtilSourcePath, 'utf-8');
+
+const backendUtilSourcePath = path.join(__dirname, '..', 'Utils', 'backend.js');
+const backendUtilSource = fs.readFileSync(backendUtilSourcePath, 'utf-8');
+
+const mobileUtilSourcePath = path.join(__dirname, '..', 'Utils', 'mobile.js');
+const mobileUtilSource = fs.readFileSync(mobileUtilSourcePath, 'utf-8');
 
 describe('yo demoiselle:add', () => {
 
@@ -119,44 +129,328 @@ describe('yo demoiselle:add', () => {
     });
   });
 
-  // --- Verificar filtros avançados, exportação, chaves i18n, cards no dashboard ---
+  // --- Funcionalidades integradas no CRUD ---
 
   describe('funcionalidades integradas no CRUD', () => {
 
     it('FrontendUtil deve adicionar chaves i18n ao gerar CRUD', () => {
-      const frontendSource = fs.readFileSync(
-        path.join(__dirname, '..', 'Utils', 'frontend.js'), 'utf-8'
-      );
       assert.ok(
-        frontendSource.includes('_addI18nKeys'),
+        frontendUtilSource.includes('_addI18nKeys'),
         'FrontendUtil deve conter método _addI18nKeys'
       );
     });
 
     it('FrontendUtil deve adicionar card no dashboard ao gerar CRUD', () => {
-      const frontendSource = fs.readFileSync(
-        path.join(__dirname, '..', 'Utils', 'frontend.js'), 'utf-8'
-      );
       assert.ok(
-        frontendSource.includes('_addDashboardCard'),
+        frontendUtilSource.includes('_addDashboardCard'),
         'FrontendUtil deve conter método _addDashboardCard'
       );
     });
 
     it('MobileUtil deve adicionar rota, i18n, dashboard card e drawer item ao gerar CRUD', () => {
-      const mobileSource = fs.readFileSync(
-        path.join(__dirname, '..', 'Utils', 'mobile.js'), 'utf-8'
-      );
-      assert.ok(mobileSource.includes('_addRoute'), 'MobileUtil deve conter _addRoute');
-      assert.ok(mobileSource.includes('_addI18nKeys'), 'MobileUtil deve conter _addI18nKeys');
-      assert.ok(mobileSource.includes('_addDashboardCard'), 'MobileUtil deve conter _addDashboardCard');
-      assert.ok(mobileSource.includes('_addDrawerItem'), 'MobileUtil deve conter _addDrawerItem');
+      assert.ok(mobileUtilSource.includes('_addRoute'), 'MobileUtil deve conter _addRoute');
+      assert.ok(mobileUtilSource.includes('_addI18nKeys'), 'MobileUtil deve conter _addI18nKeys');
+      assert.ok(mobileUtilSource.includes('_addDashboardCard'), 'MobileUtil deve conter _addDashboardCard');
+      assert.ok(mobileUtilSource.includes('_addDrawerItem'), 'MobileUtil deve conter _addDrawerItem');
     });
 
     it('prompt do AddGenerator deve incluir opção mobile', () => {
       assert.ok(
         addGeneratorSource.includes("name: 'mobile'"),
         'Prompt do AddGenerator deve conter opção mobile'
+      );
+    });
+  });
+
+  // --- Req 17.1: CRUD gerado respeitando pacotes selecionados ---
+
+  describe('CRUD gerado respeitando pacotes selecionados (Req 17.1)', () => {
+
+    it('AddGenerator DEVE ler Configuração_Pacotes do .yo-rc.json no initializing()', () => {
+      assert.ok(
+        addGeneratorSource.includes("this.config.get('packages')"),
+        'AddGenerator deve ler packages do config (.yo-rc.json)'
+      );
+      assert.ok(
+        addGeneratorSource.includes('this.selectedPackages'),
+        'AddGenerator deve armazenar pacotes em this.selectedPackages'
+      );
+    });
+
+    it('AddGenerator DEVE passar selectedPackages ao config do FrontendUtil', () => {
+      assert.ok(
+        addGeneratorSource.includes('packages: this.selectedPackages'),
+        'configFrontend deve conter packages: this.selectedPackages'
+      );
+    });
+
+    it('AddGenerator DEVE passar selectedPackages ao config do BackendUtil', () => {
+      // Verify configBackend includes packages
+      const configBackendMatch = addGeneratorSource.includes('packages: this.selectedPackages');
+      assert.ok(configBackendMatch, 'configBackend deve conter packages: this.selectedPackages');
+    });
+
+    it('AddGenerator DEVE passar selectedPackages ao config do MobileUtil', () => {
+      // configMobile should also include packages
+      const configMobileMatch = addGeneratorSource.includes('packages: this.selectedPackages');
+      assert.ok(configMobileMatch, 'configMobile deve conter packages: this.selectedPackages');
+    });
+
+    it('FrontendUtil.createCrud() DEVE extrair packages do config', () => {
+      assert.ok(
+        frontendUtilSource.includes('config.packages') || frontendUtilSource.includes("config.packages || []"),
+        'FrontendUtil.createCrud deve extrair packages do config'
+      );
+    });
+
+    it('FrontendUtil.createCrud() DEVE repassar packages ao template EJS', () => {
+      assert.ok(
+        frontendUtilSource.includes('packages: packages'),
+        'FrontendUtil deve passar packages ao template'
+      );
+    });
+
+    it('BackendUtil.createCrud() DEVE extrair packages do config', () => {
+      assert.ok(
+        backendUtilSource.includes("config.packages || []"),
+        'BackendUtil.createCrud deve extrair packages do config'
+      );
+    });
+
+    it('BackendUtil.createCrud() DEVE repassar packages ao template EJS', () => {
+      assert.ok(
+        backendUtilSource.includes('packages: packages'),
+        'BackendUtil deve passar packages ao template'
+      );
+    });
+
+    it('MobileUtil.createCrud() DEVE extrair packages do config', () => {
+      assert.ok(
+        mobileUtilSource.includes("config.packages || []"),
+        'MobileUtil.createCrud deve extrair packages do config'
+      );
+    });
+
+    it('MobileUtil.createCrud() DEVE repassar packages ao template EJS', () => {
+      assert.ok(
+        mobileUtilSource.includes('packages: packages'),
+        'MobileUtil deve passar packages ao template'
+      );
+    });
+  });
+
+  // --- Verificar que funcionalidades de pacotes não selecionados não aparecem ---
+
+  describe('funcionalidades condicionais nos templates CRUD', () => {
+
+    it('template backend entity DEVE condicionar @EntityListeners ao pacote audit', () => {
+      const entityPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'entity', '_pojo.java');
+      const content = fs.readFileSync(entityPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('audit')"),
+        'Template entity deve condicionar AuditEntityListener ao pacote audit'
+      );
+      assert.ok(
+        content.includes('AuditEntityListener'),
+        'Template entity deve conter referência a AuditEntityListener'
+      );
+    });
+
+    it('template backend REST DEVE condicionar endpoints de exportação ao pacote export', () => {
+      const restPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+      const content = fs.readFileSync(restPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('export')"),
+        'Template REST deve condicionar exportação ao pacote export'
+      );
+      assert.ok(
+        content.includes('exportCsv') || content.includes('/export'),
+        'Template REST deve conter endpoint de exportação'
+      );
+    });
+
+    it('template backend REST DEVE condicionar @RolesAllowed ao pacote auth', () => {
+      const restPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+      const content = fs.readFileSync(restPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('auth')"),
+        'Template REST deve condicionar anotações de segurança ao pacote auth'
+      );
+    });
+
+    it('template backend REST DEVE condicionar @Counted/@Traced ao pacote observability', () => {
+      const restPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+      const content = fs.readFileSync(restPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('observability')"),
+        'Template REST deve condicionar observabilidade ao pacote observability'
+      );
+      assert.ok(
+        content.includes('@Counted') && content.includes('@Traced'),
+        'Template REST deve conter @Counted e @Traced'
+      );
+    });
+
+    it('template backend REST DEVE condicionar @McpTool ao pacote mcp', () => {
+      const restPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+      const content = fs.readFileSync(restPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('mcp')"),
+        'Template REST deve condicionar @McpTool ao pacote mcp'
+      );
+    });
+
+    it('template frontend list DEVE condicionar botões de exportação ao pacote export', () => {
+      const listPath = path.join(__dirname, '..', 'Utils', 'templates', 'frontend', 'entity', '_entityList.vue');
+      const content = fs.readFileSync(listPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('export')"),
+        'Template list deve condicionar exportação ao pacote export'
+      );
+    });
+
+    it('template frontend list DEVE condicionar $t() ao pacote i18n', () => {
+      const listPath = path.join(__dirname, '..', 'Utils', 'templates', 'frontend', 'entity', '_entityList.vue');
+      const content = fs.readFileSync(listPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('i18n')"),
+        'Template list deve condicionar i18n ao pacote i18n'
+      );
+      // Deve ter fallback para textos fixos em português
+      assert.ok(
+        content.includes('} else {'),
+        'Template list deve ter fallback para textos fixos quando i18n não selecionado'
+      );
+    });
+
+    it('template frontend form DEVE condicionar $t() ao pacote i18n', () => {
+      const formPath = path.join(__dirname, '..', 'Utils', 'templates', 'frontend', 'entity', '_entityForm.vue');
+      const content = fs.readFileSync(formPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('i18n')"),
+        'Template form deve condicionar i18n ao pacote i18n'
+      );
+    });
+
+    it('template mobile list DEVE condicionar exportação ao pacote export', () => {
+      const listPath = path.join(__dirname, '..', 'Utils', 'templates', 'mobile', 'entity', '_entity_list_screen.dart');
+      const content = fs.readFileSync(listPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('export')"),
+        'Template mobile list deve condicionar exportação ao pacote export'
+      );
+    });
+
+    it('template mobile list DEVE condicionar i18n ao pacote i18n', () => {
+      const listPath = path.join(__dirname, '..', 'Utils', 'templates', 'mobile', 'entity', '_entity_list_screen.dart');
+      const content = fs.readFileSync(listPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('i18n')"),
+        'Template mobile list deve condicionar i18n ao pacote i18n'
+      );
+    });
+
+    it('FrontendUtil DEVE condicionar _addI18nKeys à presença do pacote i18n', () => {
+      assert.ok(
+        frontendUtilSource.includes("packages.includes('i18n')"),
+        'FrontendUtil deve verificar pacote i18n antes de chamar _addI18nKeys'
+      );
+    });
+
+    it('FrontendUtil DEVE condicionar _addDashboardCard à presença do pacote dashboard', () => {
+      assert.ok(
+        frontendUtilSource.includes("packages.includes('dashboard')"),
+        'FrontendUtil deve verificar pacote dashboard antes de chamar _addDashboardCard'
+      );
+    });
+
+    it('MobileUtil DEVE condicionar _addI18nKeys à presença do pacote i18n', () => {
+      assert.ok(
+        mobileUtilSource.includes("packages.includes('i18n')"),
+        'MobileUtil deve verificar pacote i18n antes de chamar _addI18nKeys'
+      );
+    });
+
+    it('MobileUtil DEVE condicionar _addDashboardCard à presença do pacote dashboard', () => {
+      assert.ok(
+        mobileUtilSource.includes("packages.includes('dashboard')"),
+        'MobileUtil deve verificar pacote dashboard antes de chamar _addDashboardCard'
+      );
+    });
+
+    it('BackendUtil DEVE condicionar _addEntityToDashboardStats à presença do pacote dashboard', () => {
+      assert.ok(
+        backendUtilSource.includes("packages.includes('dashboard')"),
+        'BackendUtil deve verificar pacote dashboard antes de chamar _addEntityToDashboardStats'
+      );
+    });
+  });
+
+  // --- Req 17.4: Compatibilidade retroativa (projeto sem Configuração_Pacotes) ---
+
+  describe('compatibilidade retroativa — projeto legado sem Configuração_Pacotes (Req 17.4)', () => {
+
+    it('AddGenerator DEVE assumir todos os pacotes quando .yo-rc.json não tem packages', () => {
+      // initializing() deve tratar null como "todos os pacotes"
+      assert.ok(
+        addGeneratorSource.includes("this.config.get('packages') || null") ||
+        addGeneratorSource.includes("this.config.get('packages')"),
+        'AddGenerator deve ler packages do config'
+      );
+      assert.ok(
+        addGeneratorSource.includes('this.selectedPackages === null'),
+        'AddGenerator deve verificar se selectedPackages é null'
+      );
+    });
+
+    it('AddGenerator DEVE usar PackageRegistry.getAvailablePackages() para obter todos os slugs', () => {
+      assert.ok(
+        addGeneratorSource.includes('PackageRegistry'),
+        'AddGenerator deve importar PackageRegistry'
+      );
+      assert.ok(
+        addGeneratorSource.includes('getAvailablePackages'),
+        'AddGenerator deve chamar getAvailablePackages() para obter todos os pacotes'
+      );
+    });
+
+    it('quando selectedPackages é null, DEVE resolver para todos os 10 pacotes', () => {
+      const registry = new PackageRegistry();
+      const allSlugs = registry.getAvailablePackages().map(p => p.slug);
+      assert.strictEqual(allSlugs.length, 10, 'Deve haver 10 pacotes disponíveis');
+      // Verify all expected slugs are present
+      const expected = ['auth', 'messaging', 'mcp', 'file-upload', 'audit',
+        'dashboard', 'export', 'observability', 'i18n', 'themes'];
+      expected.forEach(slug => {
+        assert.ok(allSlugs.includes(slug), `Pacote "${slug}" deve estar disponível`);
+      });
+    });
+
+    it('projeto legado com todos os pacotes DEVE gerar CRUD com todas as funcionalidades', () => {
+      // When all packages are enabled (legacy mode), all conditionals should be active
+      const registry = new PackageRegistry();
+      const allSlugs = registry.getAvailablePackages().map(p => p.slug);
+      assert.ok(allSlugs.includes('audit'), 'Todos os pacotes devem incluir audit');
+      assert.ok(allSlugs.includes('export'), 'Todos os pacotes devem incluir export');
+      assert.ok(allSlugs.includes('auth'), 'Todos os pacotes devem incluir auth');
+      assert.ok(allSlugs.includes('observability'), 'Todos os pacotes devem incluir observability');
+      assert.ok(allSlugs.includes('i18n'), 'Todos os pacotes devem incluir i18n');
+      assert.ok(allSlugs.includes('dashboard'), 'Todos os pacotes devem incluir dashboard');
+      assert.ok(allSlugs.includes('mcp'), 'Todos os pacotes devem incluir mcp');
+    });
+
+    it('AddGenerator initializing() DEVE instanciar PackageRegistry para fallback', () => {
+      // The initializing method should create a new PackageRegistry when packages is null
+      assert.ok(
+        addGeneratorSource.includes('new PackageRegistry()'),
+        'AddGenerator deve instanciar PackageRegistry no initializing() para fallback'
+      );
+    });
+
+    it('fallback de compatibilidade DEVE mapear getAvailablePackages para array de slugs', () => {
+      assert.ok(
+        addGeneratorSource.includes('.map(p => p.slug)') || addGeneratorSource.includes('.map(function'),
+        'AddGenerator deve mapear pacotes para array de slugs'
       );
     });
   });

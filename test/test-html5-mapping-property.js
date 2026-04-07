@@ -38,7 +38,8 @@ function buildTemplateData(entityName, properties) {
       capital: capitalize(entityName)
     },
     properties,
-    hasCustomEntity: properties.some(p => !p.isPrimitive)
+    hasCustomEntity: properties.some(p => !p.isPrimitive),
+    packages: ['i18n']
   };
 }
 

@@ -2,13 +2,14 @@ package <%= package.lower %>.<%= project.lower %>.service;
 
 import <%= package.lower %>.<%= project.lower %>.bc.<%= name.capital %>BC;
 import <%= package.lower %>.<%= project.lower %>.entity.<%= name.capital %>;
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
+<% } %>
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
@@ -26,12 +27,36 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.demoiselle.jee.core.api.crud.Result;
 import org.demoiselle.jee.crud.AbstractREST;
 import org.demoiselle.jee.crud.Search;
+<% if (typeof packages !== 'undefined' && packages.includes('auth')) { %>
+import org.demoiselle.jee.security.annotation.Authenticated;
+import org.demoiselle.jee.security.annotation.RequiredAnyRole;
+<% } %>
+import org.demoiselle.jee.security.annotation.RateLimit;
+import org.demoiselle.jee.rest.annotation.CacheControl;
+<% if (typeof packages !== 'undefined' && packages.includes('observability')) { %>
+import org.demoiselle.jee.observability.annotation.Counted;
+import org.demoiselle.jee.observability.annotation.Traced;
+<% } %>
+<% if (typeof packages !== 'undefined' && packages.includes('mcp')) { %>
+import org.demoiselle.jee.mcp.annotation.McpTool;
+<% } %>
 
 @Tag(name = "v1/<%= name.capital %>s")
 @SecurityScheme(securitySchemeName = "jwt", type = SecuritySchemeType.HTTP, scheme = "bearer", bearerFormat = "JWT")
 @SecurityRequirement(name = "jwt")
 @Path("v1/<%= name.lower %>s")
-@RolesAllowed({"ADMIN", "USER"})
+<% if (typeof packages !== 'undefined' && packages.includes('auth')) { %>
+@Authenticated
+@RequiredAnyRole({"ADMIN", "USER"})
+<% } %>
+@RateLimit(requests = 100, window = 60)
+<% if (typeof packages !== 'undefined' && packages.includes('observability')) { %>
+@Counted
+@Traced(module = "crud", operation = "<%= name.lower %>")
+<% } %>
+<% if (typeof packages !== 'undefined' && packages.includes('mcp')) { %>
+@McpTool(name = "<%= name.lower %>-crud", description = "CRUD operations for <%= name.capital %> entity")
+<% } %>
 public class <%= name.capital %>REST extends AbstractREST< <%= name.capital %>, UUID> {
 
     @Inject
@@ -41,11 +66,13 @@ public class <%= name.capital %>REST extends AbstractREST< <%= name.capital %>, 
     @Override
     @Transactional
     @Search(fields = {"*"}) // Escolha quais campos vão para o frontend Ex: {"id", "description"}
+    @CacheControl(maxAge = 60)
     @Operation(summary = "Lista <%= name.capital %>s", description = "Retorna lista paginada de <%= name.capital %>s")
     public Result find() {
         return bc.find();
     }
 
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
     @GET
     @Path("export")
     @Produces("text/csv")
@@ -99,5 +126,6 @@ public class <%= name.capital %>REST extends AbstractREST< <%= name.capital %>, 
                 .header("Content-Disposition", "attachment; filename=\"<%= name.lower %>s.pdf\"")
                 .build();
     }
+<% } %>
 
 }

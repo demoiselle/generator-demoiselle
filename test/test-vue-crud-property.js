@@ -70,7 +70,8 @@ function buildTemplateData(entityName, properties) {
       capital: capitalize(entityName)
     },
     properties,
-    hasCustomEntity: properties.some(p => !p.isPrimitive)
+    hasCustomEntity: properties.some(p => !p.isPrimitive),
+    packages: ['export', 'i18n', 'dashboard', 'auth', 'audit', 'observability', 'mcp']
   };
 }
 

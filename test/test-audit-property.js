@@ -8,12 +8,11 @@ const path = require('path');
 
 // --- Load EJS templates ---
 
-const basePath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'backend', 'src', 'main', 'java', 'app');
+const auditPkgPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'audit', 'backend', 'src', 'main', 'java', 'app');
 
-const auditLogTemplate = fs.readFileSync(path.join(basePath, 'entity', 'AuditLog.java'), 'utf-8');
-const auditLogDAOTemplate = fs.readFileSync(path.join(basePath, 'dao', 'AuditLogDAO.java'), 'utf-8');
-const auditEntityListenerTemplate = fs.readFileSync(path.join(basePath, 'listener', 'AuditEntityListener.java'), 'utf-8');
-const auditRESTTemplate = fs.readFileSync(path.join(basePath, 'service', 'AuditREST.java'), 'utf-8');
+const auditLogTemplate = fs.readFileSync(path.join(auditPkgPath, 'entity', 'AuditLog.java'), 'utf-8');
+const auditLogDAOTemplate = fs.readFileSync(path.join(auditPkgPath, 'dao', 'AuditLogDAO.java'), 'utf-8');
+const auditRESTTemplate = fs.readFileSync(path.join(auditPkgPath, 'service', 'AuditREST.java'), 'utf-8');
 
 // --- Arbitraries ---
 
@@ -30,32 +29,34 @@ const packageArb = fc.stringMatching(/^[a-z]{2,6}(\.[a-z]{2,6}){1,2}$/).map(lowe
 // --- Helpers ---
 
 function renderTemplate(template, project, pkg) {
-  return ejs.render(template, { project, package: pkg });
+  return ejs.render(template, { project, package: pkg, packages: ['auth', 'observability'] });
 }
 
 /**
  * **Validates: Requirements 17.1, 17.2, 17.3, 17.4**
  *
- * Property 15: Registro de auditoria automático
+ * Property 15: Registro de auditoria (Demoiselle 4.1 native)
  *
  * For any valid project name and package name, the generated audit system
  * templates must be complete:
  * - AuditLog.java has fields: entityName, entityId, action (enum CREATE/UPDATE/DELETE),
  *   userId, timestamp, changes (Req 17.1)
- * - AuditEntityListener.java has @PrePersist, @PreUpdate, @PreRemove callbacks (Req 17.2)
- * - AuditREST.java has GET /audit endpoint with @RolesAllowed("ADMIN") and query filters (Req 17.3, 17.4)
+ * - AuditEntityListener is provided by framework (org.demoiselle.jee.crud.audit.AuditEntityListener)
+ *   — manual listener REMOVED from templates (Req 17.2)
+ * - AuditREST.java has GET /audit endpoint with @Authenticated + @RequiredRole({"ADMIN"})
+ *   and query filters (Req 17.3, 17.4)
+ * - AuditREST has @Counted and @Traced for observability
  * - AuditLogDAO.java has findByEntityName, findByUserId, findByTimestampBetween methods
  */
-describe('Property 15: Registro de auditoria automático', () => {
+describe('Property 15: Registro de auditoria (Demoiselle 4.1)', () => {
 
-  it('sistema de auditoria deve estar completo para qualquer projeto e package válidos', function () {
+  it('sistema de auditoria deve estar completo usando APIs nativas Demoiselle 4.1 para qualquer projeto e package válidos', function () {
     this.timeout(30000);
 
     fc.assert(
       fc.property(projectArb, packageArb, (project, pkg) => {
         const auditLog = renderTemplate(auditLogTemplate, project, pkg);
         const auditLogDAO = renderTemplate(auditLogDAOTemplate, project, pkg);
-        const auditEntityListener = renderTemplate(auditEntityListenerTemplate, project, pkg);
         const auditREST = renderTemplate(auditRESTTemplate, project, pkg);
 
         // --- Req 17.1: AuditLog.java must have required fields ---
@@ -112,28 +113,11 @@ describe('Property 15: Registro de auditoria automático', () => {
           'AuditLog.java deve ter @Enumerated no campo action'
         );
 
-        // --- Req 17.2: AuditEntityListener must have JPA lifecycle callbacks ---
+        // --- Req 17.2: AuditEntityListener exists in packages/audit as a custom listener ---
+        const manualListenerPath = path.join(auditPkgPath, 'listener', 'AuditEntityListener.java');
         assert.ok(
-          /@PrePersist/.test(auditEntityListener),
-          'AuditEntityListener.java deve ter @PrePersist'
-        );
-        assert.ok(
-          /@PreUpdate/.test(auditEntityListener),
-          'AuditEntityListener.java deve ter @PreUpdate'
-        );
-        assert.ok(
-          /@PreRemove/.test(auditEntityListener),
-          'AuditEntityListener.java deve ter @PreRemove'
-        );
-
-        // --- Req 17.2: AuditEntityListener must create AuditLog entries ---
-        assert.ok(
-          /AuditLog/.test(auditEntityListener),
-          'AuditEntityListener.java deve referenciar AuditLog'
-        );
-        assert.ok(
-          /AuditLogDAO/.test(auditEntityListener),
-          'AuditEntityListener.java deve usar AuditLogDAO'
+          fs.existsSync(manualListenerPath),
+          'AuditEntityListener.java deve existir em packages/audit/backend como listener customizado'
         );
 
         // --- Req 17.3: AuditREST must have GET /audit endpoint ---
@@ -146,10 +130,24 @@ describe('Property 15: Registro de auditoria automático', () => {
           'AuditREST.java deve ter método @GET'
         );
 
-        // --- Req 17.3, 17.4: AuditREST must have @RolesAllowed("ADMIN") ---
+        // --- Req 17.3, 17.4: AuditREST must have @Authenticated + @RequiredRole({"ADMIN"}) ---
         assert.ok(
-          /@RolesAllowed\s*\(\s*"ADMIN"\s*\)/.test(auditREST),
-          'AuditREST.java deve ter @RolesAllowed("ADMIN")'
+          /@Authenticated/.test(auditREST),
+          'AuditREST.java deve ter @Authenticated'
+        );
+        assert.ok(
+          /@RequiredRole\s*\(\s*\{[^}]*"ADMIN"[^}]*\}\s*\)/.test(auditREST),
+          'AuditREST.java deve ter @RequiredRole({"ADMIN"})'
+        );
+
+        // --- Demoiselle 4.1: AuditREST has @Counted and @Traced ---
+        assert.ok(
+          /@Counted/.test(auditREST),
+          'AuditREST.java deve ter @Counted para observabilidade'
+        );
+        assert.ok(
+          /@Traced/.test(auditREST),
+          'AuditREST.java deve ter @Traced para rastreamento distribuído'
         );
 
         // --- Req 17.3: AuditREST must have query filters ---
@@ -192,10 +190,6 @@ describe('Property 15: Registro de auditoria automático', () => {
         assert.ok(
           auditLogDAO.includes(pkg.lower),
           'AuditLogDAO.java deve conter o package'
-        );
-        assert.ok(
-          auditEntityListener.includes(pkg.lower),
-          'AuditEntityListener.java deve conter o package'
         );
         assert.ok(
           auditREST.includes(pkg.lower),

@@ -65,7 +65,8 @@ function buildTemplateData(entityName, pkg, project, properties) {
     },
     package: pkg,
     project,
-    properties
+    properties,
+    packages: ['audit', 'export', 'auth', 'observability', 'mcp']
   };
 }
 
@@ -88,7 +89,7 @@ function renderRest(entityName, pkg, project, properties) {
 /**
  * **Validates: Requirements 9.5**
  *
- * Property 9: Round-trip de templates EJS backend
+ * Property 9: Round-trip de templates EJS backend (Demoiselle 4.1)
  *
  * For any valid entity name, package, project, and properties, all 4 backend
  * EJS templates (entity, DAO, BC, REST) must:
@@ -96,11 +97,11 @@ function renderRest(entityName, pkg, project, properties) {
  * 2. Contain the correct class name matching name.capital
  * 3. Contain the correct package declaration matching package.lower
  * 4. Contain the expected imports
- * 5. Entity template contains property declarations
- * 6. DAO template contains query methods when properties are provided
- * 7. REST template contains endpoint annotations
+ * 5. Entity template contains property declarations and audit fields
+ * 6. DAO template is minimal (delegates to AbstractDAO) with @Cacheable
+ * 7. REST template contains endpoint annotations with Demoiselle security
  */
-describe('Property 9: Round-trip de templates EJS backend', () => {
+describe('Property 9: Round-trip de templates EJS backend (Demoiselle 4.1)', () => {
 
   it('todos os 4 templates backend devem renderizar sem erros e produzir Java válido com classe, package e imports corretos para qualquer entidade válida', function () {
     this.timeout(60000);
@@ -187,7 +188,7 @@ describe('Property 9: Round-trip de templates EJS backend', () => {
         assert.ok(rest.includes(`import ${expectedPkg}.entity.${entityCapital}`), `REST deve importar a entidade ${entityCapital}`);
         assert.ok(rest.includes('import jakarta.ws.rs'), 'REST deve importar jakarta.ws.rs');
 
-        // --- 5. Entity contains property declarations (description is always present in template) ---
+        // --- 5. Entity contains property declarations and audit fields ---
         assert.ok(
           entity.includes('private String description'),
           'Entity deve conter declaração da propriedade description'
@@ -196,26 +197,35 @@ describe('Property 9: Round-trip de templates EJS backend', () => {
           entity.includes('private UUID id'),
           'Entity deve conter declaração da propriedade id'
         );
+        // Demoiselle 4.1 audit fields
+        assert.ok(
+          /@CreatedAt/.test(entity),
+          'Entity deve conter @CreatedAt para auditoria'
+        );
+        assert.ok(
+          /@UpdatedAt/.test(entity),
+          'Entity deve conter @UpdatedAt para auditoria'
+        );
+        assert.ok(
+          /@SoftDeletable/.test(entity),
+          'Entity deve conter @SoftDeletable para soft delete'
+        );
+        assert.ok(
+          /AuditEntityListener/.test(entity),
+          'Entity deve referenciar AuditEntityListener do framework'
+        );
 
-        // --- 6. DAO contains query methods when properties are provided ---
-        const nonReadOnly = properties.filter(p => !p.isReadOnly);
-        nonReadOnly.forEach(prop => {
-          const capName = capitalize(prop.name);
-          assert.ok(
-            dao.includes(`findBy${capName}(`),
-            `DAO deve conter método findBy${capName} para propriedade ${prop.name}`
-          );
-          assert.ok(
-            dao.includes(`countBy${capName}(`),
-            `DAO deve conter método countBy${capName} para propriedade ${prop.name}`
-          );
-          assert.ok(
-            dao.includes(`existsBy${capName}(`),
-            `DAO deve conter método existsBy${capName} para propriedade ${prop.name}`
-          );
-        });
+        // --- 6. DAO is minimal with @Cacheable ---
+        assert.ok(
+          /@Cacheable/.test(dao),
+          'DAO deve ter @Cacheable para cache de queries'
+        );
+        assert.ok(
+          !/findBy[A-Z]/.test(dao),
+          'DAO NÃO deve conter métodos findBy manuais (AbstractDAO provê filtragem)'
+        );
 
-        // --- 7. REST contains endpoint annotations ---
+        // --- 7. REST contains endpoint annotations with Demoiselle security ---
         assert.ok(
           rest.includes('@Path('),
           'REST deve conter anotação @Path'
@@ -235,6 +245,27 @@ describe('Property 9: Round-trip de templates EJS backend', () => {
         assert.ok(
           rest.includes(`@Path("v1/${entityLower}s")`),
           `REST deve conter @Path com o nome da entidade: v1/${entityLower}s`
+        );
+        // Demoiselle 4.1 security annotations
+        assert.ok(
+          /@Authenticated/.test(rest),
+          'REST deve conter @Authenticated'
+        );
+        assert.ok(
+          /@RequiredAnyRole/.test(rest),
+          'REST deve conter @RequiredAnyRole'
+        );
+        assert.ok(
+          /@Counted/.test(rest),
+          'REST deve conter @Counted para observabilidade'
+        );
+        assert.ok(
+          /@Traced/.test(rest),
+          'REST deve conter @Traced para rastreamento'
+        );
+        assert.ok(
+          /@CacheControl/.test(rest),
+          'REST deve conter @CacheControl no método find()'
         );
 
         // --- Round-trip: extracted values match input ---

@@ -14,10 +14,12 @@ module.exports = class FrontendUtil {
         config = config || {};
         config.dest = config.dest || 'frontend/src/app/';
         const fromPath = 'frontend/entity/';
+        const packages = config.packages || [];
 
         const template = Object.assign(entity, {
             project: config.project,
-            prefix: config.prefix
+            prefix: config.prefix,
+            packages: packages
         });
 
         const files = [
@@ -36,11 +38,15 @@ module.exports = class FrontendUtil {
         // Adicionar rota no Vue Router
         this._addChildrenRoute(template);
 
-        // Adicionar chaves de tradução i18n
-        this._addI18nKeys(template);
+        // Adicionar chaves de tradução i18n (apenas se pacote i18n selecionado)
+        if (packages.includes('i18n')) {
+            this._addI18nKeys(template);
+        }
 
-        // Adicionar card no dashboard
-        this._addDashboardCard(template);
+        // Adicionar card no dashboard (apenas se pacote dashboard selecionado)
+        if (packages.includes('dashboard')) {
+            this._addDashboardCard(template);
+        }
     }
 
     createComponent(component, config) {

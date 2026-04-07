@@ -77,10 +77,12 @@ module.exports = class MobileUtil {
         config = config || {};
         config.dest = config.dest || 'mobile/lib/';
         const fromPath = 'mobile/entity/';
+        const packages = config.packages || [];
 
         const template = Object.assign({}, entity, {
             project: config.project,
             prefix: config.prefix,
+            packages: packages,
             dartType: dartType,
             flutterWidgetType: flutterWidgetType,
             isPrimitive: isPrimitive
@@ -102,8 +104,12 @@ module.exports = class MobileUtil {
         });
 
         this._addRoute(template);
-        this._addI18nKeys(template);
-        this._addDashboardCard(template);
+        if (packages.includes('i18n')) {
+            this._addI18nKeys(template);
+        }
+        if (packages.includes('dashboard')) {
+            this._addDashboardCard(template);
+        }
         this._addDrawerItem(template);
     }
 

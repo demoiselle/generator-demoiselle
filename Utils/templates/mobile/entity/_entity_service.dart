@@ -56,6 +56,7 @@ class <%= name.capital %>Service {
     await _dio.delete('$_basePath/$id');
   }
 
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
   Future<String> exportCsv({Map<String, dynamic>? filters}) async {
     final response = await _dio.get(
       '$_basePath/export',
@@ -73,4 +74,5 @@ class <%= name.capital %>Service {
     );
     return response.headers.value('content-disposition') ?? '<%= name.lower %>s.pdf';
   }
+<% } %>
 }

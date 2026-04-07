@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
 import '../l10n/app_localizations.dart';
+<% } %>
 import '../models/<%= name.lower %>_model.dart';
 import '../services/<%= name.lower %>_service.dart';
 
@@ -121,11 +123,17 @@ class _<%= name.capital %>FormScreenState extends ConsumerState<<%= name.capital
 
   @override
   Widget build(BuildContext context) {
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
     final l10n = AppLocalizations.of(context)!;
+<% } %>
 
     return Scaffold(
       appBar: AppBar(
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         title: Text(_isEditing ? l10n.<%= name.lower %>Edit : l10n.<%= name.lower %>Create),
+<% } else { %>
+        title: Text(_isEditing ? 'Editar <%= name.capital %>' : 'Criar <%= name.capital %>'),
+<% } %>
       ),
       body: _isLoading && _isEditing
           ? const Center(child: CircularProgressIndicator())
@@ -148,10 +156,18 @@ class _<%= name.capital %>FormScreenState extends ConsumerState<<%= name.capital
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                           return l10n.validationRequired;
+<% } else { %>
+                          return 'Campo obrigatório';
+<% } %>
                         }
                         if (!value.contains('@')) {
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                           return l10n.validationEmail;
+<% } else { %>
+                          return 'Email inválido';
+<% } %>
                         }
                         return null;
                       },
@@ -167,7 +183,11 @@ class _<%= name.capital %>FormScreenState extends ConsumerState<<%= name.capital
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                           return l10n.validationRequired;
+<% } else { %>
+                          return 'Campo obrigatório';
+<% } %>
                         }
                         return null;
                       },
@@ -210,7 +230,11 @@ class _<%= name.capital %>FormScreenState extends ConsumerState<<%= name.capital
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                           return l10n.validationRequired;
+<% } else { %>
+                          return 'Campo obrigatório';
+<% } %>
                         }
                         return null;
                       },
@@ -237,7 +261,11 @@ class _<%= name.capital %>FormScreenState extends ConsumerState<<%= name.capital
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                           return l10n.validationRequired;
+<% } else { %>
+                          return 'Campo obrigatório';
+<% } %>
                         }
                         return null;
                       },
@@ -252,7 +280,11 @@ class _<%= name.capital %>FormScreenState extends ConsumerState<<%= name.capital
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                           return l10n.validationRequired;
+<% } else { %>
+                          return 'Campo obrigatório';
+<% } %>
                         }
                         return null;
                       },
@@ -269,9 +301,15 @@ class _<%= name.capital %>FormScreenState extends ConsumerState<<%= name.capital
                               height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                           : Text(_isEditing
                               ? l10n.<%= name.lower %>Edit
                               : l10n.<%= name.lower %>Create),
+<% } else { %>
+                          : Text(_isEditing
+                              ? 'Editar <%= name.capital %>'
+                              : 'Criar <%= name.capital %>'),
+<% } %>
                     ),
                   ],
                 ),

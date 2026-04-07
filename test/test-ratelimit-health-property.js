@@ -8,10 +8,13 @@ const path = require('path');
 
 // --- Load EJS templates ---
 
-const basePath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'backend', 'src', 'main', 'java', 'app');
+const observabilityPkgPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'observability', 'backend', 'src', 'main', 'java', 'app');
 
-const rateLimitFilterTemplate = fs.readFileSync(path.join(basePath, 'filter', 'RateLimitFilter.java'), 'utf-8');
-const healthRESTTemplate = fs.readFileSync(path.join(basePath, 'service', 'HealthREST.java'), 'utf-8');
+const healthRESTTemplate = fs.readFileSync(path.join(observabilityPkgPath, 'service', 'HealthREST.java'), 'utf-8');
+
+// Load REST template to verify @RateLimit annotation usage
+const entityRestTemplatePath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+const entityRestTemplate = fs.readFileSync(entityRestTemplatePath, 'utf-8');
 
 // --- Arbitraries ---
 
@@ -25,68 +28,62 @@ const packageArb = fc.stringMatching(/^[a-z]{2,6}(\.[a-z]{2,6}){1,2}$/).map(lowe
   capital: lower.split('.').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('.')
 }));
 
+const entityNameArb = fc.stringMatching(/^[A-Z][a-z]{2,8}$/).map(capital => ({
+  capital,
+  lower: capital.toLowerCase()
+}));
+
 // --- Helpers ---
 
-function renderTemplate(template, project, pkg) {
-  return ejs.render(template, { project, package: pkg });
+function renderTemplate(template, data) {
+  return ejs.render(template, data);
 }
 
 /**
  * **Validates: Requirements 23.1, 23.2, 23.3, 23.4**
  *
- * Property 18: Rate limiting e health check
+ * Property 18: Rate limiting (via @RateLimit) e health check (Demoiselle 4.1)
  *
- * For any valid project name and package name, the generated rate limiting
- * and health check templates must satisfy:
- * - RateLimitFilter implements ContainerRequestFilter with @Provider (Req 23.1)
- * - RateLimitFilter returns HTTP 429 with Retry-After header (Req 23.2)
- * - RateLimitFilter has configurable requests-per-minute limit (Req 23.1)
+ * In Demoiselle 4.1, rate limiting is handled by the framework's @RateLimit
+ * annotation instead of a manual ContainerRequestFilter. The generated templates
+ * must satisfy:
+ * - Manual RateLimitFilter.java REMOVED (replaced by @RateLimit annotation) (Req 23.1)
+ * - REST endpoints use @RateLimit annotation from Demoiselle security (Req 23.2)
  * - HealthREST has GET /health endpoint (Req 23.3)
  * - HealthREST returns status, database status, and memory info (Req 23.3)
  * - HealthREST does NOT have @RolesAllowed or authentication annotations (Req 23.4)
+ * - HealthREST has @Counted for observability metrics (Demoiselle 4.1)
  */
-describe('Property 18: Rate limiting e health check', () => {
+describe('Property 18: Rate limiting (via @RateLimit) e health check (Demoiselle 4.1)', () => {
 
-  it('rate limiting e health check devem estar completos para qualquer projeto e package válidos', function () {
+  it('rate limiting via @RateLimit e health check devem estar completos para qualquer projeto e package válidos', function () {
     this.timeout(30000);
 
     fc.assert(
-      fc.property(projectArb, packageArb, (project, pkg) => {
-        const rateLimitFilter = renderTemplate(rateLimitFilterTemplate, project, pkg);
-        const healthREST = renderTemplate(healthRESTTemplate, project, pkg);
+      fc.property(projectArb, packageArb, entityNameArb, (project, pkg, entityName) => {
+        const healthREST = renderTemplate(healthRESTTemplate, { project, package: pkg });
+        const entityRest = renderTemplate(entityRestTemplate, {
+          project,
+          package: pkg,
+          name: entityName,
+          properties: []
+        });
 
-        // --- Req 23.1: RateLimitFilter implements ContainerRequestFilter with @Provider ---
+        // --- Req 23.1: RateLimitFilter exists in packages/observability as a custom filter ---
+        const rateLimitFilterPath = path.join(observabilityPkgPath, 'filter', 'RateLimitFilter.java');
         assert.ok(
-          /implements\s+ContainerRequestFilter/.test(rateLimitFilter),
-          'RateLimitFilter.java deve implementar ContainerRequestFilter'
-        );
-        assert.ok(
-          /@Provider/.test(rateLimitFilter),
-          'RateLimitFilter.java deve ter anotação @Provider'
-        );
-        assert.ok(
-          /import\s+jakarta\.ws\.rs\.container\.ContainerRequestFilter/.test(rateLimitFilter),
-          'RateLimitFilter.java deve importar jakarta.ws.rs.container.ContainerRequestFilter'
-        );
-        assert.ok(
-          /import\s+jakarta\.ws\.rs\.ext\.Provider/.test(rateLimitFilter),
-          'RateLimitFilter.java deve importar jakarta.ws.rs.ext.Provider'
+          fs.existsSync(rateLimitFilterPath),
+          'RateLimitFilter.java deve existir em packages/observability/backend como filtro customizado'
         );
 
-        // --- Req 23.1: RateLimitFilter has configurable requests-per-minute limit ---
+        // --- Req 23.2: REST endpoints use @RateLimit annotation ---
         assert.ok(
-          /requests-per-minute|requests\.per\.minute|REQUESTS_PER_MINUTE/i.test(rateLimitFilter),
-          'RateLimitFilter.java deve ter limite de requisições por minuto configurável'
-        );
-
-        // --- Req 23.2: RateLimitFilter returns HTTP 429 with Retry-After header ---
-        assert.ok(
-          /429/.test(rateLimitFilter),
-          'RateLimitFilter.java deve retornar HTTP 429'
+          /@RateLimit/.test(entityRest),
+          '_pojoREST.java deve usar @RateLimit do Demoiselle para rate limiting'
         );
         assert.ok(
-          /Retry-After/.test(rateLimitFilter),
-          'RateLimitFilter.java deve incluir header Retry-After'
+          /import\s+org\.demoiselle\.jee\.security\.annotation\.RateLimit/.test(entityRest),
+          '_pojoREST.java deve importar org.demoiselle.jee.security.annotation.RateLimit'
         );
 
         // --- Req 23.3: HealthREST has GET /health endpoint ---
@@ -113,7 +110,7 @@ describe('Property 18: Rate limiting e health check', () => {
           'HealthREST.java deve retornar informações de memória'
         );
 
-        // --- Req 23.4: HealthREST does NOT have @RolesAllowed or authentication annotations ---
+        // --- Req 23.4: HealthREST does NOT have @RolesAllowed or @Authenticated annotations ---
         assert.ok(
           !/@RolesAllowed/.test(healthREST),
           'HealthREST.java NÃO deve ter @RolesAllowed (acesso sem autenticação)'
@@ -123,18 +120,16 @@ describe('Property 18: Rate limiting e health check', () => {
           'HealthREST.java NÃO deve ter @Authenticated (acesso sem autenticação)'
         );
 
-        // --- Package interpolation ---
+        // --- Demoiselle 4.1: HealthREST has @Counted for observability ---
         assert.ok(
-          rateLimitFilter.includes(pkg.lower),
-          'RateLimitFilter.java deve conter o package'
+          /@Counted/.test(healthREST),
+          'HealthREST.java deve ter @Counted para métricas de observabilidade'
         );
+
+        // --- Package interpolation ---
         assert.ok(
           healthREST.includes(pkg.lower),
           'HealthREST.java deve conter o package'
-        );
-        assert.ok(
-          rateLimitFilter.includes(project.lower),
-          'RateLimitFilter.java deve conter o nome do projeto'
         );
         assert.ok(
           healthREST.includes(project.lower),

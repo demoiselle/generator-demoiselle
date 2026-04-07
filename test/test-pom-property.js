@@ -6,8 +6,15 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 
+const PackageRegistry = require('../Utils/packageRegistry');
 const templatePath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'backend', 'pom.xml');
 const pomTemplate = fs.readFileSync(templatePath, 'utf-8');
+const registry = new PackageRegistry();
+const allPackages = registry.getAvailablePackages().map(p => p.slug);
+const allMavenDeps = registry.getMavenDeps(allPackages);
+
+// Base-only maven deps (no optional packages selected)
+const baseMavenDeps = [];
 
 /**
  * Arbitrary for project object with .lower and .capital properties
@@ -29,13 +36,13 @@ const packageArb = fc.stringMatching(/^[a-z]{2,8}(\.[a-z]{2,8}){1,3}$/).map(lowe
  * Renders the pom.xml EJS template with given project and package values
  */
 function renderPom(project, pkg) {
-  return ejs.render(pomTemplate, { project, package: pkg });
+  return ejs.render(pomTemplate, { project, package: pkg, mavenDeps: baseMavenDeps });
 }
 
 /**
  * **Validates: Requirements 1.1, 1.2, 1.4, 1.5**
  *
- * Property 1: Conformidade do pom.xml com Demoiselle 4
+ * Property 1: Conformidade do pom.xml com Demoiselle 4.1
  *
  * For any valid project name and package name, the generated pom.xml must:
  * - Contain parent demoiselle-parent-rest version 4.x
@@ -44,11 +51,13 @@ function renderPom(project, pkg) {
  * - NOT contain hibernate-entitymanager or hibernate-infinispan
  * - Contain microprofile-openapi-api (not io.swagger:swagger-jaxrs)
  * - NOT contain javaee-endorsed-api
- * - Contain jjwt-api, jbcrypt, jakarta.mail-api, opencsv, openpdf
+ * - Contain demoiselle-observability, demoiselle-openapi, demoiselle-rest, demoiselle-security-hashcash
+ * - NOT contain jjwt-api or jbcrypt (framework handles JWT and password hashing)
+ * - Contain jakarta.mail-api, opencsv, openpdf
  */
-describe('Property 1: Conformidade do pom.xml com Demoiselle 4', () => {
+describe('Property 1: Conformidade do pom.xml com Demoiselle 4.1', () => {
 
-  it('pom.xml gerado deve estar em conformidade com Demoiselle 4 para qualquer projeto e package válidos', function () {
+  it('pom.xml gerado deve estar em conformidade com Demoiselle 4.1 para qualquer projeto e package válidos', function () {
     this.timeout(30000);
 
     fc.assert(
@@ -109,26 +118,44 @@ describe('Property 1: Conformidade do pom.xml com Demoiselle 4', () => {
           'pom.xml NÃO deve conter javaee-endorsed-api'
         );
 
-        // Additional dependencies required by design
+        // Demoiselle 4.1 modules (always included in base)
         assert.ok(
-          /jjwt-api/.test(pom),
-          'pom.xml deve conter jjwt-api'
+          /demoiselle-openapi/.test(pom),
+          'pom.xml deve conter demoiselle-openapi'
         );
         assert.ok(
-          /jbcrypt/.test(pom),
-          'pom.xml deve conter jbcrypt'
+          /demoiselle-security-hashcash/.test(pom),
+          'pom.xml deve conter demoiselle-security-hashcash'
         );
         assert.ok(
-          /jakarta\.mail-api/.test(pom),
-          'pom.xml deve conter jakarta.mail-api'
+          /<artifactId>demoiselle-rest<\/artifactId>/.test(pom),
+          'pom.xml deve conter demoiselle-rest'
+        );
+
+        // Package-specific deps should NOT be in base pom.xml (now conditional)
+        assert.ok(
+          !/jjwt-api/.test(pom),
+          'pom.xml base NÃO deve conter jjwt-api (agora condicional via pacote auth)'
         );
         assert.ok(
-          /opencsv/.test(pom),
-          'pom.xml deve conter opencsv'
+          !/jbcrypt/.test(pom),
+          'pom.xml base NÃO deve conter jbcrypt (agora condicional via pacote auth)'
         );
         assert.ok(
-          /openpdf/.test(pom),
-          'pom.xml deve conter openpdf'
+          !/opencsv/.test(pom),
+          'pom.xml base NÃO deve conter opencsv (agora condicional via pacote export)'
+        );
+        assert.ok(
+          !/openpdf/.test(pom),
+          'pom.xml base NÃO deve conter openpdf (agora condicional via pacote export)'
+        );
+        assert.ok(
+          !/demoiselle-observability/.test(pom),
+          'pom.xml base NÃO deve conter demoiselle-observability (agora condicional via pacote observability)'
+        );
+        assert.ok(
+          !/jakarta\.mail-api/.test(pom),
+          'pom.xml base NÃO deve conter jakarta.mail-api (agora condicional via pacote auth)'
         );
 
         // Verify project/package interpolation

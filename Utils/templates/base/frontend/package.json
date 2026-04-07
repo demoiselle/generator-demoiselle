@@ -13,8 +13,8 @@
     "vue-router": "^4.3.0",
     "pinia": "^2.1.0",
     "axios": "^1.7.0",
-    "vue-i18n": "^9.9.0",
-    "@vueuse/core": "^10.7.0"
+    "@vueuse/core": "^10.7.0"<% if (typeof npmDeps !== 'undefined') { var npmKeys = Object.keys(npmDeps); for (var i = 0; i < npmKeys.length; i++) { %>,
+    "<%= npmKeys[i] %>": "<%= npmDeps[npmKeys[i]] %>"<% } } %>
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",

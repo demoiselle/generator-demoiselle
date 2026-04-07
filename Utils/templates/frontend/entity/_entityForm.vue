@@ -2,7 +2,11 @@
   <div class="entity-form">
     <div class="card">
       <div class="card-header">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         <strong>{{ action }} {{ $t('<%= name.lower %>.entityName') }}</strong>
+<% } else { %>
+        <strong>{{ action }} <%= name.capital %></strong>
+<% } %>
       </div>
       <div class="card-body">
         <form @submit.prevent="save" ref="formRef">
@@ -10,9 +14,15 @@
 <%_ (properties || []).forEach(function(property) { _%>
 <%_ if (property.isReadOnly) { _%>
             <div class="form-group">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
               <input
                 type="text"
                 id="<%= name.lower %>-<%= property.name %>"
@@ -23,15 +33,25 @@
             </div>
 <%_ } else if (!property.isPrimitive) { _%>
             <div class="form-group">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
               <select
                 id="<%= name.lower %>-<%= property.name %>"
                 class="form-control"
                 v-model="entity.<%= property.name %>"
               >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                 <option :value="null">{{ $t('common.select') }}</option>
+<% } else { %>
+                <option :value="null">Selecione</option>
+<% } %>
                 <option
                   v-for="opt in <%= property.name %>Options"
                   :key="opt.id"
@@ -49,15 +69,27 @@
                 class="form-check-input"
                 v-model="entity.<%= property.name %>"
               />
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>" class="form-check-label">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>" class="form-check-label">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
             </div>
 <%_ } else if (/^(date|localdate|localdatetime)$/i.test(property.type)) { _%>
             <div class="form-group">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
               <input
                 type="date"
                 id="<%= name.lower %>-<%= property.name %>"
@@ -67,9 +99,15 @@
             </div>
 <%_ } else if (/^(integer|int|long|double|float|bigdecimal|number|short)$/i.test(property.type)) { _%>
             <div class="form-group">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
               <input
                 type="number"
                 id="<%= name.lower %>-<%= property.name %>"
@@ -79,9 +117,15 @@
             </div>
 <%_ } else if (/email/i.test(property.name)) { _%>
             <div class="form-group">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
               <input
                 type="email"
                 id="<%= name.lower %>-<%= property.name %>"
@@ -91,9 +135,15 @@
             </div>
 <%_ } else if (/pass/i.test(property.name)) { _%>
             <div class="form-group">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
               <input
                 type="password"
                 id="<%= name.lower %>-<%= property.name %>"
@@ -103,9 +153,15 @@
             </div>
 <%_ } else { _%>
             <div class="form-group">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <label for="<%= name.lower %>-<%= property.name %>">
                 {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
               </label>
+<% } else { %>
+              <label for="<%= name.lower %>-<%= property.name %>">
+                <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+              </label>
+<% } %>
               <input
                 type="text"
                 id="<%= name.lower %>-<%= property.name %>"
@@ -124,7 +180,11 @@
               :disabled="isLoading"
               @click="remove"
             >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               {{ $t('common.remove') }}
+<% } else { %>
+              Remover
+<% } %>
             </button>
             <button
               type="button"
@@ -132,14 +192,22 @@
               :disabled="isLoading"
               @click="goBack"
             >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               {{ $t('common.cancel') }}
+<% } else { %>
+              Cancelar
+<% } %>
             </button>
             <button
               type="submit"
               class="btn btn-primary"
               :disabled="isLoading"
             >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               {{ $t('common.save') }}
+<% } else { %>
+              Salvar
+<% } %>
             </button>
           </div>
         </form>
@@ -151,7 +219,9 @@
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
 import { useI18n } from 'vue-i18n';
+<% } %>
 import { use<%= name.capital %>Service } from './<%= name.lower %>.service';
 <%_ if (typeof hasCustomEntity !== 'undefined' && hasCustomEntity) { _%>
 import { useApi } from '@/composables/useApi';
@@ -159,7 +229,9 @@ import { useApi } from '@/composables/useApi';
 
 const route = useRoute();
 const router = useRouter();
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
 const { t } = useI18n();
+<% } %>
 const service = use<%= name.capital %>Service();
 <%_ if (typeof hasCustomEntity !== 'undefined' && hasCustomEntity) { _%>
 const api = useApi();
@@ -177,9 +249,15 @@ const entity = reactive({
 
 const isLoading = ref(false);
 
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
 const action = computed(() =>
   entity.id ? t('common.edit') : t('common.create')
 );
+<% } else { %>
+const action = computed(() =>
+  entity.id ? 'Editar' : 'Criar'
+);
+<% } %>
 
 <%_ if (typeof hasCustomEntity !== 'undefined' && hasCustomEntity) { _%>
 <%_ (properties || []).filter(function(p) { return !p.isPrimitive; }).forEach(function(property) { _%>

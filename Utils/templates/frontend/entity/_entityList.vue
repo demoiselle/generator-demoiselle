@@ -1,6 +1,10 @@
 <template>
   <div class="entity-list">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
     <h1>{{ $t('<%= name.lower %>.title') }}</h1>
+<% } else { %>
+    <h1><%= name.capital %></h1>
+<% } %>
 
     <AdvancedFilter :fields="filterFields" @filter="onFilter" />
 
@@ -9,26 +13,48 @@
         :to="{ name: '<%= name.lower %>-create' }"
         class="btn btn-success"
       >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         {{ $t('common.create') }}
+<% } else { %>
+        Criar
+<% } %>
       </router-link>
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
       <button class="btn btn-secondary" @click="exportCsv">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         {{ $t('common.exportCsv') }}
+<% } else { %>
+        Exportar CSV
+<% } %>
       </button>
       <button class="btn btn-secondary" @click="exportPdf">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         {{ $t('common.exportPdf') }}
+<% } else { %>
+        Exportar PDF
+<% } %>
       </button>
+<% } %>
       <button
         class="btn btn-danger"
         :disabled="selecteds.length === 0"
         @click="showDeleteModal = true"
       >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         {{ $t('common.removeSelected') }}
+<% } else { %>
+        Remover Selecionados
+<% } %>
       </button>
     </div>
 
     <div class="card">
       <div class="card-body">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         <table class="table" role="grid" :aria-label="$t('<%= name.lower %>.title')">
+<% } else { %>
+        <table class="table" role="grid" aria-label="<%= name.capital %>">
+<% } %>
           <thead>
             <tr>
 <%_ (properties || []).forEach(function(property) { _%>
@@ -39,7 +65,11 @@
                   class="th-button"
                   @click="orderBy('<%= property.name %>')"
                 >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                   {{ $t('<%= name.lower %>.fields.<%= property.name %>') }}
+<% } else { %>
+                  <%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>
+<% } %>
                   <span v-if="sortField === '<%= property.name %>'">
                     {{ sortDirection === 'ASC' ? '⇧' : '⇩' }}
                   </span>
@@ -47,13 +77,21 @@
 <%_ } else { _%>
                 <input
                   type="checkbox"
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                   :aria-label="$t('common.selectAll')"
+<% } else { %>
+                  aria-label="Selecionar Todos"
+<% } %>
                   @change="toggleSelectAll($event)"
                 />
 <%_ } _%>
               </th>
 <%_ }); _%>
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
               <th scope="col">{{ $t('common.actions') }}</th>
+<% } else { %>
+              <th scope="col">Ações</th>
+<% } %>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +102,11 @@
                 <input
                   type="checkbox"
                   :checked="selecteds.includes(item)"
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                   :aria-label="$t('common.select')"
+<% } else { %>
+                  aria-label="Selecionar"
+<% } %>
                   @change="toggleSelected(item)"
                 />
               </td>
@@ -79,26 +121,42 @@
                   class="btn btn-sm btn-primary"
                   :to="{ name: '<%= name.lower %>-edit', params: { id: item.id } }"
                 >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                   {{ $t('common.edit') }}
+<% } else { %>
+                  Editar
+<% } %>
                 </router-link>
                 <button
                   class="btn btn-sm btn-danger"
                   @click="confirmDelete(item)"
                 >
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                   {{ $t('common.remove') }}
+<% } else { %>
+                  Remover
+<% } %>
                 </button>
               </td>
             </tr>
             <tr v-if="items.length === 0 && !isLoading">
               <td :colspan="columnCount" class="text-center">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                 {{ $t('common.noRecords') }}
+<% } else { %>
+                Nenhum registro encontrado
+<% } %>
               </td>
             </tr>
           </tbody>
         </table>
 
         <div v-if="isLoading" class="loading-indicator">
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
           {{ $t('common.loading') }}
+<% } else { %>
+          Carregando...
+<% } %>
         </div>
 
         <div class="pagination-controls" v-if="totalItems > 0">
@@ -129,6 +187,7 @@
     </div>
 
     <!-- Delete confirmation modal -->
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
     <div v-if="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false">
       <div class="modal-content" role="dialog" :aria-label="$t('common.confirmDelete')">
         <p>{{ $t('common.confirmDeleteMessage') }}</p>
@@ -142,19 +201,42 @@
         </div>
       </div>
     </div>
+<% } else { %>
+    <div v-if="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false">
+      <div class="modal-content" role="dialog" aria-label="Confirmar Exclusão">
+        <p>Tem certeza que deseja excluir?</p>
+        <div class="modal-actions">
+          <button class="btn btn-default" @click="showDeleteModal = false">
+            Não
+          </button>
+          <button class="btn btn-danger" @click="deleteSelecteds">
+            Sim
+          </button>
+        </div>
+      </div>
+    </div>
+<% } %>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue';
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
 import { useI18n } from 'vue-i18n';
+<% } %>
 import AdvancedFilter from '@/components/AdvancedFilter.vue';
 import { use<%= name.capital %>Service } from './<%= name.lower %>.service';
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
 import { useExport } from '@/composables/useExport';
+<% } %>
 
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
 const { t } = useI18n();
+<% } %>
 const service = use<%= name.capital %>Service();
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
 const { downloadCsv, downloadPdf } = useExport();
+<% } %>
 
 const items = ref([]);
 const isLoading = ref(false);
@@ -181,7 +263,11 @@ const filterFields = [
 <%_ (properties || []).filter(function(p) { return !p.isReadOnly && !/^id$/i.test(p.name); }).forEach(function(property, index, arr) { _%>
   {
     name: '<%= property.name %>',
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
     label: t('<%= name.lower %>.fields.<%= property.name %>'),
+<% } else { %>
+    label: '<%= property.name.charAt(0).toUpperCase() + property.name.slice(1) %>',
+<% } %>
 <%_ if (/^(date|localdate|localdatetime)$/i.test(property.type)) { _%>
     type: 'date-range'
 <%_ } else if (/^(integer|int|long|double|float|bigdecimal|number|short)$/i.test(property.type)) { _%>
@@ -287,6 +373,7 @@ async function deleteSelecteds() {
   }
 }
 
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
 function exportCsv() {
   downloadCsv('<%= name.lower %>s', activeFilters);
 }
@@ -294,6 +381,7 @@ function exportCsv() {
 function exportPdf() {
   downloadPdf('<%= name.lower %>s', activeFilters);
 }
+<% } %>
 </script>
 
 <style scoped>

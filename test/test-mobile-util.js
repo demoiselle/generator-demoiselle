@@ -10,8 +10,19 @@ const { dartType, flutterWidgetType, isPrimitive } = require('../Utils/mobile.js
 
 // --- Paths ---
 const mobileBasePath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'mobile');
+const authMobilePath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'auth', 'mobile');
+const themesMobilePath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'themes', 'mobile');
+const i18nMobilePath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'i18n', 'mobile');
 const pubspecTemplatePath = path.join(mobileBasePath, 'pubspec.yaml');
 const pubspecTemplate = fs.readFileSync(pubspecTemplatePath, 'utf-8');
+
+const PackageRegistry = require('../Utils/packageRegistry');
+const mobileRegistry = new PackageRegistry();
+const allMobilePackages = mobileRegistry.getAvailablePackages().map(p => p.slug);
+const allDartDeps = mobileRegistry.getDartDeps(allMobilePackages);
+
+// Base-only dart deps (no optional packages selected)
+const baseDartDeps = {};
 
 // --- Arbitraries ---
 
@@ -181,7 +192,7 @@ describe('Property 22: Dependências Flutter no pubspec.yaml', function () {
 
     fc.assert(
       fc.property(projectArb, (project) => {
-        const rendered = ejs.render(pubspecTemplate, { project });
+        const rendered = ejs.render(pubspecTemplate, { project, dartDeps: allDartDeps });
 
         // Each required dependency must appear as a key in the YAML
         requiredDeps.forEach(dep => {
@@ -231,12 +242,12 @@ describe('Property 22: Dependências Flutter no pubspec.yaml', function () {
 describe('Property 24: Completude do sistema de autenticação mobile', function () {
 
   const authFiles = {
-    'login_screen.dart': path.join(mobileBasePath, 'lib', 'screens', 'login_screen.dart'),
-    'register_screen.dart': path.join(mobileBasePath, 'lib', 'screens', 'register_screen.dart'),
-    'forgot_password_screen.dart': path.join(mobileBasePath, 'lib', 'screens', 'forgot_password_screen.dart'),
-    'reset_password_screen.dart': path.join(mobileBasePath, 'lib', 'screens', 'reset_password_screen.dart'),
-    'auth_provider.dart': path.join(mobileBasePath, 'lib', 'providers', 'auth_provider.dart'),
-    'auth_service.dart': path.join(mobileBasePath, 'lib', 'services', 'auth_service.dart'),
+    'login_screen.dart': path.join(authMobilePath, 'lib', 'screens', 'login_screen.dart'),
+    'register_screen.dart': path.join(authMobilePath, 'lib', 'screens', 'register_screen.dart'),
+    'forgot_password_screen.dart': path.join(authMobilePath, 'lib', 'screens', 'forgot_password_screen.dart'),
+    'reset_password_screen.dart': path.join(authMobilePath, 'lib', 'screens', 'reset_password_screen.dart'),
+    'auth_provider.dart': path.join(authMobilePath, 'lib', 'providers', 'auth_provider.dart'),
+    'auth_service.dart': path.join(authMobilePath, 'lib', 'services', 'auth_service.dart'),
   };
 
   it('todos os arquivos de autenticação mobile devem existir', function () {
@@ -400,9 +411,9 @@ describe('Property 24: Completude do sistema de autenticação mobile', function
 describe('Property 26: Temas Material Design 3 no mobile', function () {
 
   const themeFiles = {
-    'app_theme.dart': path.join(mobileBasePath, 'lib', 'theme', 'app_theme.dart'),
-    'color_schemes.dart': path.join(mobileBasePath, 'lib', 'theme', 'color_schemes.dart'),
-    'theme_provider.dart': path.join(mobileBasePath, 'lib', 'providers', 'theme_provider.dart'),
+    'app_theme.dart': path.join(themesMobilePath, 'lib', 'theme', 'app_theme.dart'),
+    'color_schemes.dart': path.join(themesMobilePath, 'lib', 'theme', 'color_schemes.dart'),
+    'theme_provider.dart': path.join(themesMobilePath, 'lib', 'providers', 'theme_provider.dart'),
     'settings_screen.dart': path.join(mobileBasePath, 'lib', 'screens', 'settings_screen.dart'),
   };
 
@@ -525,21 +536,21 @@ describe('Property 26: Temas Material Design 3 no mobile', function () {
 describe('Property 25: Internacionalização mobile completa', function () {
 
   const l10nFiles = {
-    'app_pt.arb': path.join(mobileBasePath, 'lib', 'l10n', 'app_pt.arb'),
-    'app_en.arb': path.join(mobileBasePath, 'lib', 'l10n', 'app_en.arb'),
-    'app_localizations.dart': path.join(mobileBasePath, 'lib', 'l10n', 'app_localizations.dart'),
+    'app_pt.arb': path.join(i18nMobilePath, 'lib', 'l10n', 'app_pt.arb'),
+    'app_en.arb': path.join(i18nMobilePath, 'lib', 'l10n', 'app_en.arb'),
+    'app_localizations.dart': path.join(i18nMobilePath, 'lib', 'l10n', 'app_localizations.dart'),
   };
 
-  const screenFiles = [
-    'login_screen.dart',
-    'register_screen.dart',
-    'forgot_password_screen.dart',
-    'reset_password_screen.dart',
-    'dashboard_screen.dart',
-    'audit_screen.dart',
-    'notifications_screen.dart',
-    'settings_screen.dart',
-  ];
+  const screenFiles = {
+    'login_screen.dart': path.join(authMobilePath, 'lib', 'screens'),
+    'register_screen.dart': path.join(authMobilePath, 'lib', 'screens'),
+    'forgot_password_screen.dart': path.join(authMobilePath, 'lib', 'screens'),
+    'reset_password_screen.dart': path.join(authMobilePath, 'lib', 'screens'),
+    'dashboard_screen.dart': path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'dashboard', 'mobile', 'lib', 'screens'),
+    'audit_screen.dart': path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'audit', 'mobile', 'lib', 'screens'),
+    'notifications_screen.dart': path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'messaging', 'mobile', 'lib', 'screens'),
+    'settings_screen.dart': path.join(mobileBasePath, 'lib', 'screens'),
+  };
 
   it('arquivos ARB de tradução devem existir', function () {
     assert.ok(
@@ -613,9 +624,7 @@ describe('Property 25: Internacionalização mobile completa', function () {
   });
 
   it('todas as telas devem importar e usar AppLocalizations', function () {
-    const screensDir = path.join(mobileBasePath, 'lib', 'screens');
-
-    screenFiles.forEach(screenFile => {
+    Object.entries(screenFiles).forEach(([screenFile, screensDir]) => {
       const filePath = path.join(screensDir, screenFile);
       assert.ok(
         fs.existsSync(filePath),
@@ -737,7 +746,8 @@ function buildMobileTemplateData(entityName, properties) {
     properties,
     dartType,
     flutterWidgetType,
-    isPrimitive: isPrimitive
+    isPrimitive: isPrimitive,
+    packages: ['export', 'i18n', 'dashboard', 'auth', 'audit', 'observability', 'mcp']
   };
 }
 

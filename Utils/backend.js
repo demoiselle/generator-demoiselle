@@ -17,10 +17,12 @@ module.exports = class BackendUtil {
         config = config || {};
         config.dest = config.dest || 'backend/src/main/java/' + config.package.lower.replace(/\./g, '/') + '/' + config.project.lower + '/';
         const fromPath = 'backend/src/main/java/app/';
+        const packages = config.packages || [];
 
         const template = Object.assign(entity, {
             project: config.project,
-            package: config.package
+            package: config.package,
+            packages: packages
         });
 
         // Ensure properties are available for export endpoints in REST template
@@ -43,13 +45,16 @@ module.exports = class BackendUtil {
         });
 
         this._addEntityToPersistenceXml(template);
-        this._addEntityToDashboardStats(template);
+        if (packages.includes('dashboard')) {
+            this._addEntityToDashboardStats(template);
+        }
     }
 
     createFromEntity(entity, config) {
         config = config || {};
         config.dest = config.dest || 'backend/src/main/java/' + config.package.lower.replace(/\./g, '/') + '/' + config.project.lower + '/';
         const fromPath = 'backend/src/main/java/app/';
+        const packages = config.packages || [];
 
         // Generate query methods from entity properties using QueryGeneratorUtil
         const queryMethods = this.queryGenerator.generateQueryMethods(entity.properties || []);
@@ -57,6 +62,7 @@ module.exports = class BackendUtil {
         const template = Object.assign(entity, {
             project: config.project,
             package: config.package,
+            packages: packages,
             queryMethods: queryMethods
         });
 
@@ -79,7 +85,9 @@ module.exports = class BackendUtil {
         });
 
         this._addEntityToPersistenceXml(template);
-        this._addEntityToDashboardStats(template);
+        if (packages.includes('dashboard')) {
+            this._addEntityToDashboardStats(template);
+        }
     }
 
     /**

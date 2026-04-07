@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "<%= project.lower %>-mcp": {
+      "transport": "sse",
+      "url": "http://localhost:8080/mcp/sse",
+      "description": "MCP server for the <%= project.capital %> application",
+      "metadata": {
+        "name": "<%= project.lower %>-mcp-server",
+        "version": "1.0.0",
+        "framework": "Demoiselle 4.1"
+      }
+    }
+  }
+}

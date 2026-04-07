@@ -17,6 +17,14 @@ const bcTemplate = fs.readFileSync(bcTemplatePath, 'utf-8');
 const frontendPkgTemplatePath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'frontend', 'package.json');
 const frontendPkgTemplate = fs.readFileSync(frontendPkgTemplatePath, 'utf-8');
 
+const PackageRegistry = require('../Utils/packageRegistry');
+const registry = new PackageRegistry();
+const allPackages = registry.getAvailablePackages().map(p => p.slug);
+const allNpmDeps = registry.getNpmDeps(allPackages);
+
+// Base-only npm deps (no optional packages selected)
+const baseNpmDeps = {};
+
 // --- Arbitraries ---
 
 const JAVA_TYPES = ['String', 'Integer', 'Long', 'Date', 'LocalDate', 'Double', 'BigDecimal', 'boolean'];
@@ -64,7 +72,8 @@ function buildTemplateData(entityName, pkg, project, properties) {
     },
     package: pkg,
     project,
-    properties
+    properties,
+    packages: ['observability']
   };
 }
 
@@ -79,16 +88,18 @@ function renderBc(entityName, pkg, project) {
 /**
  * **Validates: Requirements 2.3, 2.4**
  *
- * Property 3: Classes base Demoiselle 4
+ * Property 3: Classes base Demoiselle 4.1
  *
  * For any valid entity name, package, and project, the generated DAO and BC must:
  * - DAO class extends AbstractDAO from org.demoiselle.jee.crud
  * - BC class extends AbstractBusiness from org.demoiselle.jee.crud
  * - Both use the correct generic type parameters (Entity class and UUID)
+ * - DAO has @Cacheable annotation (Demoiselle 4.1)
+ * - BC has @Counted annotation (Demoiselle 4.1)
  */
-describe('Property 3: Classes base Demoiselle 4', () => {
+describe('Property 3: Classes base Demoiselle 4.1', () => {
 
-  it('DAO deve estender AbstractDAO e BC deve estender AbstractBusiness do Demoiselle 4 para qualquer entidade válida', function () {
+  it('DAO deve estender AbstractDAO e BC deve estender AbstractBusiness do Demoiselle 4.1 para qualquer entidade válida', function () {
     this.timeout(30000);
 
     fc.assert(
@@ -120,6 +131,12 @@ describe('Property 3: Classes base Demoiselle 4', () => {
           `DAO deve importar java.util.UUID`
         );
 
+        // DAO must have @Cacheable (Demoiselle 4.1)
+        assert.ok(
+          /@Cacheable/.test(dao),
+          'DAO deve ter @Cacheable para cache de queries'
+        );
+
         // --- BC assertions ---
 
         // BC must import AbstractBusiness from org.demoiselle.jee.crud
@@ -141,6 +158,12 @@ describe('Property 3: Classes base Demoiselle 4', () => {
         assert.ok(
           bc.includes('import java.util.UUID'),
           `BC deve importar java.util.UUID`
+        );
+
+        // BC must have @Counted (Demoiselle 4.1)
+        assert.ok(
+          /@Counted/.test(bc),
+          'BC deve ter @Counted para métricas de observabilidade'
         );
 
         // Both must import the entity class
@@ -180,7 +203,7 @@ describe('Property 6: Dependências Vue.js no package.json do frontend', () => {
 
     fc.assert(
       fc.property(projectArb, (project) => {
-        const rendered = ejs.render(frontendPkgTemplate, { project });
+        const rendered = ejs.render(frontendPkgTemplate, { project, npmDeps: baseNpmDeps });
         const pkg = JSON.parse(rendered);
 
         // --- Vue.js 3 dependencies must be present ---
@@ -209,9 +232,10 @@ describe('Property 6: Dependências Vue.js no package.json do frontend', () => {
           'package.json deve conter "axios" como dependência'
         );
 
+        // vue-i18n is now conditional (only with i18n package)
         assert.ok(
-          pkg.dependencies['vue-i18n'],
-          'package.json deve conter "vue-i18n" como dependência'
+          !pkg.dependencies['vue-i18n'],
+          'package.json base NÃO deve conter "vue-i18n" (agora condicional via pacote i18n)'
         );
 
         assert.ok(

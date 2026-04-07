@@ -4,6 +4,7 @@ const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
 const BackendUtil = require('../../Utils/backend');
 const MobileUtil = require('../../Utils/mobile');
+const PackageRegistry = require('../../Utils/packageRegistry');
 const SwaggerParser = new (require('swagger-parser'))();
 const jsonQ = require('jsonq');
 const _ = require('lodash');
@@ -56,6 +57,15 @@ module.exports = class SwaggerGenerator extends Generator {
    * Your initialization methods (checking current project state, getting configs, etc)
    */
   initializing() {
+    // Lê configuração de pacotes do .yo-rc.json
+    this.selectedPackages = this.config.get('packages') || null;
+
+    // Compatibilidade retroativa: se não há config de pacotes, assume todos
+    if (this.selectedPackages === null) {
+        const registry = new PackageRegistry();
+        this.selectedPackages = registry.getAvailablePackages().map(p => p.slug);
+    }
+
     this.log('[initializing] done.');
 
     // Read swagger.json
@@ -261,21 +271,24 @@ module.exports = class SwaggerGenerator extends Generator {
       if (!this.options['skip-frontend']) {
         this.frontendUtil.createCrud(entity, {
           project: Util.createNames(this.project),
-          prefix: Util.createNames(this.prefix)
+          prefix: Util.createNames(this.prefix),
+          packages: this.selectedPackages
         });
       }
 
       if (!this.options['skip-backend']) {
         this.backendUtil.createCrud(entity, {
             package: Util.createNames(this.package),
-            project: Util.createNames(this.project)
+            project: Util.createNames(this.project),
+            packages: this.selectedPackages
         });
       }
 
       if (!this.options['skip-mobile']) {
         this.mobileUtil.createCrud(entity, {
             project: Util.createNames(this.project),
-            prefix: Util.createNames(this.prefix)
+            prefix: Util.createNames(this.prefix),
+            packages: this.selectedPackages
         });
       }
     });

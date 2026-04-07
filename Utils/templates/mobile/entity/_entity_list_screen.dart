@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
 import '../l10n/app_localizations.dart';
+<% } %>
 import '../models/<%= name.lower %>_model.dart';
 import '../providers/<%= name.lower %>_provider.dart';
 import '../widgets/advanced_filter_widget.dart';
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
 import '../widgets/export_buttons.dart';
+<% } %>
 import '../widgets/responsive_layout.dart';
 
 class <%= name.capital %>ListScreen extends ConsumerStatefulWidget {
@@ -81,16 +85,24 @@ class _<%= name.capital %>ListScreenState extends ConsumerState<<%= name.capital
   @override
   Widget build(BuildContext context) {
     final listState = ref.watch(<%= name.lower %>ListProvider);
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
     final l10n = AppLocalizations.of(context)!;
+<% } %>
 
     return Scaffold(
       appBar: AppBar(
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
         title: Text(l10n.<%= name.lower %>Title),
+<% } else { %>
+        title: const Text('<%= name.capital %>'),
+<% } %>
         actions: [
+<% if (typeof packages !== 'undefined' && packages.includes('export')) { %>
           ExportButtons(
             entityPath: '<%= name.lower %>s',
             filters: listState.filters.isNotEmpty ? listState.filters : null,
           ),
+<% } %>
         ],
       ),
       body: ResponsiveLayout(
@@ -162,7 +174,11 @@ class _<%= name.capital %>ListScreenState extends ConsumerState<<%= name.capital
             child: Padding(
               padding: const EdgeInsets.all(32),
               child: Text(
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
                 AppLocalizations.of(context)!.commonClear,
+<% } else { %>
+                'Nenhum registro encontrado',
+<% } %>
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -216,8 +232,13 @@ class _<%= name.capital %>ListScreenState extends ConsumerState<<%= name.capital
           }
         },
         itemBuilder: (context) => [
-          const PopupMenuItem(value: 'edit', child: Text('Edit')),
-          const PopupMenuItem(value: 'delete', child: Text('Delete')),
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
+          PopupMenuItem(value: 'edit', child: Text(AppLocalizations.of(context)!.commonEdit)),
+          PopupMenuItem(value: 'delete', child: Text(AppLocalizations.of(context)!.commonDelete)),
+<% } else { %>
+          const PopupMenuItem(value: 'edit', child: Text('Editar')),
+          const PopupMenuItem(value: 'delete', child: Text('Excluir')),
+<% } %>
         ],
       ),
       onTap: () {
@@ -302,12 +323,21 @@ class _<%= name.capital %>ListScreenState extends ConsumerState<<%= name.capital
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Confirm Delete'),
-        content: const Text('Are you sure you want to delete this item?'),
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
+        title: Text(AppLocalizations.of(context)!.commonConfirmDelete),
+        content: Text(AppLocalizations.of(context)!.commonConfirmDeleteMessage),
+<% } else { %>
+        title: const Text('Confirmar Exclusão'),
+        content: const Text('Tem certeza que deseja excluir este item?'),
+<% } %>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
             child: Text(AppLocalizations.of(context)!.commonCancel),
+<% } else { %>
+            child: const Text('Cancelar'),
+<% } %>
           ),
           TextButton(
             onPressed: () {
@@ -317,7 +347,11 @@ class _<%= name.capital %>ListScreenState extends ConsumerState<<%= name.capital
                 setState(() => _selectedItem = null);
               }
             },
-            child: const Text('Delete'),
+<% if (typeof packages !== 'undefined' && packages.includes('i18n')) { %>
+            child: Text(AppLocalizations.of(context)!.commonDelete),
+<% } else { %>
+            child: const Text('Excluir'),
+<% } %>
           ),
         ],
       ),

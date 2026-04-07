@@ -7,7 +7,7 @@ const path = require('path');
 
 // --- Paths ---
 
-const baseFrontendPath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'frontend', 'src');
+const baseFrontendPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'themes', 'frontend', 'src');
 const stylesDir = path.join(baseFrontendPath, 'styles');
 const componentsDir = path.join(baseFrontendPath, 'components');
 const viewsDir = path.join(baseFrontendPath, 'views');
@@ -19,7 +19,7 @@ const variablesCssPath = path.join(stylesDir, 'variables.css');
 const themeLightPath = path.join(stylesDir, 'theme-light.css');
 const themeDarkPath = path.join(stylesDir, 'theme-dark.css');
 const themeTogglePath = path.join(componentsDir, 'ThemeToggle.vue');
-const appHeaderPath = path.join(componentsDir, 'AppHeader.vue');
+const appHeaderPath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'frontend', 'src', 'components', 'AppHeader.vue');
 const themeStorePath = path.join(storesDir, 'theme.js');
 
 const variablesCss = fs.readFileSync(variablesCssPath, 'utf-8');

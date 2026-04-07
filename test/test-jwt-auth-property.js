@@ -8,14 +8,10 @@ const path = require('path');
 
 // --- Load EJS templates ---
 
-const basePath = path.join(__dirname, '..', 'Utils', 'templates', 'base', 'backend', 'src', 'main', 'java', 'app');
+const authPkgPath = path.join(__dirname, '..', 'Utils', 'templates', 'packages', 'auth', 'backend', 'src', 'main', 'java', 'app');
 
-const jwtTokenProviderTemplate = fs.readFileSync(path.join(basePath, 'security', 'JwtTokenProvider.java'), 'utf-8');
-const jwtAuthFilterTemplate = fs.readFileSync(path.join(basePath, 'security', 'JwtAuthFilter.java'), 'utf-8');
-const passwordEncoderTemplate = fs.readFileSync(path.join(basePath, 'security', 'PasswordEncoder.java'), 'utf-8');
-const tokenResponseTemplate = fs.readFileSync(path.join(basePath, 'security', 'TokenResponse.java'), 'utf-8');
-const authRestTemplate = fs.readFileSync(path.join(basePath, 'service', 'AuthREST.java'), 'utf-8');
-const userTemplate = fs.readFileSync(path.join(basePath, 'entity', 'User.java'), 'utf-8');
+const authRestTemplate = fs.readFileSync(path.join(authPkgPath, 'service', 'AuthREST.java'), 'utf-8');
+const userTemplate = fs.readFileSync(path.join(authPkgPath, 'entity', 'User.java'), 'utf-8');
 
 // --- Arbitraries ---
 
@@ -38,67 +34,89 @@ function renderTemplate(template, project, pkg) {
 /**
  * **Validates: Requirements 12.1, 12.2, 12.3, 12.6, 13.1, 13.3, 13.4, 14.1, 14.2, 14.4**
  *
- * Property 12: Completude do sistema de autenticação JWT
+ * Property 12: Completude do sistema de autenticação JWT (Demoiselle 4.1 native)
  *
  * For any valid project name and package name, the generated JWT authentication
- * system templates must be complete:
- * - JwtTokenProvider contains generateToken, refreshToken, validateToken methods
- * - JwtTokenProvider uses jjwt library (contains io.jsonwebtoken)
- * - JwtAuthFilter implements ContainerRequestFilter and has @Provider annotation
- * - PasswordEncoder uses BCrypt (contains BCrypt or jbcrypt)
+ * system templates must be complete using Demoiselle 4.1 native APIs:
+ * - AuthREST uses SecurityContext from org.demoiselle.jee.core.api.security
+ * - AuthREST uses TokenManager for JWT token creation/validation
+ * - AuthREST uses BruteForceGuard for brute force protection
+ * - AuthREST uses DemoiselleUser / DemoiselleUserImpl for user representation
  * - AuthREST contains all 6 endpoints: /auth/login, /auth/refresh, /auth/register,
  *   /auth/confirm, /auth/forgot-password, /auth/reset-password
+ * - AuthREST has @Counted for observability
+ * - AuthREST has @RateLimit on login endpoint
  * - User.java contains emailVerified, verificationToken, resetToken, resetTokenExpiry fields
  * - User.java contains @ManyToMany with Role
  */
-describe('Property 12: Completude do sistema de autenticação JWT', () => {
+describe('Property 12: Completude do sistema de autenticação JWT (Demoiselle 4.1)', () => {
 
-  it('sistema de autenticação JWT deve estar completo para qualquer projeto e package válidos', function () {
+  it('sistema de autenticação JWT deve usar APIs nativas Demoiselle 4.1 para qualquer projeto e package válidos', function () {
     this.timeout(30000);
 
     fc.assert(
       fc.property(projectArb, packageArb, (project, pkg) => {
-        const jwtTokenProvider = renderTemplate(jwtTokenProviderTemplate, project, pkg);
-        const jwtAuthFilter = renderTemplate(jwtAuthFilterTemplate, project, pkg);
-        const passwordEncoder = renderTemplate(passwordEncoderTemplate, project, pkg);
-        const tokenResponse = renderTemplate(tokenResponseTemplate, project, pkg);
         const authRest = renderTemplate(authRestTemplate, project, pkg);
         const user = renderTemplate(userTemplate, project, pkg);
 
-        // --- Req 12.1, 12.2: JwtTokenProvider must have generateToken, refreshToken, validateToken ---
+        // --- AuthREST uses Demoiselle SecurityContext ---
         assert.ok(
-          /generateToken\s*\(/.test(jwtTokenProvider),
-          'JwtTokenProvider deve conter método generateToken'
-        );
-        assert.ok(
-          /refreshToken\s*\(/.test(jwtTokenProvider),
-          'JwtTokenProvider deve conter método refreshToken'
-        );
-        assert.ok(
-          /validateToken\s*\(/.test(jwtTokenProvider),
-          'JwtTokenProvider deve conter método validateToken'
+          /import\s+org\.demoiselle\.jee\.core\.api\.security\.SecurityContext/.test(authRest),
+          'AuthREST deve importar SecurityContext do Demoiselle'
         );
 
-        // JwtTokenProvider must use jjwt library
+        // --- AuthREST uses TokenManager ---
         assert.ok(
-          /io\.jsonwebtoken/.test(jwtTokenProvider),
-          'JwtTokenProvider deve usar biblioteca jjwt (io.jsonwebtoken)'
+          /import\s+org\.demoiselle\.jee\.core\.api\.security\.TokenManager/.test(authRest),
+          'AuthREST deve importar TokenManager do Demoiselle'
         );
 
-        // --- Req 12.6: JwtAuthFilter implements ContainerRequestFilter with @Provider ---
+        // --- AuthREST uses DemoiselleUser ---
         assert.ok(
-          /implements\s+ContainerRequestFilter/.test(jwtAuthFilter),
-          'JwtAuthFilter deve implementar ContainerRequestFilter'
-        );
-        assert.ok(
-          /@Provider/.test(jwtAuthFilter),
-          'JwtAuthFilter deve ter anotação @Provider'
+          /import\s+org\.demoiselle\.jee\.core\.api\.security\.DemoiselleUser/.test(authRest),
+          'AuthREST deve importar DemoiselleUser do Demoiselle'
         );
 
-        // --- Req 12.6: PasswordEncoder uses BCrypt ---
+        // --- AuthREST uses BruteForceGuard ---
         assert.ok(
-          /BCrypt/.test(passwordEncoder),
-          'PasswordEncoder deve usar BCrypt'
+          /import\s+org\.demoiselle\.jee\.security\.bruteforce\.BruteForceGuard/.test(authRest),
+          'AuthREST deve importar BruteForceGuard do Demoiselle'
+        );
+
+        // --- AuthREST uses DemoiselleUserImpl ---
+        assert.ok(
+          /DemoiselleUserImpl/.test(authRest),
+          'AuthREST deve usar DemoiselleUserImpl para representação de usuário'
+        );
+
+        // --- AuthREST has @Counted ---
+        assert.ok(
+          /@Counted/.test(authRest),
+          'AuthREST deve ter @Counted para observabilidade'
+        );
+
+        // --- AuthREST has @RateLimit on login ---
+        assert.ok(
+          /@RateLimit/.test(authRest),
+          'AuthREST deve ter @RateLimit no endpoint de login'
+        );
+
+        // --- AuthREST does NOT use manual JwtTokenProvider ---
+        assert.ok(
+          !/JwtTokenProvider/.test(authRest),
+          'AuthREST NÃO deve usar JwtTokenProvider manual (substituído por TokenManager)'
+        );
+
+        // --- AuthREST does NOT use manual PasswordEncoder ---
+        assert.ok(
+          !/PasswordEncoder/.test(authRest),
+          'AuthREST NÃO deve usar PasswordEncoder manual'
+        );
+
+        // --- AuthREST does NOT use manual TokenResponse ---
+        assert.ok(
+          !/TokenResponse/.test(authRest),
+          'AuthREST NÃO deve usar TokenResponse manual'
         );
 
         // --- Req 12.1: AuthREST contains /auth/login endpoint ---
@@ -177,17 +195,7 @@ describe('Property 12: Completude do sistema de autenticação JWT', () => {
           'User.java deve referenciar Role'
         );
 
-        // --- TokenResponse has token and expiresIn fields ---
-        assert.ok(
-          /token/.test(tokenResponse) && /expiresIn/.test(tokenResponse),
-          'TokenResponse deve conter campos token e expiresIn'
-        );
-
         // --- Package interpolation ---
-        assert.ok(
-          jwtTokenProvider.includes(pkg.lower),
-          'JwtTokenProvider deve conter o package'
-        );
         assert.ok(
           authRest.includes(pkg.lower),
           'AuthREST deve conter o package'

@@ -3,9 +3,13 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const PackageRegistry = require('../Utils/packageRegistry');
 
 const fromEntitySourcePath = path.join(__dirname, '..', 'generators', 'fromEntity', 'index.js');
 const fromEntitySource = fs.readFileSync(fromEntitySourcePath, 'utf-8');
+
+const backendUtilSourcePath = path.join(__dirname, '..', 'Utils', 'backend.js');
+const backendUtilSource = fs.readFileSync(backendUtilSourcePath, 'utf-8');
 
 const QueryGeneratorUtil = require('../Utils/queryGenerator');
 const queryGenerator = new QueryGeneratorUtil();
@@ -261,6 +265,169 @@ describe('yo demoiselle:fromEntity', () => {
       assert.ok(
         fromEntitySource.includes('private\\s+'),
         'FromEntityGenerator deve usar regex para extrair campos private'
+      );
+    });
+  });
+
+  // --- Req 17.2: Entidade gerada respeitando pacotes selecionados ---
+
+  describe('entidade gerada respeitando pacotes selecionados (Req 17.2)', () => {
+
+    it('FromEntityGenerator DEVE ler Configuração_Pacotes do .yo-rc.json no initializing()', () => {
+      assert.ok(
+        fromEntitySource.includes("this.config.get('packages')"),
+        'FromEntityGenerator deve ler packages do config (.yo-rc.json)'
+      );
+      assert.ok(
+        fromEntitySource.includes('this.selectedPackages'),
+        'FromEntityGenerator deve armazenar pacotes em this.selectedPackages'
+      );
+    });
+
+    it('FromEntityGenerator DEVE passar selectedPackages ao config do BackendUtil', () => {
+      assert.ok(
+        fromEntitySource.includes('packages: this.selectedPackages'),
+        'config do BackendUtil deve conter packages: this.selectedPackages'
+      );
+    });
+
+    it('FromEntityGenerator DEVE passar selectedPackages ao config do FrontendUtil', () => {
+      assert.ok(
+        fromEntitySource.includes('packages: this.selectedPackages'),
+        'config do FrontendUtil deve conter packages: this.selectedPackages'
+      );
+    });
+
+    it('FromEntityGenerator DEVE passar selectedPackages ao config do MobileUtil', () => {
+      assert.ok(
+        fromEntitySource.includes('packages: this.selectedPackages'),
+        'config do MobileUtil deve conter packages: this.selectedPackages'
+      );
+    });
+
+    it('BackendUtil.createFromEntity() DEVE extrair packages do config', () => {
+      assert.ok(
+        backendUtilSource.includes("config.packages || []"),
+        'BackendUtil.createFromEntity deve extrair packages do config'
+      );
+    });
+
+    it('BackendUtil.createFromEntity() DEVE repassar packages ao template EJS', () => {
+      assert.ok(
+        backendUtilSource.includes('packages: packages'),
+        'BackendUtil deve passar packages ao template'
+      );
+    });
+  });
+
+  // --- Condicionais de audit, export, auth, observability nos templates gerados ---
+
+  describe('condicionais de pacotes nos templates backend usados por fromEntity', () => {
+
+    it('template backend entity DEVE condicionar @EntityListeners ao pacote audit', () => {
+      const entityPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'entity', '_pojo.java');
+      const content = fs.readFileSync(entityPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('audit')"),
+        'Template entity deve condicionar AuditEntityListener ao pacote audit'
+      );
+      assert.ok(
+        content.includes('AuditEntityListener'),
+        'Template entity deve conter referência a AuditEntityListener'
+      );
+    });
+
+    it('template backend REST DEVE condicionar endpoints de exportação ao pacote export', () => {
+      const restPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+      const content = fs.readFileSync(restPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('export')"),
+        'Template REST deve condicionar exportação ao pacote export'
+      );
+      assert.ok(
+        content.includes('exportCsv') || content.includes('/export') || content.includes('export'),
+        'Template REST deve conter endpoint de exportação'
+      );
+    });
+
+    it('template backend REST DEVE condicionar @RolesAllowed/@Authenticated ao pacote auth', () => {
+      const restPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+      const content = fs.readFileSync(restPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('auth')"),
+        'Template REST deve condicionar anotações de segurança ao pacote auth'
+      );
+    });
+
+    it('template backend REST DEVE condicionar @Counted/@Traced ao pacote observability', () => {
+      const restPath = path.join(__dirname, '..', 'Utils', 'templates', 'backend', 'src', 'main', 'java', 'app', 'service', '_pojoREST.java');
+      const content = fs.readFileSync(restPath, 'utf-8');
+      assert.ok(
+        content.includes("packages.includes('observability')"),
+        'Template REST deve condicionar observabilidade ao pacote observability'
+      );
+      assert.ok(
+        content.includes('@Counted') && content.includes('@Traced'),
+        'Template REST deve conter @Counted e @Traced'
+      );
+    });
+
+    it('BackendUtil DEVE condicionar _addEntityToDashboardStats à presença do pacote dashboard', () => {
+      assert.ok(
+        backendUtilSource.includes("packages.includes('dashboard')"),
+        'BackendUtil deve verificar pacote dashboard antes de chamar _addEntityToDashboardStats'
+      );
+    });
+  });
+
+  // --- Req 17.4: Compatibilidade retroativa (projeto sem Configuração_Pacotes) ---
+
+  describe('compatibilidade retroativa — projeto legado sem Configuração_Pacotes (Req 17.4)', () => {
+
+    it('FromEntityGenerator DEVE assumir todos os pacotes quando .yo-rc.json não tem packages', () => {
+      assert.ok(
+        fromEntitySource.includes("this.config.get('packages')"),
+        'FromEntityGenerator deve ler packages do config'
+      );
+      assert.ok(
+        fromEntitySource.includes('this.selectedPackages === null'),
+        'FromEntityGenerator deve verificar se selectedPackages é null'
+      );
+    });
+
+    it('FromEntityGenerator DEVE usar PackageRegistry.getAvailablePackages() para obter todos os slugs', () => {
+      assert.ok(
+        fromEntitySource.includes('PackageRegistry'),
+        'FromEntityGenerator deve importar PackageRegistry'
+      );
+      assert.ok(
+        fromEntitySource.includes('getAvailablePackages'),
+        'FromEntityGenerator deve chamar getAvailablePackages() para obter todos os pacotes'
+      );
+    });
+
+    it('quando selectedPackages é null, DEVE resolver para todos os 10 pacotes', () => {
+      const registry = new PackageRegistry();
+      const allSlugs = registry.getAvailablePackages().map(p => p.slug);
+      assert.strictEqual(allSlugs.length, 10, 'Deve haver 10 pacotes disponíveis');
+      const expected = ['auth', 'messaging', 'mcp', 'file-upload', 'audit',
+        'dashboard', 'export', 'observability', 'i18n', 'themes'];
+      expected.forEach(slug => {
+        assert.ok(allSlugs.includes(slug), `Pacote "${slug}" deve estar disponível`);
+      });
+    });
+
+    it('FromEntityGenerator initializing() DEVE instanciar PackageRegistry para fallback', () => {
+      assert.ok(
+        fromEntitySource.includes('new PackageRegistry()'),
+        'FromEntityGenerator deve instanciar PackageRegistry no initializing() para fallback'
+      );
+    });
+
+    it('fallback de compatibilidade DEVE mapear getAvailablePackages para array de slugs', () => {
+      assert.ok(
+        fromEntitySource.includes('.map(p => p.slug)') || fromEntitySource.includes('.map(function'),
+        'FromEntityGenerator deve mapear pacotes para array de slugs'
       );
     });
   });

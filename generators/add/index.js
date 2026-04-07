@@ -3,6 +3,7 @@ const Util = require('../../Utils/util');
 const FrontendUtil = require('../../Utils/frontend');
 const BackendUtil = require('../../Utils/backend');
 const MobileUtil = require('../../Utils/mobile');
+const PackageRegistry = require('../../Utils/packageRegistry');
 // const _ = require('lodash');
 
 /**
@@ -38,7 +39,14 @@ module.exports = class AddGenerator extends Generator {
      * Your initialization methods (checking current project state, getting configs, etc)
      */
     initializing() {
-        // this.log('[initializing] done.');
+        // Lê configuração de pacotes do .yo-rc.json
+        this.selectedPackages = this.config.get('packages') || null;
+
+        // Compatibilidade retroativa: se não há config de pacotes, assume todos
+        if (this.selectedPackages === null) {
+            const registry = new PackageRegistry();
+            this.selectedPackages = registry.getAvailablePackages().map(p => p.slug);
+        }
     }
 
     /**
@@ -218,15 +226,18 @@ module.exports = class AddGenerator extends Generator {
 
         let configFrontend = {
             prefix: Util.createNames(this.prefix),
-            project: Util.createNames(this.project)
+            project: Util.createNames(this.project),
+            packages: this.selectedPackages
         };
         let configBackend = {
             package: Util.createNames(this.package),
-            project: Util.createNames(this.project)
+            project: Util.createNames(this.project),
+            packages: this.selectedPackages
         };
         let configMobile = {
             prefix: Util.createNames(this.prefix),
-            project: Util.createNames(this.project)
+            project: Util.createNames(this.project),
+            packages: this.selectedPackages
         };
 
         // Generate Entity CRUD
