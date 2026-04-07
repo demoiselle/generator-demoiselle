@@ -72,11 +72,8 @@ Sistema completo de autenticação JWT com registro, confirmação por email, re
 - `models/user_model.dart`
 
 **Dependências Maven:**
-- `io.jsonwebtoken:jjwt-api:0.12.6`
-- `io.jsonwebtoken:jjwt-impl:0.12.6`
-- `io.jsonwebtoken:jjwt-jackson:0.12.6`
-- `org.mindrot:jbcrypt:0.4`
-- `com.sun.mail:jakarta.mail-api:2.0.1`
+- `org.demoiselle.jee:demoiselle-security-jwt:4.1.0-SNAPSHOT` — módulo JWT do framework com TokenManager, KeyRotation, RefreshToken, TokenBlacklist (usa jose4j internamente). Inclui `demoiselle-security` que fornece PasswordEncoder (PBKDF2-SHA256), BruteForceGuard, anotações de segurança e filtros
+- `com.sun.mail:jakarta.mail-api:2.0.1` — envio de emails (confirmação de registro, recuperação de senha)
 
 **Dependências Dart:**
 - `flutter_secure_storage: ^9.0.0`

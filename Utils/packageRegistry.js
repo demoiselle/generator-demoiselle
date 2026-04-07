@@ -29,10 +29,7 @@ module.exports = class PackageRegistry {
                 dependencies: [],
                 layers: ['backend', 'frontend', 'mobile'],
                 mavenDeps: [
-                    { groupId: 'io.jsonwebtoken', artifactId: 'jjwt-api', version: '0.12.6' },
-                    { groupId: 'io.jsonwebtoken', artifactId: 'jjwt-impl', version: '0.12.6' },
-                    { groupId: 'io.jsonwebtoken', artifactId: 'jjwt-jackson', version: '0.12.6' },
-                    { groupId: 'org.mindrot', artifactId: 'jbcrypt', version: '0.4' },
+                    { groupId: 'org.demoiselle.jee', artifactId: 'demoiselle-security-jwt', version: '4.1.0-SNAPSHOT' },
                     { groupId: 'com.sun.mail', artifactId: 'jakarta.mail-api', version: '2.0.1' }
                 ],
                 npmDeps: {},

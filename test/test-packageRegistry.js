@@ -121,14 +121,14 @@ describe('PackageRegistry', function () {
         it('should return correct deps for auth', function () {
             const deps = registry.getMavenDeps(['auth']);
             const artifacts = deps.map(d => d.artifactId);
-            assert.ok(artifacts.includes('jjwt-api'));
-            assert.ok(artifacts.includes('jbcrypt'));
+            assert.ok(artifacts.includes('demoiselle-security-jwt'));
+            assert.ok(artifacts.includes('jakarta.mail-api'));
         });
 
         it('should merge deps from multiple packages', function () {
             const deps = registry.getMavenDeps(['auth', 'export']);
             const artifacts = deps.map(d => d.artifactId);
-            assert.ok(artifacts.includes('jjwt-api'));
+            assert.ok(artifacts.includes('demoiselle-security-jwt'));
             assert.ok(artifacts.includes('opencsv'));
         });
     });
