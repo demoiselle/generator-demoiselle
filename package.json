@@ -41,9 +41,9 @@
     "jsonq": "^1.1.0",
     "lodash": "^4.17.21",
     "@apidevtools/swagger-parser": "^10.1.0",
-    "yeoman-generator": "^5.10.0",
+    "yeoman-generator": "^7.5.0",
     "yosay": "^2.0.2",
-    "snyk": "^1.192.0"
+    "snyk": "^1.996.0"
   },
   "devDependencies": {
     "eslint": "^3.1.1",
